@@ -1,8 +1,20 @@
+/* test_c -- an attempt to put the lexer through the ringer */
 
-        ///lksjdlfjkasldjkfasjdf
+/*
+thisisanunusuallylongidentifierbutitislegal
 
-// for
-//
+"What the #&*%!"
+"Don't forget"
+"Maximum of 15 characters"
+*/
+//The following comments may prove difficult
+/**/ /*u*/ /***/ /*v*/ /****/ /*w*/ /*****/ /*x*/ /******/ /*y*/ /*/*/ /*z*/
 
 
+// You may assume the following limits on numbers: 
+
+// 2147483647 is the maximum unsigned integer: 2^31-1
+
+//floating point can range from 1.17549E-38 to 3.402823E+38
+// we will assume that at most 8 significant mantissa digits can be carried.
 

@@ -14,13 +14,15 @@ struct token
     struct token* link;
     union
     {
-        char tokenstring[16];
+        char tokenstring[MAX_TOKEN_LENGTH];
         int which;
         long integer_number;
         double floating_number;
     } tokenvalue;
 
 };
+
+#define stringval  tokenvalue.tokenstring
 
 TOKEN makeToken(void)
 {
@@ -30,6 +32,42 @@ TOKEN makeToken(void)
         printf("Token allocation failed\n");
     }
     return t;
+}
+
+void setTokenType(TOKEN t, TokenType tType)
+{
+    t->tokenType = tType;
+}
+
+TokenType getTokenType(TOKEN t)
+{
+    return t->tokenType;
+}
+
+void setDataType(TOKEN t, DataType dType)
+{
+    t->dataType = dType;
+}
+
+DataType getDataType(TOKEN t)
+{
+    return t->dataType;
+}
+
+void setStringVal(TOKEN t, char* string)
+{
+    int i = 0;
+
+    for(i = 0; (i < MAX_TOKEN_LENGTH) && (string[i] != 0); i++)
+    {
+        t->stringval[i] = string[i];
+    }
+    t->stringval[i] = 0; //terminate the string FIXME: there may be an off-by-one buffer overflow here...
+}
+
+char* getStringVal(TOKEN t)
+{
+    return t->stringval;
 }
 
 void printToken(TOKEN t)

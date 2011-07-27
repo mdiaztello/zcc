@@ -3,6 +3,7 @@
 #include "scanner.h"
 #include "global_defs.h"
 #include "debug.h"
+#include <stdlib.h>
 
 static void skip_whitespace_and_comments(void);
 static TOKEN make_identifier(TOKEN tok);
@@ -17,6 +18,37 @@ static void skip_single_line_comment(void);
 void skip_block_comments(void);
 static void updateLineNumber(char c);
 
+unsigned char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
+{
+    "static",
+    "const",
+    "unsigned", 
+    "signed", 
+    "char", 
+    "short", 
+    "int", 
+    "long",
+    "float",
+    "double",
+    "struct",
+    "union",
+    "enum",
+    "void",
+    "typedef",
+    "if",
+    "else",
+    "do",
+    "while",
+    "for",
+    "continue",
+    "switch",
+    "case",
+    "break",
+    "return",
+    "goto",
+
+};
+
 unsigned long source_code_line_number = 0;
 
 TOKEN lex(void)
@@ -29,7 +61,7 @@ TOKEN lex(void)
 
     if((c = peekchar()) != EOF)
     {
-        character_class = CHARCLASS[c];
+        character_class = get_char_class(c);
 
         if(ALPHA == character_class)
         {
@@ -131,14 +163,63 @@ void skip_single_line_comment(void)
 
 void skip_block_comments(void)
 {
+    char c;
+    getchar(); //discard the '/'
+    getchar(); //discard the '*'
+
+    unsigned long block_comment_starting_line = source_code_line_number;
+
+    while(((c = peekchar()) != EOF) && !detectBlockCommentClose())
+    {
+        c = getchar();
+        updateLineNumber(c);
+    }
+
+    if(c == EOF)
+    {
+        fprintf(stderr, "The comment starting on line %lu needs a terminating comment symbol\n", block_comment_starting_line);
+        exit(-1);
+    }
+    getchar(); //discard the '*'
+    getchar(); //discard the '/'
 
 }
 
 TOKEN make_identifier(TOKEN tok)
 {
+    char buffer[MAX_TOKEN_LENGTH];
+
+    setTokenType(tok, IDENTIFIER_TOKEN);
+    setDataType(tok, STRING_TYPE);
+
+    //assume that the token is an identifier, then check if it is a reserved word
+    get_identifier_string(buffer);
+    
+    setStringVal(tok, buffer);
 
     return tok;
 }
+
+static void get_identifier_string(char* buffer)
+{
+    int i = 0;
+    char c = peekchar();
+    char cclass = get_char_class(c);
+    char prev_char;
+
+    while( ((cclass == ALPHA) || (cclass == NUMERIC) || (c == '_')) && (EOF != peekchar()) )
+    {
+        if(i < MAX_TOKEN_LENGTH)
+        {
+            buffer[i++] = c;
+        }
+        prev_char = getchar();
+        c = peekchar();
+        cclass = get_char_class(c);
+    }
+    buffer[i] = 0; //terminate the string
+}
+
 
 
 
@@ -177,7 +258,7 @@ BOOLEAN isWhiteSpace(char c)
     return result;
 }
 
-void updateLineNumber(char c)
+static void updateLineNumber(char c)
 {
     if(c == '\n')
     {

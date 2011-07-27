@@ -27,8 +27,8 @@
 
 int EOFFLG;
 
-int CHARCLASS[MAXCHARCLASS]; //character class lookup table 
-char special_characters[] = "+-*/:<>^.,;()[]{}"; //initialize special characters lookup table
+static int CHARCLASS[MAXCHARCLASS]; //character class lookup table. This is basically a lookup table based on the ASCII table
+char special_characters[] = "+-*/!%&|=.,;:^<>()[]{}"; //initialize special characters lookup table
 
 void init_scanner(void)
 {
@@ -78,4 +78,12 @@ void init_charclass(void)
         CHARCLASS[special_characters[i]] = SPECIAL;
     }
 
+}
+
+//determines whether the character being scanned is ALPHA (alphabetical)
+//NUMBER (numeric) or SPECIAL (any of the operators, seperators, terminators, and other delimiters)
+int get_char_class(char c)
+{
+    int cclass = CHARCLASS[c];
+    return cclass;
 }

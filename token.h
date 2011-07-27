@@ -1,6 +1,9 @@
 #ifndef __TOKEN_H_
 #define __TOKEN_H_
 
+#define MAX_TOKEN_LENGTH 256 //this is somewhat arbitrary, but it seems long enough to deal with
+                            //really long function and variable names
+
 typedef struct token* TOKEN;
 
 enum token_type
@@ -17,6 +20,7 @@ enum token_type
     // all of the token types
     NUM_TOKEN_TYPES
 };
+typedef enum token_type TokenType;
 
 enum operator_type
 {
@@ -47,6 +51,7 @@ enum operator_type
     // all of the operator types
     NUM_OPERATOR_TYPES
 };
+typedef enum operator_type OperatorType;
 
 enum delimiter_type
 {
@@ -64,6 +69,7 @@ enum delimiter_type
     // all of the delimiter types
     NUM_DELIMITER_TYPES
 };
+typedef enum delimeter_type DelimiterType;
 
 enum data_type 
 {
@@ -86,21 +92,27 @@ enum data_type
     // all of the number types
     NUM_DATA_TYPES
 };
+typedef enum data_type DataType;
 
+#define MAX_KEYWORD_LENGTH 8 //"continue" and "unsigned" are the longest keywords
+                                //with lenthgs of 8 characters
 enum keyword_types
 {
+    STATIC = 0,
+    CONST,
     UNSIGNED, 
     SIGNED, 
     CHAR, 
     SHORT, 
     INT, 
-    LONG ,
+    LONG,
     FLOAT,
     DOUBLE,
     STRUCT,
     UNION,
     ENUM,
     VOID,
+    TYPEDEF,
     IF,
     ELSE,
     DO,
@@ -111,15 +123,23 @@ enum keyword_types
     CASE,
     BREAK,
     RETURN,
-    TYPEDEF,
     GOTO,
 
     // this last enum is here just to be able to iterate across
     // all of the keyword types
     NUM_KEYWORD_TYPES
 };
+typedef enum keyword_types KeywordType;
 
 TOKEN makeToken(void);
+void setTokenType(TOKEN t, enum token_type tType);
+TokenType getTokenType(TOKEN t);
+void setDataType(TOKEN t, DataType dType);
+DataType getDataType(TOKEN t);
+
+void setStringVal(TOKEN t, char* string);
+char* getStringVal(TOKEN t);
+
 void printToken(TOKEN t);
 void printTokenType(TOKEN t);
 
