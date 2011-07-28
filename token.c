@@ -23,6 +23,7 @@ struct token
 };
 
 #define stringval  tokenvalue.tokenstring
+#define whichval tokenvalue.which
 
 TOKEN makeToken(void)
 {
@@ -70,9 +71,34 @@ char* getStringVal(TOKEN t)
     return t->stringval;
 }
 
+void setWhichVal(TOKEN t, int which)
+{
+    t->whichval = which;
+}
+
+int getWhichVal(TOKEN t)
+{
+    return t->whichval;
+}
+
 void printToken(TOKEN t)
 {
     printTokenType(t);
+    switch(getTokenType(t))
+    {
+        case KEYWORD_TOKEN:
+            printKeywordType(t);
+            break;
+        case IDENTIFIER_TOKEN:
+            printIdentifier(t);
+            break;
+        case STRING_LITERAL:
+            printf("The string is \"%s\"\n", getStringVal(t));
+            break;
+        default:
+            printf("I don't know what kind of token this is...\n");
+            break;
+    }
 }
 
 void printTokenType(TOKEN t)
@@ -105,4 +131,100 @@ void printTokenType(TOKEN t)
             printf("unknown");
             break;
     }
+}
+
+void printKeywordType(TOKEN t)
+{
+    printf("This is a \"");
+    switch(getWhichVal(t))
+    {
+        case STATIC:
+            printf("static");
+            break;
+        case CONST:
+            printf("const");
+            break;
+        case UNSIGNED:
+            printf("unsigned");
+            break;
+        case SIGNED:
+            printf("signed");
+            break;
+        case CHAR:
+            printf("char");
+            break;
+        case SHORT:
+            printf("short");
+            break;
+        case INT:
+            printf("int");
+            break;
+        case LONG:
+            printf("long");
+            break;
+        case FLOAT:
+            printf("float");
+            break;
+        case DOUBLE:
+            printf("double");
+            break;
+        case STRUCT:
+            printf("struct");
+            break;
+        case UNION:
+            printf("union");
+            break;
+        case ENUM:
+            printf("enum");
+            break;
+        case VOID:
+            printf("void");
+            break;
+        case TYPEDEF:
+            printf("typedef");
+            break;
+        case IF:
+            printf("if");
+            break;
+        case ELSE:
+            printf("else");
+            break;
+        case DO:
+            printf("do");
+            break;
+        case WHILE:
+            printf("while");
+            break;
+        case FOR:
+            printf("for");
+            break;
+        case CONTINUE:
+            printf("continue");
+            break;
+        case SWITCH:
+            printf("switch");
+            break;
+        case CASE:
+            printf("case");
+            break;
+        case BREAK:
+            printf("break");
+            break;
+        case RETURN:
+            printf("return");
+            break;
+        case GOTO:
+            printf("goto");
+            break;
+
+        default:
+            printf("UNKNOWN");
+            break;
+    }
+    printf("\" keyword token\n");
+}
+
+void printIdentifier(TOKEN t)
+{
+    printf("The identifier is \"%s\"\n", getStringVal(t));
 }

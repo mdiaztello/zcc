@@ -94,8 +94,8 @@ enum data_type
 };
 typedef enum data_type DataType;
 
-#define MAX_KEYWORD_LENGTH 8 //"continue" and "unsigned" are the longest keywords
-                                //with lenthgs of 8 characters
+#define MAX_KEYWORD_LENGTH 9 //"continue" and "unsigned" are the longest keywords
+                                //with lengths of 8 characters (+ 1 for the null terminal)
 enum keyword_types
 {
     STATIC = 0,
@@ -140,9 +140,13 @@ DataType getDataType(TOKEN t);
 void setStringVal(TOKEN t, char* string);
 char* getStringVal(TOKEN t);
 
+int getWhichVal(TOKEN t);
+void setWhichVal(TOKEN t, int which);
+
 void printToken(TOKEN t);
 void printTokenType(TOKEN t);
-
+void printKeywordType(TOKEN t);
+void printIdentifier(TOKEN t);
 
 
 #endif // __TOKEN_H_

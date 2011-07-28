@@ -1,14 +1,41 @@
 /* test_c -- an attempt to put the lexer through the ringer */
 
-/*
-thisisanunusuallylongidentifierbutitislegal
+//static
+//const
+//unsigned 
+//signed 
+//char 
+//short 
+//int 
+//long
+//float
+//double
+//struct
+//union
+//enum
+//void
+//typedef
+//if
+//else
+//do
+//while
+//for
+//continue
+//switch
+//case
+//break
+//return
+//goto
+
+//thisisanunusuallylongidentifierbutitislegal
 
 "What the #&*%!"
-"Don't forget"
+
+"\"Don't \\forget\""
 "Maximum of 15 characters"
-*/
+
 //The following comments may prove difficult
-/**/ /*u*/ /***/ /*v*/ /****/ /*w*/ /*****/ /*x*/ /******/ /*y*/ /*/*/ /*z*/
+/**/ u /***/ v /****/ w /*****/ x /******/ y /*/*/ z
 
 
 // You may assume the following limits on numbers: 

@@ -17,6 +17,9 @@ BOOLEAN detectedSingleLineComment(void);
 static void skip_single_line_comment(void);
 void skip_block_comments(void);
 static void updateLineNumber(char c);
+static int isKeyword(char* string);
+static void get_identifier_string(char* buffer);
+static void get_string_literal(char* buffer);
 
 unsigned char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
 {
@@ -71,9 +74,13 @@ TOKEN lex(void)
         {
             make_number(token);
         }
-        else if('\'' == c)
+        else if('\"' == c)
         {
             make_string(token);
+        }
+        else if('\'' == c)
+        {
+            //make_string(token);
         }
         else
         {
@@ -102,7 +109,6 @@ void skip_whitespace_and_comments(void)
         if(detectedSingleLineComment())
         {
             skip_single_line_comment();
-            printf("finished\n");
         }
         else if(detectBlockCommentOpen())
         {
@@ -157,7 +163,6 @@ void skip_single_line_comment(void)
     }
     updateLineNumber(c);
     getchar();
-    dprint("we are on line %d\n", source_code_line_number);
 }
 
 
@@ -189,15 +194,41 @@ TOKEN make_identifier(TOKEN tok)
 {
     char buffer[MAX_TOKEN_LENGTH];
 
+    //assume that the token is an identifier, then check if it is a reserved word
     setTokenType(tok, IDENTIFIER_TOKEN);
     setDataType(tok, STRING_TYPE);
 
-    //assume that the token is an identifier, then check if it is a reserved word
     get_identifier_string(buffer);
-    
     setStringVal(tok, buffer);
 
+    int whichKeyword = isKeyword(getStringVal(tok));
+    if(-1 != whichKeyword)
+    {
+        setWhichVal(tok, whichKeyword);
+        setTokenType(tok, KEYWORD_TOKEN);
+    }
+
     return tok;
+}
+
+//returns which keyword the string represents
+//or returns NOT_A_KEYWORD if it isn't in the
+//dictionary of keywords
+static int isKeyword(char* string)
+{
+#define NOT_A_KEYWORD (-1)
+    int i = 0;
+    int whichKeyword = NOT_A_KEYWORD;
+
+    for(i = 0; i < NUM_KEYWORD_TYPES; i++)
+    {
+        if(0 == strcmp(string, keywords[i]))
+        {
+            whichKeyword = i;
+            break;
+        }
+    }
+    return whichKeyword;
 }
 
 static void get_identifier_string(char* buffer)
@@ -221,8 +252,6 @@ static void get_identifier_string(char* buffer)
 }
 
 
-
-
 TOKEN make_number(TOKEN tok)
 {
 
@@ -233,10 +262,45 @@ TOKEN make_number(TOKEN tok)
 
 TOKEN make_string(TOKEN tok)
 {
+    char buffer[MAX_TOKEN_LENGTH];
+    setTokenType(tok, STRING_LITERAL);
+    setDataType(tok, STRING_TYPE);
+    get_string_literal(buffer);
+    setStringVal(tok, buffer);
 
     return tok;
 }
 
+static void get_string_literal(char* buffer)
+{
+    int i = 0;
+    getchar(); //consume the opening quotation mark
+    char c = peekchar();
+    char cclass = get_char_class(c);
+    char prev_char;
+
+    while( (c != '\"')  && (EOF != peekchar()) )
+    {
+        if((peekchar() == '\\') && ((peek2char() == '\"') || (peek2char() == '\\')))
+        {
+            buffer[i++] = peek2char();
+            getchar();
+            prev_char = getchar();
+            c = peekchar();
+            cclass = get_char_class(c);
+            continue;
+        }
+        if(i < MAX_TOKEN_LENGTH)
+        {
+            buffer[i++] = c;
+        }
+        prev_char = getchar();
+        c = peekchar();
+        cclass = get_char_class(c);
+    }
+    buffer[i] = 0; //terminate the string
+    getchar(); //consume the closing quotation mark
+}
 
 
 TOKEN make_special(TOKEN tok)
@@ -249,12 +313,10 @@ TOKEN make_special(TOKEN tok)
 BOOLEAN isWhiteSpace(char c)
 {
     BOOLEAN result = FALSE;
-    if((c == '\t') || (c == '\n')
-            || (c == ' '))
+    if((c == '\t') || (c == '\n') || (c == ' '))
     {
         result = TRUE;
     }
-
     return result;
 }
 
