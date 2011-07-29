@@ -49,7 +49,6 @@ unsigned char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
     "break",
     "return",
     "goto",
-
 };
 
 unsigned long source_code_line_number = 0;
@@ -254,6 +253,7 @@ static void get_identifier_string(char* buffer)
 
 TOKEN make_number(TOKEN tok)
 {
+    /* There is vomit _EVERYWHERE_!! */
 
     return tok;
 }

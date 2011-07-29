@@ -27,11 +27,13 @@
 //return
 //goto
 
-//thisisanunusuallylongidentifierbutitislegal
+an_identifier_with_underscores
+
+thisisanunusuallylongidentifierbutitislegal
 
 "What the #&*%!"
 
-"\"Don't \\forget\""
+"\"Don't \n\t\t\nforget\""
 "Maximum of 15 characters"
 
 //The following comments may prove difficult

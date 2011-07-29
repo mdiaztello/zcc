@@ -1,3 +1,6 @@
+#ifndef __SCANNER_H_
+#define __SCANNER_H_
+
 /*
  * =====================================================================================
  *
@@ -33,3 +36,5 @@ int peek2char(void);
 void init_charclass(void);
 void init_scanner(void);
 int get_char_class(char c);
+
+#endif // __SCANNER_H_

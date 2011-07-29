@@ -1,7 +1,6 @@
 #ifndef __DEBUG_H_
 #define __DEBUG_H_
 
-
 #define DEBUG 1
 
 #ifdef DEBUG

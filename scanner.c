@@ -18,7 +18,6 @@
 
 #include <stdio.h>
 #include <ctype.h>
-
 #include "token.h"
 #include "scanner.h"
 #include "debug.h"
@@ -77,7 +76,6 @@ void init_charclass(void)
     {
         CHARCLASS[special_characters[i]] = SPECIAL;
     }
-
 }
 
 //determines whether the character being scanned is ALPHA (alphabetical)
