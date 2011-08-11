@@ -6,24 +6,30 @@
 #include <stdlib.h>
 #include <string.h> //for strcmp
 
+/**************************** STATIC HELPER FUNCTION PROTOTYPES **************************************/
+
 static void skip_whitespace_and_comments(void);
+static void skip_single_line_comment(void);
+static void skip_block_comments(void);
+static BOOLEAN isWhiteSpace(char c);
+static BOOLEAN detectBlockCommentClose(void);
+static BOOLEAN detectBlockCommentOpen(void);
+static BOOLEAN detectedSingleLineComment(void);
 static void make_identifier(TOKEN tok);
 static void make_number(TOKEN tok);
 static void make_string(TOKEN tok);
 static void make_special(TOKEN tok);
-BOOLEAN isWhiteSpace(char c);
-BOOLEAN detectBlockCommentClose(void);
-BOOLEAN detectBlockCommentOpen(void);
-BOOLEAN detectedSingleLineComment(void);
-static void skip_single_line_comment(void);
-void skip_block_comments(void);
 static void updateLineNumber(char c);
 static int isKeyword(char* string);
 static void get_identifier_string(char* buffer);
 static void get_string_literal(char* buffer);
 
+static BOOLEAN isDelimiter(char c, DelimiterType* whichDelim);
+
+/**************************** END OF STATIC HELPER FUNCTION PROTOTYPES *******************************/
+
 unsigned long source_code_line_number = 0;
-char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
+static char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
 {
     "static",
     "const",
@@ -53,6 +59,58 @@ char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
     "goto",
 };
 
+#define MAX_OPERATOR_LENGTH 3 //up to 2 characters for each operator plus the null terminal
+#if 0
+static char single_char_operators[16][MAX_OPERATOR_LENGTH] = 
+{
+    "+",   // ADDITION
+    "-",   // SUBTRACTION,            
+    "*",   // MULTIPLICATION,         
+    "/",   // DIVISION,               
+    "%",   // MODULAR_DIVISION,       
+    "!",   // BOOLEAN_NOT,            
+    "~",   // BITWISE_NOT,            
+    "&",   // BITWISE_AND,            
+    "|",   // BITWISE_OR,             
+    "^",   // BITWISE_XOR,            
+    //"&",   // REFERENCE,              
+    //"*",   // DEREFERENCE,            
+    ".",   // DOT,                    
+    "=",   // ASSIGNMENT,             
+    ">",   // GREATER_THAN,           
+    "<"   // LESS_THAN,              
+};
+#endif
+
+#if 0
+static char double_char_operators[18][MAX_OPERATOR_LENGTH] =
+{
+    "==",  // EQUALS,                 
+    "!=",  // NOT_EQUALS,             
+    ">=",  // GREATER_THAN_OR_EQUAL,  
+    "<=",  // LESS_THAN_OR_EQUAL,     
+    "||",  // BOOLEAN_OR,             
+    "&&",  // BOOLEAN_AND,            
+    "<<",   //shift left      //NOTE: I AM EXPLICITLY DISSALLOWING "<<="
+    ">>",   //shift right     //NOTE: I AM EXPLICITLY DISSALLOWING ">>="
+    "++",   //increment  (post/pre)
+    "--",   //decrement (post/pre)
+    "+=",   //PLUS_EQUAL
+    "-=",   //MINUS_EQUAL
+    "*=",   //MULTIPLY_EQUAL
+    "/=",   //DIVIDE_EQUAL
+    "%=",   //MOD_EQUAL
+    "&=",   //BITWISE_AND_EQUAL
+    "|=",   //BITWISE_OR_EQUAL
+    "->",   //ARROW  (same as a dereference followed by a dot operator)
+};
+#endif
+
+//TODO: consider using hash tables for all of this stuff since it may be faster/easier
+static char delimiters[NUM_DELIMITER_TYPES+1] = ",;:()[]{}"; 
+
+/*************** LEXER *******************************************************************************/
+
 TOKEN lex(void)
 {
     TOKEN token = makeToken();
@@ -73,17 +131,24 @@ TOKEN lex(void)
         {
             make_number(token);
         }
-        else if('\"' == c)
+        else if(SPECIAL == character_class)
         {
-            make_string(token);
-        }
-        else if('\'' == c)
-        {
-            //make_string(token);
+            make_special(token);
         }
         else
         {
-            make_special(token);
+            if('\"' == c)
+            {
+                make_string(token);
+            }
+            else if('\'' == c)
+            {
+                make_string(token);
+            }
+            else
+            {
+                printf("what the fuck just happened?\n");
+            }
         }
     }
     else
@@ -98,7 +163,11 @@ TOKEN lex(void)
     return token;
 }
 
-void skip_whitespace_and_comments(void)
+/*************** END OF LEXER ************************************************************************/
+
+/************************** COMMENT PROCESSING FUNCTIONS *********************************************/
+
+static void skip_whitespace_and_comments(void)
 {
     char c = peekchar();
     
@@ -120,7 +189,7 @@ void skip_whitespace_and_comments(void)
     }
 }
 
-BOOLEAN detectedSingleLineComment(void)
+static BOOLEAN detectedSingleLineComment(void)
 {
     BOOLEAN result = FALSE;
 
@@ -131,7 +200,7 @@ BOOLEAN detectedSingleLineComment(void)
     return result;
 }
 
-BOOLEAN detectBlockCommentOpen(void)
+static BOOLEAN detectBlockCommentOpen(void)
 {
     BOOLEAN result = FALSE;
     if((peekchar() == '/') && (peek2char() == '*'))
@@ -141,7 +210,7 @@ BOOLEAN detectBlockCommentOpen(void)
     return result;
 }
 
-BOOLEAN detectBlockCommentClose(void)
+static BOOLEAN detectBlockCommentClose(void)
 {
     BOOLEAN result = FALSE;
     if((peekchar() == '*') && (peek2char() == '/'))
@@ -151,7 +220,7 @@ BOOLEAN detectBlockCommentClose(void)
     return result;
 }
 
-void skip_single_line_comment(void)
+static void skip_single_line_comment(void)
 {
     char c = peekchar();
 
@@ -163,8 +232,7 @@ void skip_single_line_comment(void)
     discard_char(); //getchar(); //discard the newline character
 }
 
-
-void skip_block_comments(void)
+static void skip_block_comments(void)
 {
     char c;
     unsigned long block_comment_starting_line = source_code_line_number;
@@ -187,8 +255,28 @@ void skip_block_comments(void)
     discard_char(); //getchar(); //discard the '/'
 }
 
+static BOOLEAN isWhiteSpace(char c)
+{
+    BOOLEAN result = FALSE;
+    if((c == '\t') || (c == '\n') || (c == ' '))
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+static void updateLineNumber(char c)
+{
+    if(c == '\n')
+    {
+        source_code_line_number++;
+    }
+}
+
+/************************** END OF COMMENT PROCESSING FUNCTIONS **************************************/
+
 //makes an identifier token from a pre-allocated token object
-void make_identifier(TOKEN tok)
+static void make_identifier(TOKEN tok)
 {
     char buffer[MAX_TOKEN_LENGTH];
 
@@ -248,7 +336,7 @@ static void get_identifier_string(char* buffer)
 }
 
 //makes number token from pre-allocated token object
-void make_number(TOKEN tok)
+static void make_number(TOKEN tok)
 {
     /* There is vomit _EVERYWHERE_!! */
     setTokenType(tok, STRING_LITERAL); //FIXME THIS IS JUST TO MAKE SPLINT STFU ABOUT THIS STUB!
@@ -257,7 +345,7 @@ void make_number(TOKEN tok)
 }
 
 //makes string token from pre-allocated token object
-void make_string(TOKEN tok)
+static void make_string(TOKEN tok)
 {
     char buffer[MAX_TOKEN_LENGTH];
     setTokenType(tok, STRING_LITERAL);
@@ -294,32 +382,45 @@ static void get_string_literal(char* buffer)
         cclass = get_char_class(c);
     }
     buffer[i] = 0; //terminate the string
-    getchar(); //consume the closing quotation mark
+    discard_char(); //consume the closing quotation mark
 }
 
 //make special token from pre-allocated token object
-void make_special(TOKEN tok)
+//handles all the delimiters and operators (both single and double character operators)
+static void make_special(TOKEN tok)
 {
+    char buffer[MAX_OPERATOR_LENGTH];
+    DelimiterType whichDelimiter;
 
-    setTokenType(tok, STRING_LITERAL); //FIXME THIS IS JUST TO MAKE SPLINT STFU ABOUT THIS STUB!
-    return;
+    buffer[0] = peekchar();
+    buffer[1] = peek2char();
+    buffer[2] = 0; //terminate the string
+
+    if(TRUE == isDelimiter(buffer[0], &whichDelimiter))
+    {
+        buffer[1] = 0; //terminate the delimiter after 1 character
+        setTokenType(tok, DELIMITER_TOKEN); 
+        setWhichVal(tok, (int)whichDelimiter);
+        discard_char();
+    }
+
+
 }
 
-
-BOOLEAN isWhiteSpace(char c)
+//answers the question whether it is a delimiter, and if so which one
+//if it is not a delimiter, then the value stored in whichDelim is invalid
+static BOOLEAN isDelimiter(char c, DelimiterType* whichDelim)
 {
+    int i = 0;
     BOOLEAN result = FALSE;
-    if((c == '\t') || (c == '\n') || (c == ' '))
+    *whichDelim = 0;
+    for(i = 0; i < NUM_DELIMITER_TYPES; ++i)
     {
-        result = TRUE;
+        if(delimiters[i] == c)
+        {
+            result = TRUE;
+            *whichDelim = i;
+        }
     }
     return result;
-}
-
-static void updateLineNumber(char c)
-{
-    if(c == '\n')
-    {
-        source_code_line_number++;
-    }
 }

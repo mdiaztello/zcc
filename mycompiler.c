@@ -25,7 +25,7 @@
 void test_lexer(void)
 {
     TOKEN t;
-    printf("TESTING THE LEXER\n");
+    printf("*** TESTING THE LEXER ***\n\n");
     while(EOFFLG == 0)
     {
         t = lex();
@@ -34,7 +34,7 @@ void test_lexer(void)
             printToken(t);
         }
     }
-    printf("DONE TESTING THE LEXER\n");
+    printf("\n*** DONE TESTING THE LEXER ***\n");
 }
 
 int main(void)

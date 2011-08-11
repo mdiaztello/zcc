@@ -77,7 +77,7 @@ void init_charclass(void)
     {
         CHARCLASS[i] = NUMERIC;
     }
-    for(i = '0'; special_characters[i] != '\0'; i++)
+    for(i = 0; special_characters[i] != '\0'; i++)
     {
         CHARCLASS[(size_t)special_characters[i]] = SPECIAL;
     }

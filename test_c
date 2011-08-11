@@ -47,3 +47,8 @@ thisisanunusuallylongidentifierbutitislegal
 //floating point can range from 1.17549E-38 to 3.402823E+38
 // we will assume that at most 8 significant mantissa digits can be carried.
 
+
+int main(void)
+{
+    return; //0;
+}

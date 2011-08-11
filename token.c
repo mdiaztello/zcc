@@ -83,6 +83,7 @@ int getWhichVal(TOKEN t)
 
 void printToken(TOKEN t)
 {
+    printf("\n");
     printTokenType(t);
     switch(getTokenType(t))
     {
@@ -94,6 +95,10 @@ void printToken(TOKEN t)
             break;
         case STRING_LITERAL:
             printf("The string is \"%s\"\n", getStringVal(t));
+            break;
+        case DELIMITER_TOKEN:
+            printf("The DELIMITER we found is a ");
+            printDelimiterType(t);
             break;
         default:
             printf("I don't know what kind of token this is...\n");
@@ -227,4 +232,41 @@ void printKeywordType(TOKEN t)
 void printIdentifier(TOKEN t)
 {
     printf("The identifier is \"%s\"\n", getStringVal(t));
+}
+
+void printDelimiterType(TOKEN t)
+{
+    switch(getWhichVal(t))
+    {
+        case COMMA:
+            printf("COMMA\n");
+            break;
+        case SEMICOLON:
+            printf("SEMICOLON\n");
+            break;
+        case COLON:
+            printf("COLON\n");
+            break;
+        case OPEN_PAREN:
+            printf("OPEN_PAREN\n");
+            break;
+        case CLOSE_PAREN:
+            printf("CLOSE_PAREN\n");
+            break;
+        case OPEN_BRACKET:
+            printf("OPEN_BRACKET\n");
+            break;
+        case CLOSE_BRACKET:
+            printf("CLOSE_BRACKET\n");
+            break;
+        case OPEN_BRACE:
+            printf("OPEN_BRACE\n");
+            break;
+        case CLOSE_BRACE:
+            printf("CLOSE_BRACE\n");
+            break;
+        default:
+            printf("UNKOWN DELIMITER\n");
+            break;
+    }
 }

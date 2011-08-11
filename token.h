@@ -45,7 +45,7 @@ enum operator_type
     GREATER_THAN,           // ">"
     GREATER_THAN_OR_EQUAL,  // ">=" 
     LESS_THAN,              // "<"
-    LESS_THAN_OR_EQUAL,     // "<"
+    LESS_THAN_OR_EQUAL,     // "<="
 
     // this last enum is here just to be able to iterate across
     // all of the operator types
@@ -69,7 +69,7 @@ enum delimiter_type
     // all of the delimiter types
     NUM_DELIMITER_TYPES
 };
-typedef enum delimeter_type DelimiterType;
+typedef enum delimiter_type DelimiterType;
 
 enum data_type 
 {
@@ -147,6 +147,7 @@ void printToken(TOKEN t);
 void printTokenType(TOKEN t);
 void printKeywordType(TOKEN t);
 void printIdentifier(TOKEN t);
+void printDelimiterType(TOKEN t);
 
 
 #endif // __TOKEN_H_
