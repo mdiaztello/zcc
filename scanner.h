@@ -31,8 +31,9 @@ enum character_types
 #define DEBUG_GET_TOKEN 0
 
 int EOFFLG;
-int peekchar(void); //peek at next character w/o moving pointer
-int peek2char(void);
+char peekchar(void); //peek at next character w/o moving pointer
+char peek2char(void);
+void discard_char(void);
 void init_charclass(void);
 void init_scanner(void);
 int get_char_class(char c);

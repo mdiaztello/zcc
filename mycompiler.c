@@ -21,7 +21,6 @@
 #include "lexer.h"
 #include "scanner.h"
 
-extern source_code_line_number;
 
 void test_lexer(void)
 {
@@ -42,6 +41,6 @@ int main(void)
 {
     init_scanner();
     test_lexer();
-    printf("the total number of lines of source code is %d\n", source_code_line_number);
+    printf("the total number of lines of source code is %lu\n", source_code_line_number);
     return 0;
 }

@@ -4,12 +4,13 @@
 #include "global_defs.h"
 #include "debug.h"
 #include <stdlib.h>
+#include <string.h> //for strcmp
 
 static void skip_whitespace_and_comments(void);
-static TOKEN make_identifier(TOKEN tok);
-static TOKEN make_number(TOKEN tok);
-static TOKEN make_string(TOKEN tok);
-static TOKEN make_special(TOKEN tok);
+static void make_identifier(TOKEN tok);
+static void make_number(TOKEN tok);
+static void make_string(TOKEN tok);
+static void make_special(TOKEN tok);
 BOOLEAN isWhiteSpace(char c);
 BOOLEAN detectBlockCommentClose(void);
 BOOLEAN detectBlockCommentOpen(void);
@@ -21,7 +22,8 @@ static int isKeyword(char* string);
 static void get_identifier_string(char* buffer);
 static void get_string_literal(char* buffer);
 
-unsigned char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
+unsigned long source_code_line_number = 0;
+char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
 {
     "static",
     "const",
@@ -51,17 +53,15 @@ unsigned char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
     "goto",
 };
 
-unsigned long source_code_line_number = 0;
-
 TOKEN lex(void)
 {
     TOKEN token = makeToken();
-    int c;
+    char c;
     int character_class;
 
     skip_whitespace_and_comments();
 
-    if((c = peekchar()) != EOF)
+    if(((int)(c = peekchar())) != EOF)
     {
         character_class = get_char_class(c);
 
@@ -93,7 +93,7 @@ TOKEN lex(void)
 
     if(DEBUG_GET_TOKEN != 0)
     {
-        printtoken(token);
+        printToken(token);
     }
     return token;
 }
@@ -102,8 +102,7 @@ void skip_whitespace_and_comments(void)
 {
     char c = peekchar();
     
-    int i = 0;
-    while(((c = peekchar()) != EOF) && (isWhiteSpace(c) || detectedSingleLineComment() || detectBlockCommentOpen()))
+    while((((int)(c = peekchar())) != EOF) && (isWhiteSpace(c) || detectedSingleLineComment() || detectBlockCommentOpen()))
     {
         if(detectedSingleLineComment())
         {
@@ -116,7 +115,7 @@ void skip_whitespace_and_comments(void)
         else //isWhiteSpace(c)
         {
             updateLineNumber(c);
-            c = getchar();
+            discard_char();
         }
     }
 }
@@ -156,26 +155,26 @@ void skip_single_line_comment(void)
 {
     char c = peekchar();
 
-    while(((c = peekchar()) != '\n') && (c != EOF))
+    while(((c = peekchar()) != '\n') && ((int)c != EOF))
     {
-       getchar();
+       discard_char(); //get rid of everything in the comment
     }
     updateLineNumber(c);
-    getchar();
+    discard_char(); //getchar(); //discard the newline character
 }
 
 
 void skip_block_comments(void)
 {
     char c;
-    getchar(); //discard the '/'
-    getchar(); //discard the '*'
-
     unsigned long block_comment_starting_line = source_code_line_number;
 
-    while(((c = peekchar()) != EOF) && !detectBlockCommentClose())
+    discard_char(); //getchar(); //discard the '/'
+    discard_char(); //getchar(); //discard the '*'
+
+    while(((int)(c = peekchar()) != EOF) && !detectBlockCommentClose())
     {
-        c = getchar();
+        discard_char();
         updateLineNumber(c);
     }
 
@@ -184,12 +183,12 @@ void skip_block_comments(void)
         fprintf(stderr, "The comment starting on line %lu needs a terminating comment symbol\n", block_comment_starting_line);
         exit(-1);
     }
-    getchar(); //discard the '*'
-    getchar(); //discard the '/'
-
+    discard_char(); //getchar(); //discard the '*'
+    discard_char(); //getchar(); //discard the '/'
 }
 
-TOKEN make_identifier(TOKEN tok)
+//makes an identifier token from a pre-allocated token object
+void make_identifier(TOKEN tok)
 {
     char buffer[MAX_TOKEN_LENGTH];
 
@@ -206,8 +205,6 @@ TOKEN make_identifier(TOKEN tok)
         setWhichVal(tok, whichKeyword);
         setTokenType(tok, KEYWORD_TOKEN);
     }
-
-    return tok;
 }
 
 //returns which keyword the string represents
@@ -250,25 +247,23 @@ static void get_identifier_string(char* buffer)
     buffer[i] = 0; //terminate the string
 }
 
-
-TOKEN make_number(TOKEN tok)
+//makes number token from pre-allocated token object
+void make_number(TOKEN tok)
 {
     /* There is vomit _EVERYWHERE_!! */
+    setTokenType(tok, STRING_LITERAL); //FIXME THIS IS JUST TO MAKE SPLINT STFU ABOUT THIS STUB!
 
-    return tok;
+    return;
 }
 
-
-
-TOKEN make_string(TOKEN tok)
+//makes string token from pre-allocated token object
+void make_string(TOKEN tok)
 {
     char buffer[MAX_TOKEN_LENGTH];
     setTokenType(tok, STRING_LITERAL);
     setDataType(tok, STRING_TYPE);
     get_string_literal(buffer);
     setStringVal(tok, buffer);
-
-    return tok;
 }
 
 static void get_string_literal(char* buffer)
@@ -302,11 +297,12 @@ static void get_string_literal(char* buffer)
     getchar(); //consume the closing quotation mark
 }
 
-
-TOKEN make_special(TOKEN tok)
+//make special token from pre-allocated token object
+void make_special(TOKEN tok)
 {
 
-    return tok;
+    setTokenType(tok, STRING_LITERAL); //FIXME THIS IS JUST TO MAKE SPLINT STFU ABOUT THIS STUB!
+    return;
 }
 
 

@@ -4,13 +4,16 @@
 # to remove all the non-source files, type "make clean" in the terminal
 CC = gcc
 
+# catch issue additional warnings and make them into hard errors
+CFLAGS = -Wall -Wextra -Werror 
+
 SOURCES = $(shell echo *.c)
 HEADERS = $(shell echo *.h)
 
 OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
 
 main: $(OBJECTS)
-	$(CC) -o $@ $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $(OBJECTS)
 
 scanner.o: token.h debug.h
 token.o: token.h debug.h

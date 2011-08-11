@@ -35,22 +35,27 @@ void init_scanner(void)
     init_charclass();
 }
 
-int peekchar(void) //peek at next character w/o moving pointer
+char peekchar(void) //peek at next character w/o moving pointer
 {
-    int c;
+    char c;
     c = getchar();
     ungetc(c,stdin);
     return c;
 }
 
 //peek at 2nd next character w/o moving pointer
-int peek2char(void)
+char peek2char(void)
 {
-    int c = getchar();
-    int cc = getchar();
+    char c = getchar();
+    char cc = getchar();
     ungetc(cc, stdin);
     ungetc(c, stdin);
     return cc;
+}
+
+void discard_char(void)
+{
+    (void) getchar();
 }
 
 void init_charclass(void)
@@ -74,7 +79,7 @@ void init_charclass(void)
     }
     for(i = '0'; special_characters[i] != '\0'; i++)
     {
-        CHARCLASS[special_characters[i]] = SPECIAL;
+        CHARCLASS[(size_t)special_characters[i]] = SPECIAL;
     }
 }
 
@@ -82,6 +87,6 @@ void init_charclass(void)
 //NUMBER (numeric) or SPECIAL (any of the operators, seperators, terminators, and other delimiters)
 int get_char_class(char c)
 {
-    int cclass = CHARCLASS[c];
+    int cclass = CHARCLASS[(size_t)c];
     return cclass;
 }
