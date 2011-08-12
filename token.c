@@ -24,6 +24,7 @@ struct token
 
 #define stringval  tokenvalue.tokenstring
 #define whichval tokenvalue.which
+#define intval tokenvalue.integer_number
 
 TOKEN makeToken(void)
 {
@@ -81,6 +82,18 @@ int getWhichVal(TOKEN t)
     return t->whichval;
 }
 
+void setIntegerValue(TOKEN t, long intvalue)
+{
+    t->intval = intvalue;
+}
+
+long getIntegerValue(TOKEN t)
+{
+    return t->intval;
+}
+
+/************************** TOKEN PRINTING FUNCTIONS *************************************************/
+
 void printToken(TOKEN t)
 {
     printf("\n");
@@ -97,8 +110,13 @@ void printToken(TOKEN t)
             printf("The string is \"%s\"\n", getStringVal(t));
             break;
         case DELIMITER_TOKEN:
-            printf("The DELIMITER we found is a ");
             printDelimiterType(t);
+            break;
+        case NUMBER_TOKEN:
+            printNumericValue(t);
+            break;
+        case OPERATOR_TOKEN:
+            printOperator(t);
             break;
         default:
             printf("I don't know what kind of token this is...\n");
@@ -236,6 +254,7 @@ void printIdentifier(TOKEN t)
 
 void printDelimiterType(TOKEN t)
 {
+    printf("The DELIMITER we found is a ");
     switch(getWhichVal(t))
     {
         case COMMA:
@@ -270,3 +289,121 @@ void printDelimiterType(TOKEN t)
             break;
     }
 }
+
+void printNumericValue(TOKEN t)
+{
+    printf("The value of this NUMBER_TOKEN is %lu\n", getIntegerValue(t));
+}
+
+void printOperator(TOKEN t)
+{
+    printf("The OPERATOR_TOKEN is a ");
+    switch(getWhichVal(t))
+    {
+    //single character operators
+        case ADDITION:
+            printf("ADDITION ");
+            break;
+        case SUBTRACTION:
+            printf("SUBTRACTION ");
+            break;
+        case MULTIPLICATION:
+            printf("MULTIPLICATION ");
+            break;
+        case DIVISION:
+            printf("DIVISION ");
+            break;
+        case MODULAR_DIVISION:
+            printf("MODULAR_DIVISION ");
+            break;
+        case BOOLEAN_NOT:
+            printf("BOOLEAN_NOT ");
+            break;
+        case BITWISE_NOT:
+            printf("BITWISE_NOT ");
+            break;
+        case BITWISE_AND:
+            printf("BITWISE_AND ");
+            break;
+        case BITWISE_OR:
+            printf("BITWISE_OR ");
+            break;
+        case BITWISE_XOR:
+            printf("BITWISE_XOR ");
+            break;
+        case DOT:
+            printf("DOT ");
+            break;
+        case ASSIGNMENT:
+            printf("ASSIGNMENT ");
+            break;
+        case GREATER_THAN:
+            printf("GREATER_THAN ");
+            break;
+        case LESS_THAN:
+            printf("LESS_THAN ");
+            break;
+
+    //two-character operators
+        case EQUALS:
+            printf("EQUALS ");
+            break;
+        case NOT_EQUALS:
+            printf("NOT_EQUALS ");
+            break;
+        case GREATER_THAN_OR_EQUAL:
+            printf("GREATER_THAN_OR_EQUAL ");
+            break;
+        case LESS_THAN_OR_EQUAL:
+            printf("LESS_THAN_OR_EQUAL ");
+            break;
+        case BOOLEAN_OR:
+            printf("BOOLEAN_OR ");
+            break;
+        case BOOLEAN_AND:
+            printf("BOOLEAN_AND ");
+            break;
+        case SHIFT_LEFT:
+            printf("SHIFT_LEFT ");
+            break;
+        case SHIFT_RIGHT:
+            printf("SHIFT_RIGHT ");
+            break;
+        case INCREMENT:
+            printf("INCREMENT ");
+            break;
+        case DECREMENT:
+            printf("DECREMENT ");
+            break;
+        case PLUS_EQUAL:
+            printf("PLUS_EQUAL ");
+            break;
+        case MINUS_EQUAL:
+            printf("MINUS_EQUAL ");
+            break;
+        case MULTIPLY_EQUAL:
+            printf("MULTIPLY_EQUAL ");
+            break;
+        case DIVIDE_EQUAL:
+            printf("DIVIDE_EQUAL ");
+            break;
+        case MOD_EQUAL:
+            printf("MOD_EQUAL ");
+            break;
+        case BITWISE_AND_EQUAL:
+            printf("BITWISE_AND_EQUAL ");
+            break;
+        case BITWISE_OR_EQUAL:
+            printf("BITWISE_OR_EQUAL ");
+            break;
+        case ARROW:
+            printf("ARROW ");
+            break;
+        default:
+            printf("UNKNOWN ");
+            break;
+    }
+    printf("operator\n");
+}
+
+/************************** END OF TOKEN PRINTING FUNCTIONS ******************************************/

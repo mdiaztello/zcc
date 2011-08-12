@@ -5,11 +5,11 @@
 //KEYWORDS
 //static
 //const
-//unsigned 
-//signed 
-//char 
-//short 
-//int 
+//unsigned
+//signed
+//char
+//short
+//int
 //long
 //float
 //double
@@ -31,23 +31,23 @@
 //goto
 
 //IDENTIFIERS
-an_identifier_with_underscores
-superduperunreasonablylongidentifiernamethatshouldnotcausethelexertochoke
-_an_identifier_with_leading_underscore
-an_identifier_with_numbers_123_and_underscores12
+//an_identifier_with_underscores
+//superduperunreasonablylongidentifiernamethatshouldnotcausethelexertochoke
+//_an_identifier_with_leading_underscore
+//an_identifier_with_numbers_123_and_underscores12
 
 
 //STRING LITERALS
-"THIS IS #&*%!"
-"\"Don't \n\t\t\nforget\""
+//"THIS IS #&*%!"
+//"\"Don't \n\t\t\nforget\""
 
 //CHARACTER LITERALS
 
 //SOME WEIRD IN-LINE COMMENTS TO TRY TO TRICK THE LEXER
-/**/ u /***/ v /****/ w /*****/ x /******/ y /*/*/ z
+///**/ u /***/ v /****/ w /*****/ x /******/ y /*/*/ z
 
 
-// You may assume the following limits on numbers: 
+// You may assume the following limits on numbers:
 // 2147483647 is the maximum unsigned integer: 2^31-1
 
 //floating point can range from 1.17549E-38 to 3.402823E+38
@@ -55,12 +55,133 @@ an_identifier_with_numbers_123_and_underscores12
 
 
 //DELIMITERS
-,:;{}()[]
+//,:;{}()[]
+
+//NUMBERS
+//1
+//12
+//123
+//12345
+//123456
+//123456123456123456
+
+//OPERATORS
+//+
+//-
+//*
+///
+//%
+//!
+//~
+//&
+//|
+//^
+//.
+//=
+//>
+//<
+//==
+//!=
+//>=
+//<=
+//||
+//&&
+//<<
+//>>
+//++
+//--
+//+=
+//-=
+//*=
+///=
+//%=
+//&=
+//|=
+//->
+
+
+//TRICKY OPERATOR TESTING
+
+//+++++   //should be 2 INCREMENTS and one ADDITION
+//++=     //should be an INCREMENT and an ASSIGNMENT
+//+==     //should be a PLUS_EQUALS and an ASSIGNMENT
+//&&=     //should be a BOOLEAN_AND and an ASSIGNMENT
+//&&==    //should be a BOOLEAN_AND and an EQUALS
+//||=     //should be a BOOLEAN_OR and an ASSIGNMENT
+//|||=|   //should be a BOOLEAN_OR an BITWISE_OR_EQUALS and a BITWISE_OR
+
+//+++++++=+==&&=&&==||=|||=|/**/    //should be 3 INCREMENTS, 2 PLUS_EQUALS, an ASSIGNMENT, a BOOLEAN_AND, an ASSIGNMENT, a BOOLEAN_AND, an EQUALS, a BOOLEAN_OR, an ASSIGNMENT, a BOOLEAN_OR, a BITWISE_OR_EQUALS, a BITWISE_OR, and a block-style comment of 0-length
+
+
 
 //SAMPLE PROGRAM BEGINS BELOW
 
+/*
+int do_it(int x)
+{
+    int i = x * x;
+    return i;
+}
 
 int main(void)
 {
-    return; //0;
+    int a = 6;
+    int b = 7;
+    int c;
+    int d = do_it(b);
+    int e;
+    c = a + b;
+    e = d / c;
+    
+    return 0;
+}
+*/
+
+
+
+/*
+ * =====================================================================================
+ *
+ *       Filename:  mycompiler.c
+ *
+ *    Description:  
+ *
+ *        Version:  1.0
+ *        Created:  7/18/2011 17:15:50
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  Michael Diaz-Tello (MDT)
+ *        Company:  
+ *
+ * =====================================================================================
+ */
+
+//#include <stdio.h>
+//#include "token.h"
+//#include "lexer.h"
+//#include "scanner.h"
+
+
+void test_lexer(void)
+{
+    TOKEN t;
+    printf("*** TESTING THE LEXER ***\n\n");
+    while(EOFFLG == 0)
+    {
+        t = lex();
+        if(EOFFLG == 0)
+        {
+            printToken(t);
+        }
+    }
+    printf("\n*** DONE TESTING THE LEXER ***\n");
+}
+
+int main(void)
+{
+    init_scanner();
+    test_lexer();
+    printf("the total number of lines of source code is %lu\n", source_code_line_number);
+    return 0;
 }

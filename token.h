@@ -158,11 +158,19 @@ char* getStringVal(TOKEN t);
 int getWhichVal(TOKEN t);
 void setWhichVal(TOKEN t, int which);
 
+
+void setIntegerValue(TOKEN t, long intvalue);
+
+long getIntegerValue(TOKEN t);
+
+
 void printToken(TOKEN t);
 void printTokenType(TOKEN t);
 void printKeywordType(TOKEN t);
 void printIdentifier(TOKEN t);
 void printDelimiterType(TOKEN t);
+void printNumericValue(TOKEN t);
+void printOperator(TOKEN t);
 
 
 #endif // __TOKEN_H_

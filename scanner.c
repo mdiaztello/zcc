@@ -3,7 +3,9 @@
  *
  *       Filename:  scanner.c
  *
- *    Description:  
+ *    Description:  This file handles all of the low level scanning routines that pass
+ *    characters from the file being inspected to the lexical analyser for the creation
+ *    of tokens.
  *
  *        Version:  1.0
  *        Created:  7/21/2011 10:24:22
@@ -27,7 +29,7 @@
 int EOFFLG;
 
 static int CHARCLASS[MAXCHARCLASS]; //character class lookup table. This is basically a lookup table based on the ASCII table
-char special_characters[] = "+-*/!%&|=.,;:^<>()[]{}"; //initialize special characters lookup table
+char special_characters[] = "+-*/!%&|~^=.,;:<>()[]{}"; //initialize special characters lookup table
 
 void init_scanner(void)
 {

@@ -23,13 +23,15 @@ static void updateLineNumber(char c);
 static int isKeyword(char* string);
 static void get_identifier_string(char* buffer);
 static void get_string_literal(char* buffer);
+static long long parse_number(void);
 
 static BOOLEAN isDelimiter(char c, DelimiterType* whichDelim);
 static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp);
+static BOOLEAN isSingleCharacterOperator(char* buffer, OperatorType* whichOp);
 
 /**************************** END OF STATIC HELPER FUNCTION PROTOTYPES *******************************/
 
-unsigned long source_code_line_number = 0;
+unsigned long source_code_line_number = 1; //source files start with line 1
 static char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
 {
     "static",
@@ -148,6 +150,7 @@ TOKEN lex(void)
     else
     {
         EOFFLG = 1;
+        source_code_line_number--; //if we hit the end of the file, we've counted one line too many
     }
 
     if(DEBUG_GET_TOKEN != 0)
@@ -269,6 +272,8 @@ static void updateLineNumber(char c)
 
 /************************** END OF COMMENT PROCESSING FUNCTIONS **************************************/
 
+/************************** IDENTIFIER PROCESSING FUNCTIONS ******************************************/
+
 //makes an identifier token from a pre-allocated token object
 static void make_identifier(TOKEN tok)
 {
@@ -329,14 +334,46 @@ static void get_identifier_string(char* buffer)
     buffer[i] = 0; //terminate the string
 }
 
+/************************** END OF IDENTIFIER PROCESSING FUNCTIONS ***********************************/
+
+/************************** NUMBER PROCESSING FUNCTIONS **********************************************/
+
 //makes number token from pre-allocated token object
 static void make_number(TOKEN tok)
 {
-    /* There is vomit _EVERYWHERE_!! */
-    setTokenType(tok, STRING_LITERAL); //FIXME THIS IS JUST TO MAKE SPLINT STFU ABOUT THIS STUB!
-
-    return;
+    setTokenType(tok, NUMBER_TOKEN); 
+    long long number = parse_number();
+    setIntegerValue(tok, number);
 }
+
+#define MAX_UNSIGNED_32_BIT_INTEGER 4294967295U
+
+static long long parse_number(void)
+{
+    long long result = 0;
+    int i = 0;
+    while(get_char_class(peekchar()) == NUMERIC)
+    {
+        i = getchar() - '0';
+        result = result*10 +i;
+        if(result > MAX_UNSIGNED_32_BIT_INTEGER)
+        {
+            printf("\nNUMERIC CONSTANT ON LINE %lu BIGGER THAN MAX 32-BIT INTEGER VALUE\n", source_code_line_number);
+            printf("CAPPING VALUE OF THE CONSTANT TO MAX_UNSIGNED_32_BIT_INTEGER\n");
+            result = MAX_UNSIGNED_32_BIT_INTEGER;
+            while(get_char_class(peekchar()) == NUMERIC)
+            {
+                discard_char(); //discard the rest of the digits
+            }
+            break;
+        }
+    }
+    return result;
+}
+
+/************************** END OF NUMBER PROCESSING FUNCTIONS ***************************************/
+
+/************************** STRING PROCESSING FUNCTIONS **********************************************/
 
 //makes string token from pre-allocated token object
 static void make_string(TOKEN tok)
@@ -379,6 +416,10 @@ static void get_string_literal(char* buffer)
     discard_char(); //consume the closing quotation mark
 }
 
+/************************** END OF STRING PROCESSING FUNCTIONS ***************************************/
+
+/************************** SPECIAL TOKEN PROCESSING FUNCTIONS ***************************************/
+
 //make special token from pre-allocated token object
 //handles all the delimiters and operators (both single and double character operators)
 static void make_special(TOKEN tok)
@@ -407,11 +448,19 @@ static void make_special(TOKEN tok)
             discard_char();
             discard_char(); //discard the characters to move to the next token
         }
-        else //we have a single character operator
+        else 
         {
-            setTokenType(tok, OPERATOR_TOKEN); 
-            setWhichVal(tok, (int)whichOp);
             buffer[1] = 0; //terminate the delimiter after 1 character
+            if(TRUE == isSingleCharacterOperator(buffer, &whichOp))
+            {
+                setTokenType(tok, OPERATOR_TOKEN); 
+                setWhichVal(tok, (int)whichOp);
+                discard_char();
+            }
+            else
+            {
+                printf("This should never have happened!\n");
+            }
         }
     }
 }
@@ -434,6 +483,9 @@ static BOOLEAN isDelimiter(char c, DelimiterType* whichDelim)
     return result;
 }
 
+//FIXME: this single/double character operator detection scheme is a FILTHY HACK
+//FIXME: consider using a hash-table dictionary for more efficient lookup of tokens
+
 //answers the question whether it is an operator, and if so which one
 //if it is not a operator, then the value stored in whichOp is invalid
 static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
@@ -442,7 +494,7 @@ static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
     BOOLEAN result = FALSE;
     *whichOp = 0;
 
-    for(i = EQUALS; i < NUM_DELIMITER_TYPES; ++i)
+    for(i = EQUALS; i < NUM_OPERATOR_TYPES; ++i)
     {
         if(0 == strcmp(operators[i], buffer))
         {
@@ -452,3 +504,24 @@ static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
     }
     return result;
 }
+
+//answers the question whether it is an operator, and if so which one
+//if it is not a operator, then the value stored in whichOp is invalid
+static BOOLEAN isSingleCharacterOperator(char* buffer, OperatorType* whichOp)
+{
+    int i = 0;
+    BOOLEAN result = FALSE;
+    *whichOp = 0;
+
+    for(i = ADDITION; i < NUM_OPERATOR_TYPES; ++i)
+    {
+        if(0 == strcmp(operators[i], buffer))
+        {
+            result = TRUE;
+            *whichOp = i;
+        }
+    }
+    return result;
+}
+
+/************************** END OF SPECIAL TOKEN PROCESSING FUNCTIONS ********************************/
