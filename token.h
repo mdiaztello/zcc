@@ -24,28 +24,43 @@ typedef enum token_type TokenType;
 
 enum operator_type
 {
+    //single character operators
     ADDITION = 0,           // "+"
     SUBTRACTION,            // "-"
     MULTIPLICATION,         // "*"
     DIVISION,               // "/"
     MODULAR_DIVISION,       // "%"
     BOOLEAN_NOT,            // "!"
-    BOOLEAN_OR,             // "||"
-    BOOLEAN_AND,            // "&&"
     BITWISE_NOT,            // "~"
-    BITWISE_AND,            // " & "
-    BITWISE_OR,             // " | "
+    BITWISE_AND,            // "&"
+    BITWISE_OR,             // "|"
     BITWISE_XOR,            // "^"
-    REFERENCE,              // "&"
-    DEREFERENCE,            // "*"
+    //REFERENCE,            // "&"
+    //DEREFERENCE,          // "*"
     DOT,                    // "."
     ASSIGNMENT,             // "="
+    GREATER_THAN,           // ">"
+    LESS_THAN,              // "<"
+
+    //two-character operators
     EQUALS,                 // "=="
     NOT_EQUALS,             // "!="
-    GREATER_THAN,           // ">"
     GREATER_THAN_OR_EQUAL,  // ">=" 
-    LESS_THAN,              // "<"
     LESS_THAN_OR_EQUAL,     // "<="
+    BOOLEAN_OR,             // "||"
+    BOOLEAN_AND,            // "&&"
+    SHIFT_LEFT,             //"<<",     //NOTE: I AM EXPLICITLY DISSALLOWING "<<="  
+    SHIFT_RIGHT,            //">>",     //NOTE: I AM EXPLICITLY DISSALLOWING ">>="  
+    INCREMENT,              //"++",   (post/pre)
+    DECREMENT,              //"--",   (post/pre)
+    PLUS_EQUAL,             //"+=",   
+    MINUS_EQUAL,            //"-=",   
+    MULTIPLY_EQUAL,         //"*=",   
+    DIVIDE_EQUAL,           //"/=",   
+    MOD_EQUAL,              //"%=",   
+    BITWISE_AND_EQUAL,      //"&=",   
+    BITWISE_OR_EQUAL,       //"|=",   
+    ARROW,                  //"->"   (same as a dereference followed by a dot operator)
 
     // this last enum is here just to be able to iterate across
     // all of the operator types

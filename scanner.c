@@ -73,6 +73,9 @@ void init_charclass(void)
     {
         CHARCLASS[i] = ALPHA;
     }
+
+    CHARCLASS['_'] = ALPHA; //underscores considered alphanumeric for the purposes of identifier names
+
     for(i = '0'; i <= '9'; i++)
     {
         CHARCLASS[i] = NUMERIC;

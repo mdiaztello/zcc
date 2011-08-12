@@ -1,10 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h> //for strcmp
 #include "token.h"
 #include "scanner.h"
 #include "global_defs.h"
 #include "debug.h"
-#include <stdlib.h>
-#include <string.h> //for strcmp
 
 /**************************** STATIC HELPER FUNCTION PROTOTYPES **************************************/
 
@@ -25,6 +25,7 @@ static void get_identifier_string(char* buffer);
 static void get_string_literal(char* buffer);
 
 static BOOLEAN isDelimiter(char c, DelimiterType* whichDelim);
+static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp);
 
 /**************************** END OF STATIC HELPER FUNCTION PROTOTYPES *******************************/
 
@@ -60,37 +61,31 @@ static char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
 };
 
 #define MAX_OPERATOR_LENGTH 3 //up to 2 characters for each operator plus the null terminal
-#if 0
-static char single_char_operators[16][MAX_OPERATOR_LENGTH] = 
+static char operators[NUM_OPERATOR_TYPES+1][MAX_OPERATOR_LENGTH] = 
 {
-    "+",   // ADDITION
-    "-",   // SUBTRACTION,            
-    "*",   // MULTIPLICATION,         
-    "/",   // DIVISION,               
-    "%",   // MODULAR_DIVISION,       
-    "!",   // BOOLEAN_NOT,            
-    "~",   // BITWISE_NOT,            
-    "&",   // BITWISE_AND,            
-    "|",   // BITWISE_OR,             
-    "^",   // BITWISE_XOR,            
-    //"&",   // REFERENCE,              
-    //"*",   // DEREFERENCE,            
-    ".",   // DOT,                    
-    "=",   // ASSIGNMENT,             
-    ">",   // GREATER_THAN,           
-    "<"   // LESS_THAN,              
-};
-#endif
+    "+",    // ADDITION
+    "-",    // SUBTRACTION,            
+    "*",    // MULTIPLICATION,         
+    "/",    // DIVISION,               
+    "%",    // MODULAR_DIVISION,       
+    "!",    // BOOLEAN_NOT,            
+    "~",    // BITWISE_NOT,            
+    "&",    // BITWISE_AND,            
+    "|",    // BITWISE_OR,             
+    "^",    // BITWISE_XOR,            
+    //"&",  // REFERENCE,              
+    //"*",  // DEREFERENCE,            
+    ".",    // DOT,                    
+    "=",    // ASSIGNMENT,             
+    ">",    // GREATER_THAN,           
+    "<",    // LESS_THAN,              
 
-#if 0
-static char double_char_operators[18][MAX_OPERATOR_LENGTH] =
-{
-    "==",  // EQUALS,                 
-    "!=",  // NOT_EQUALS,             
-    ">=",  // GREATER_THAN_OR_EQUAL,  
-    "<=",  // LESS_THAN_OR_EQUAL,     
-    "||",  // BOOLEAN_OR,             
-    "&&",  // BOOLEAN_AND,            
+    "==",   // EQUALS,                 
+    "!=",   // NOT_EQUALS,             
+    ">=",   // GREATER_THAN_OR_EQUAL,  
+    "<=",   // LESS_THAN_OR_EQUAL,     
+    "||",   // BOOLEAN_OR,             
+    "&&",   // BOOLEAN_AND,            
     "<<",   //shift left      //NOTE: I AM EXPLICITLY DISSALLOWING "<<="
     ">>",   //shift right     //NOTE: I AM EXPLICITLY DISSALLOWING ">>="
     "++",   //increment  (post/pre)
@@ -102,9 +97,8 @@ static char double_char_operators[18][MAX_OPERATOR_LENGTH] =
     "%=",   //MOD_EQUAL
     "&=",   //BITWISE_AND_EQUAL
     "|=",   //BITWISE_OR_EQUAL
-    "->",   //ARROW  (same as a dereference followed by a dot operator)
+    "->"    //ARROW  (same as a dereference followed by a dot operator)
 };
-#endif
 
 //TODO: consider using hash tables for all of this stuff since it may be faster/easier
 static char delimiters[NUM_DELIMITER_TYPES+1] = ",;:()[]{}"; 
@@ -322,7 +316,7 @@ static void get_identifier_string(char* buffer)
     char cclass = get_char_class(c);
     char prev_char;
 
-    while( ((cclass == ALPHA) || (cclass == NUMERIC) || (c == '_')) && (EOF != peekchar()) )
+    while( ((cclass == ALPHA) || (cclass == NUMERIC)) && (EOF != peekchar()) )
     {
         if(i < MAX_TOKEN_LENGTH)
         {
@@ -403,8 +397,23 @@ static void make_special(TOKEN tok)
         setWhichVal(tok, (int)whichDelimiter);
         discard_char();
     }
-
-
+    else
+    {
+        OperatorType whichOp;
+        if(TRUE == isDoubleCharacterOperator(buffer, &whichOp))
+        {
+            setTokenType(tok, OPERATOR_TOKEN); 
+            setWhichVal(tok, (int)whichOp);
+            discard_char();
+            discard_char(); //discard the characters to move to the next token
+        }
+        else //we have a single character operator
+        {
+            setTokenType(tok, OPERATOR_TOKEN); 
+            setWhichVal(tok, (int)whichOp);
+            buffer[1] = 0; //terminate the delimiter after 1 character
+        }
+    }
 }
 
 //answers the question whether it is a delimiter, and if so which one
@@ -420,6 +429,25 @@ static BOOLEAN isDelimiter(char c, DelimiterType* whichDelim)
         {
             result = TRUE;
             *whichDelim = i;
+        }
+    }
+    return result;
+}
+
+//answers the question whether it is an operator, and if so which one
+//if it is not a operator, then the value stored in whichOp is invalid
+static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
+{
+    int i = 0;
+    BOOLEAN result = FALSE;
+    *whichOp = 0;
+
+    for(i = EQUALS; i < NUM_DELIMITER_TYPES; ++i)
+    {
+        if(0 == strcmp(operators[i], buffer))
+        {
+            result = TRUE;
+            *whichOp = i;
         }
     }
     return result;

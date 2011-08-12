@@ -2,15 +2,15 @@
 # and make an executable called "main.exe" in the same directory
 # to build the project, type "make" in the terminal
 # to remove all the non-source files, type "make clean" in the terminal
-CC = gcc
+CC := gcc
 
 # catch issue additional warnings and make them into hard errors
-CFLAGS = -Wall -Wextra -Werror 
+CFLAGS := -Wall -Wextra -Werror 
 
-SOURCES = $(shell echo *.c)
-HEADERS = $(shell echo *.h)
+SOURCES := $(shell echo *.c)
+HEADERS := $(shell echo *.h)
 
-OBJECTS = $(patsubst %.c, %.o, $(SOURCES))
+OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
 
 main: $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $(OBJECTS)
