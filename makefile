@@ -23,4 +23,4 @@ lexer.o: token.h scanner.h global_defs.h debug.h
 .PHONY: clean
 
 clean:
-	rm *.o *.exe
+	rm *.o main
