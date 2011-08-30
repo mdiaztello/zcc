@@ -60,6 +60,7 @@ static char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
     "break",
     "return",
     "goto",
+    "extern",
 };
 
 #define MAX_OPERATOR_LENGTH 3 //up to 2 characters for each operator plus the null terminal
@@ -109,7 +110,7 @@ static char delimiters[NUM_DELIMITER_TYPES+1] = ",;:()[]{}";
 
 TOKEN lex(void)
 {
-    TOKEN token = makeToken();
+    TOKEN token = NULL;
     char c;
     int character_class;
 
@@ -117,6 +118,7 @@ TOKEN lex(void)
 
     if(((int)(c = peekchar())) != EOF)
     {
+        token = makeToken();
         character_class = get_char_class(c);
 
         if(ALPHA == character_class)
@@ -159,6 +161,34 @@ TOKEN lex(void)
     }
     return token;
 }
+
+TOKEN lookahead = NULL;
+TOKEN current_token = NULL;
+
+TOKEN gettok(void)
+{
+    //printf("\nGETTOK\n\n");
+    if((current_token != lookahead) && (lookahead != NULL))
+    {
+        current_token = lookahead;
+    }
+    else
+    {
+        current_token = lex();
+    }
+    return current_token;
+}
+
+TOKEN peektok(void)
+{
+    //printf("\nPEEKTOK\n\n");
+    if((lookahead == current_token) || (lookahead == NULL))
+    {
+        lookahead = lex();
+    }
+    return lookahead;
+}
+
 
 /*************** END OF LEXER ************************************************************************/
 

@@ -29,6 +29,7 @@
 //break
 //return
 //goto
+//extern
 
 //IDENTIFIERS
 //an_identifier_with_underscores
@@ -162,7 +163,9 @@ int main(void)
 //#include "lexer.h"
 //#include "scanner.h"
 
+extern signed a;
 
+/*
 void test_lexer(void)
 {
     TOKEN t;
@@ -185,3 +188,4 @@ int main(void)
     printf("the total number of lines of source code is %lu\n", source_code_line_number);
     return 0;
 }
+*/

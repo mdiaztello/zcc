@@ -77,7 +77,7 @@ void setWhichVal(TOKEN t, int which)
     t->whichval = which;
 }
 
-int getWhichVal(TOKEN t)
+unsigned int getWhichVal(TOKEN t)
 {
     return t->whichval;
 }
@@ -92,35 +92,52 @@ long getIntegerValue(TOKEN t)
     return t->intval;
 }
 
+TOKEN getLink(TOKEN tok)
+{
+    return tok->link;
+}
+
+void setLink(TOKEN tok, TOKEN linked_tok)
+{
+    tok->link = linked_tok;
+}
+
 /************************** TOKEN PRINTING FUNCTIONS *************************************************/
 
 void printToken(TOKEN t)
 {
-    printf("\n");
-    printTokenType(t);
-    switch(getTokenType(t))
+    if( NULL != t )
     {
-        case KEYWORD_TOKEN:
-            printKeywordType(t);
-            break;
-        case IDENTIFIER_TOKEN:
-            printIdentifier(t);
-            break;
-        case STRING_LITERAL:
-            printf("The string is \"%s\"\n", getStringVal(t));
-            break;
-        case DELIMITER_TOKEN:
-            printDelimiterType(t);
-            break;
-        case NUMBER_TOKEN:
-            printNumericValue(t);
-            break;
-        case OPERATOR_TOKEN:
-            printOperator(t);
-            break;
-        default:
-            printf("I don't know what kind of token this is...\n");
-            break;
+        printf("\n");
+        printTokenType(t);
+        switch(getTokenType(t))
+        {
+            case KEYWORD_TOKEN:
+                printKeywordType(t);
+                break;
+            case IDENTIFIER_TOKEN:
+                printIdentifier(t);
+                break;
+            case STRING_LITERAL:
+                printf("The string is \"%s\"\n", getStringVal(t));
+                break;
+            case DELIMITER_TOKEN:
+                printDelimiterType(t);
+                break;
+            case NUMBER_TOKEN:
+                printNumericValue(t);
+                break;
+            case OPERATOR_TOKEN:
+                printOperator(t);
+                break;
+            default:
+                printf("I don't know what kind of token this is...\n");
+                break;
+        }
+    }
+    else
+    {
+        printf("The TOKEN was empty!\n");
     }
 }
 
@@ -238,6 +255,9 @@ void printKeywordType(TOKEN t)
             break;
         case GOTO:
             printf("goto");
+            break;
+        case EXTERN:
+            printf("extern");
             break;
 
         default:

@@ -139,6 +139,7 @@ enum keyword_types
     BREAK,
     RETURN,
     GOTO,
+    EXTERN,
 
     // this last enum is here just to be able to iterate across
     // all of the keyword types
@@ -155,13 +156,16 @@ DataType getDataType(TOKEN t);
 void setStringVal(TOKEN t, char* string);
 char* getStringVal(TOKEN t);
 
-int getWhichVal(TOKEN t);
+unsigned int getWhichVal(TOKEN t);
 void setWhichVal(TOKEN t, int which);
 
 
 void setIntegerValue(TOKEN t, long intvalue);
-
 long getIntegerValue(TOKEN t);
+
+
+TOKEN getLink(TOKEN tok);
+void setLink(TOKEN tok, TOKEN linked_tok);
 
 
 void printToken(TOKEN t);

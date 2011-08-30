@@ -10,3 +10,62 @@
 
 
 
+Declarations:
+=============
+
+declaration:
+    declaration-specifiers init-declarator-list_optional ;
+
+declaration-specifiers:
+    storage-class-specifier declaration-specifiers_optional
+    type-specifer declaration-specifiers_optional
+    type-qualifier declaration-specifiers_optional
+    function-specifier declaration-specifiers_optional
+
+init-declarator-list:
+    init-declarator
+    init-declarator-list, init_declarator
+
+init-declarator:
+    declarator
+    declarator = initializer
+
+DECLARATORS:
+============
+
+declarator:
+    pointer_optional direct-declarator
+
+direct-declarator:
+    identifier
+    ( declarator )
+    direct-declarator [ type-qualifier-list_opt assignment-expression_optional ]
+    direct-declarator [ STATIC type-qualifier-list_opt assignment-expression ]
+    direct-declarator [ type-qualifier-list STATIC assignment-expression ]
+    direct-declarator [ type-qualifier-list_opt * ]
+    direct-declarator ( parameter-type-list )
+    direct-declarator ( identifier-list_opt )
+
+pointer:
+    * type-qualifier-list_opt
+    * type-qualifier-list_opt pointer
+
+type-qualifier-list:
+    type-qualifier
+    type-qualifier-list type-qualifier
+
+parameter-type-list:
+    parameter-list
+    parameter-list , ...
+
+parameter-list:
+    parameter-declaration
+    parameter-list, parameter-declaration
+    
+parameter-declaration:
+    declaration-specifiers declarator
+    declaration-specifiers abstract-declarator_opt
+
+identifier-list:
+    identifier
+    identifier-list , identifier

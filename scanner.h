@@ -13,8 +13,8 @@
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  Michael Diaz-Tello (MDT), mdiaz-tello@unvlt.com
- *        Company:  Universal Lighting Technologies
+ *         Author:  Michael Diaz-Tello (MDT), mdiaz-tello@gmail.com
+ *        Company:  
  *
  * =====================================================================================
  */

@@ -6,6 +6,7 @@
 #ifdef DEBUG
 #define dprint(...); printf(__VA_ARGS__);
 #define crashprint(); dprint("\nDid we crash here? LINE: %d FILE: %s\n\n", __LINE__, __FILE__);
+#define beacon();   dprint("\n\nNOW EXECUTING LINE %d OF FUNCTION \"%s\" IN FILE %s\n\n", __LINE__, __func__, __FILE__);
 #else
 #define dprint(...);
 #endif

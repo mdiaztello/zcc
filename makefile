@@ -5,7 +5,7 @@
 CC := gcc
 
 # catch issue additional warnings and make them into hard errors
-CFLAGS := -Wall -Wextra -Werror 
+CFLAGS := -Wall -Wextra -Werror -std=c99
 
 SOURCES := $(shell echo *.c)
 HEADERS := $(shell echo *.h)
@@ -24,3 +24,6 @@ lexer.o: token.h scanner.h global_defs.h debug.h
 
 clean:
 	rm *.o main
+
+ctags:
+	ctags *.{c,h}
