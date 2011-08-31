@@ -1,10 +1,11 @@
 #ifndef __TOKEN_H_
 #define __TOKEN_H_
 
-#define MAX_TOKEN_LENGTH 256 //this is somewhat arbitrary, but it seems long enough to deal with
+#define MAX_TOKEN_STRING_LENGTH 256 //this is somewhat arbitrary, but it seems long enough to deal with
                             //really long function and variable names
 
-typedef struct token* TOKEN;
+
+typedef struct token* TOKEN;  //opaque pointer declaration; implementation is hidden in token.c
 
 enum token_type
 {
@@ -146,35 +147,5 @@ enum keyword_types
     NUM_KEYWORD_TYPES
 };
 typedef enum keyword_types KeywordType;
-
-TOKEN makeToken(void);
-void setTokenType(TOKEN t, enum token_type tType);
-TokenType getTokenType(TOKEN t);
-void setDataType(TOKEN t, DataType dType);
-DataType getDataType(TOKEN t);
-
-void setStringVal(TOKEN t, char* string);
-char* getStringVal(TOKEN t);
-
-unsigned int getWhichVal(TOKEN t);
-void setWhichVal(TOKEN t, int which);
-
-
-void setIntegerValue(TOKEN t, long intvalue);
-long getIntegerValue(TOKEN t);
-
-
-TOKEN getLink(TOKEN tok);
-void setLink(TOKEN tok, TOKEN linked_tok);
-
-
-void printToken(TOKEN t);
-void printTokenType(TOKEN t);
-void printKeywordType(TOKEN t);
-void printIdentifier(TOKEN t);
-void printDelimiterType(TOKEN t);
-void printNumericValue(TOKEN t);
-void printOperator(TOKEN t);
-
 
 #endif // __TOKEN_H_

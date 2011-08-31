@@ -19,28 +19,31 @@
 
 #include "debug.h"
 #include "token.h"
+#include "token_API.h"
 #include "lexer.h"
 #include <stdio.h> //for debugging purposes
 #include <stdlib.h> //for exit()
 #include "global_defs.h"
+#include "symtab.h"
 BOOLEAN isKeyword(TOKEN tok);
 TOKEN translation_unit(void);
 BOOLEAN reserved(TOKEN tok, KeywordType keyword);
 TOKEN external_declaration(void);
 TOKEN function_definition(void);
-TOKEN declaration(void);
-TOKEN declaration_specifiers(void);
-TOKEN init_declarator_list(void);
+TOKEN declaration(SYMBOL s);
+TOKEN declaration_specifiers(SYMBOL s);
+TOKEN init_declarator_list(SYMBOL s);
 TOKEN storage_class_specifier(void);
 TOKEN type_specifier(void);
-TOKEN init_declarator(void);
+TOKEN init_declarator(SYMBOL s);
 BOOLEAN operator(TOKEN tok, OperatorType operator);
 BOOLEAN isOperator(TOKEN tok);
-TOKEN direct_declarator(void);
+BOOLEAN isDelimiter(TOKEN tok);
+BOOLEAN delimiter(TOKEN tok, DelimiterType delim);
 TOKEN pointer(void);
-TOKEN direct_declarator(void);
+TOKEN direct_declarator(SYMBOL s);
 TOKEN identifier(void);
-TOKEN declarator(void);
+TOKEN declarator(SYMBOL s);
 
 //parses the program
 TOKEN parse(void)
@@ -58,7 +61,9 @@ TOKEN translation_unit(void)
 {
     TOKEN trans_unit = NULL;
     trans_unit = external_declaration(); 
-    if(trans_unit != NULL)
+    TOKEN tok = peektok();
+    beacon();printToken(tok);
+    if(tok != NULL)
     {
         setLink(trans_unit, translation_unit());
     }
@@ -74,10 +79,13 @@ TOKEN translation_unit(void)
 TOKEN external_declaration(void)
 {
     beacon();
+    SYMBOL sym = symalloc(); //symbol for the declaration we are dealing with
+    //used as a temporary place to aggregate data about the declaration until
+    //we can install the symbol
     TOKEN ext_declaration = function_definition();
     if( NULL == ext_declaration )
     {
-        ext_declaration = declaration();
+        ext_declaration = declaration(sym);
     }
 
     return ext_declaration;
@@ -102,25 +110,28 @@ TOKEN function_definition(void)
 
 // <declaration-list> ::= <declaration> <declaration-list>*
 
-TOKEN declaration_list(void)
+TOKEN declaration_list(SYMBOL s)
 {
-    TOKEN dec_list = declaration();
+    TOKEN dec_list = declaration(s);
     if( dec_list != NULL)
     {
-        setLink(dec_list, declaration_list());
+        //FIXME this might be a bug, but I'm not sure yet
+        setLink(dec_list, declaration_list(s));
     }
     return dec_list;
 }
 
 // <declaration> ::= <declaration-specifiers> <init-declarator-list>? ;
 
-TOKEN declaration(void)
+TOKEN declaration(SYMBOL s)
 {
     beacon();
     //TOKEN dec =
-    declaration_specifiers();
+    s->kind = VARSYM; //if we have made it this far, i think it's safe to assume we are declaring a variable      
+    declaration_specifiers(s);
 
-    init_declarator_list(); //optional
+    init_declarator_list(s); //optional
+    beacon();
     TOKEN t = gettok(); //consume the SEMICOLON
     printToken(t);
 
@@ -132,17 +143,22 @@ TOKEN declaration(void)
 //                              <type-qualifier> <declaration-specifiers>? |
 //                              <function-specifier> <declaration-specifiers>?
 
-TOKEN declaration_specifiers(void)
+TOKEN declaration_specifiers(SYMBOL s)
 {
     beacon();
     TOKEN t = NULL;
     TOKEN storage_class = storage_class_specifier();
-    printToken(storage_class);
+    setStorageClass(s, storage_class);
     TOKEN type_spec = type_specifier();
     printToken(type_spec);
+    
+    SYMBOL type = searchst(getStringVal(type_spec));
+    s->basicdt = type->basicdt;
+    s->datatype = type;
+    s->size = type->size;
     //TOKEN type_qual = type_qualifier();
     //TOKEN function_spec = function_specifier();
-
+    beacon();
     return t;
 }
 
@@ -199,6 +215,7 @@ TOKEN type_specifier(void)
     TOKEN tok = peektok();
     if(tok == NULL)
     {
+        fprintf(stderr, "no type specifier found...\n");
         return NULL;
     }
 
@@ -229,22 +246,33 @@ TOKEN type_specifier(void)
 // <init-declarator-list> ::= <init-declarator> |
 //                             <init-declarator> , <init-declarator-list>
 
-TOKEN init_declarator_list(void)
+TOKEN init_declarator_list(SYMBOL s)
 {
-    TOKEN init_dec_list = init_declarator();
-    if( NULL != init_dec_list )
+    TOKEN init_dec_list = init_declarator(s);
+    beacon();
+    TOKEN tok = peektok();
+    printToken(tok);
+    if( TRUE == delimiter(tok, COMMA) )
     {
-        setLink(init_dec_list, init_declarator());
+        //FIXME: this might be a bug but i'm not sure yet
+        tok = gettok(); //consume the COMMA
+        setLink(init_dec_list, init_declarator(s));
     }
+    else
+    {
+        //FIXME: this might be a bug but i'm not sure yet
+        setLink(init_dec_list, NULL);
+    }
+    beacon();
     return init_dec_list;
 }
 
 // <init-declarator> ::= <declarator> |
 //                       <declarator> = <initializer>
 
-TOKEN init_declarator(void)
+TOKEN init_declarator(SYMBOL s)
 {
-    TOKEN decl = declarator();
+    TOKEN decl = declarator(s);
     TOKEN tok = peektok();
     if(tok == NULL)
     {
@@ -261,12 +289,12 @@ TOKEN init_declarator(void)
 
 // <declarator> ::= <pointer>? <direct-declarator>
 
-TOKEN declarator(void)
+TOKEN declarator(SYMBOL s)
 {
     TOKEN ptr = NULL;
     TOKEN direct_dec = NULL;
     ptr = pointer();
-    direct_dec = direct_declarator();
+    direct_dec = direct_declarator(s);
 
     return direct_dec;
 }
@@ -288,9 +316,17 @@ TOKEN pointer(void)
 //                         <direct-declarator> ( <parameter-type-list> )
 //                         <direct-declarator> ( <identifier-list>? )
 
-TOKEN direct_declarator(void)
+TOKEN direct_declarator(SYMBOL s)
 {
+    beacon();
     TOKEN direct_decl = identifier();
+    
+    SYMBOL entry = searchins(getStringVal(direct_decl));
+    setSymbolNameString(s, entry->namestring);
+    copy_symbol(s, entry);
+    
+    //can we free SYMBOL s here? or will it cause problems?
+
     printToken(direct_decl);
     return direct_decl;
 }
@@ -333,6 +369,26 @@ BOOLEAN reserved(TOKEN tok, KeywordType keyword)
 {
     BOOLEAN result = FALSE;
     if(isKeyword(tok) && (getWhichVal(tok) == keyword))
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN isDelimiter(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if(getTokenType(tok) == DELIMITER_TOKEN)
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN delimiter(TOKEN tok, DelimiterType delim)
+{
+    BOOLEAN result = FALSE;
+    if(isDelimiter(tok) && (getWhichVal(tok) == delim))
     {
         result = TRUE;
     }

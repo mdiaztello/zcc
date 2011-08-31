@@ -18,9 +18,11 @@
 
 #include <stdio.h>
 #include "token.h"
+#include "token_API.h"
 #include "lexer.h"
 #include "scanner.h"
 #include "parser.h"
+#include "symtab.h"
 
 
 void test_lexer(void)
@@ -69,8 +71,10 @@ void test_parser(void)
 int main(void)
 {
     init_scanner();
+    initsyms();
     //test_lexer();
     test_parser();
     printf("the total number of lines of source code is %lu\n", source_code_line_number);
+    printst();
     return 0;
 }

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h> //for strcmp
 #include "token.h"
+#include "token_API.h"
 #include "scanner.h"
 #include "global_defs.h"
 #include "debug.h"
@@ -307,7 +308,7 @@ static void updateLineNumber(char c)
 //makes an identifier token from a pre-allocated token object
 static void make_identifier(TOKEN tok)
 {
-    char buffer[MAX_TOKEN_LENGTH];
+    char buffer[MAX_TOKEN_STRING_LENGTH];
 
     //assume that the token is an identifier, then check if it is a reserved word
     setTokenType(tok, IDENTIFIER_TOKEN);
@@ -353,7 +354,7 @@ static void get_identifier_string(char* buffer)
 
     while( ((cclass == ALPHA) || (cclass == NUMERIC)) && (EOF != peekchar()) )
     {
-        if(i < MAX_TOKEN_LENGTH)
+        if(i < MAX_TOKEN_STRING_LENGTH)
         {
             buffer[i++] = c;
         }
@@ -408,7 +409,7 @@ static long long parse_number(void)
 //makes string token from pre-allocated token object
 static void make_string(TOKEN tok)
 {
-    char buffer[MAX_TOKEN_LENGTH];
+    char buffer[MAX_TOKEN_STRING_LENGTH];
     setTokenType(tok, STRING_LITERAL);
     setDataType(tok, STRING_TYPE);
     get_string_literal(buffer);
@@ -434,7 +435,7 @@ static void get_string_literal(char* buffer)
             cclass = get_char_class(c);
             continue;
         }
-        if(i < MAX_TOKEN_LENGTH)
+        if(i < MAX_TOKEN_STRING_LENGTH)
         {
             buffer[i++] = c;
         }

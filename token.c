@@ -1,20 +1,22 @@
 #include "token.h"
+#include "token_API.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "debug.h"
 #include "global_defs.h"
+#include "symtab.h"
 
 struct token
 {
     enum token_type tokenType;
     enum data_type dataType;
-    //struct symtbr * symtype;
-    //struct symtbr * symentry;
+    struct symtbr * symtype;   //pointer to the symbols type in the symbol table
+    struct symtbr * symentry;  //pointer to entry in the symbol table
     struct token* operands;
     struct token* link;
     union
     {
-        char tokenstring[MAX_TOKEN_LENGTH];
+        char tokenstring[MAX_TOKEN_STRING_LENGTH];
         int which;
         long integer_number;
         double floating_number;
@@ -25,6 +27,7 @@ struct token
 #define stringval  tokenvalue.tokenstring
 #define whichval tokenvalue.which
 #define intval tokenvalue.integer_number
+#define realval tokenvalue.floating_number
 
 TOKEN makeToken(void)
 {
@@ -60,7 +63,7 @@ void setStringVal(TOKEN t, char* string)
 {
     int i = 0;
 
-    for(i = 0; (i < MAX_TOKEN_LENGTH) && (string[i] != 0); i++)
+    for(i = 0; (i < MAX_TOKEN_STRING_LENGTH) && (string[i] != 0); i++)
     {
         t->stringval[i] = string[i];
     }
@@ -69,7 +72,34 @@ void setStringVal(TOKEN t, char* string)
 
 char* getStringVal(TOKEN t)
 {
-    return t->stringval;
+    char* s;
+    if(t->tokenType == KEYWORD_TOKEN)
+    {
+        //FIXME: this is a hack to make looking up basic types in the symbol table work
+        switch(t->whichval)
+        {
+            case CHAR:
+                s = "char";
+                break;
+            case SHORT:
+                s = "short";
+                break;
+            case INT:
+                s = "int";
+                break;
+            case LONG:
+                s = "long";
+                break;
+            default:
+                s = "unknown";
+                break;
+        }
+    }
+    else
+    {
+        s = t->stringval;
+    }
+    return s;
 }
 
 void setWhichVal(TOKEN t, int which)
@@ -101,6 +131,47 @@ void setLink(TOKEN tok, TOKEN linked_tok)
 {
     tok->link = linked_tok;
 }
+
+TOKEN getOperands(TOKEN tok)
+{
+    return tok->operands;
+}
+
+void setOperands(TOKEN tok, TOKEN operand)
+{
+    tok->operands = operand;
+}
+
+SYMBOL getSymbolType(TOKEN tok)
+{
+    return tok->symtype;
+}
+
+void setSymbolType(TOKEN tok, SYMBOL sym_t)
+{
+    tok->symtype = sym_t;
+}
+
+SYMBOL getSymbolTableEntry(TOKEN tok)
+{
+    return tok->symentry;
+}
+
+void setSymbolTableEntry(TOKEN tok, SYMBOL sym_entry)
+{
+    tok->symentry = sym_entry;
+}
+
+double getRealVal(TOKEN tok)
+{
+    return tok->realval;
+}
+
+void setRealVal(TOKEN tok, double value)
+{
+    tok->realval = value;
+}
+
 
 /************************** TOKEN PRINTING FUNCTIONS *************************************************/
 

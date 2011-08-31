@@ -163,7 +163,10 @@ int main(void)
 //#include "lexer.h"
 //#include "scanner.h"
 
-extern signed a;
+extern int a;
+static char b;
+typedef short c;
+static long d;
 
 /*
 void test_lexer(void)
