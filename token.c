@@ -17,7 +17,7 @@ struct token
     union
     {
         char tokenstring[MAX_TOKEN_STRING_LENGTH];
-        int which;
+        unsigned int which;
         long integer_number;
         double floating_number;
     } tokenvalue;
@@ -171,6 +171,103 @@ void setRealVal(TOKEN tok, double value)
 {
     tok->realval = value;
 }
+
+//gets the storage class from a token containing a storage class reserved word
+StorageClass getTokenStorageClass(TOKEN tok)
+{
+    if( FALSE == reserved(tok, EXTERN) && FALSE == reserved(tok, TYPEDEF) &&
+            FALSE == reserved(tok, STATIC))
+    {
+        printf("You tried to get a storage class from a non-storage-class token\n");
+        exit(EXIT_FAILURE); //FIXME: we don't want to just barf in the future, but for now its ok
+    }
+
+    int whichStorage = getWhichVal(tok);
+    StorageClass s;
+
+    switch(whichStorage)
+    {
+        case EXTERN:
+            s = EXTERNAL_STORAGE_CLASS;
+            break;
+        case TYPEDEF:
+            s = TYPEDEF_STORAGE_CLASS;
+            break;
+        case STATIC:
+            s = STATIC_STORAGE_CLASS;
+            break;
+        default: //automatic variables and everything else
+            s = UNKNOWN_STORAGE_CLASS;
+            break;
+    }
+    return s;
+}
+
+
+//RANDOM HELPER FUNCTIONS: FIXME figure out where these functions ought to go instead of just jamming them all down here
+//perhaps consider putting them with the other token operations?
+
+BOOLEAN isKeyword(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if(getTokenType(tok) == KEYWORD_TOKEN)
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN reserved(TOKEN tok, KeywordType keyword)
+{
+    BOOLEAN result = FALSE;
+    if(isKeyword(tok) && (getWhichVal(tok) == keyword))
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN isDelimiter(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if(getTokenType(tok) == DELIMITER_TOKEN)
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN delimiter(TOKEN tok, DelimiterType delim)
+{
+    BOOLEAN result = FALSE;
+    if(isDelimiter(tok) && (getWhichVal(tok) == delim))
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN isOperator(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if(getTokenType(tok) == OPERATOR_TOKEN)
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN operator(TOKEN tok, OperatorType operator)
+{
+    BOOLEAN result = FALSE;
+    if(isOperator(tok) && (getWhichVal(tok) == operator))
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+
 
 
 /************************** TOKEN PRINTING FUNCTIONS *************************************************/

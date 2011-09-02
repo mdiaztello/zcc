@@ -39,6 +39,11 @@ void test_lexer(void)
             {
                 printToken(t);
             }
+            t = peektok();
+            if(EOFFLG == 0)
+            {
+                printToken(t);
+            }
             t = gettok();
             if(EOFFLG == 0)
             {

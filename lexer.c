@@ -21,12 +21,12 @@ static void make_number(TOKEN tok);
 static void make_string(TOKEN tok);
 static void make_special(TOKEN tok);
 static void updateLineNumber(char c);
-static int isKeyword(char* string);
+static int isKeywordString(char* string);
 static void get_identifier_string(char* buffer);
 static void get_string_literal(char* buffer);
 static long long parse_number(void);
 
-static BOOLEAN isDelimiter(char c, DelimiterType* whichDelim);
+static BOOLEAN isDelimiterCharacter(char c, DelimiterType* whichDelim);
 static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp);
 static BOOLEAN isSingleCharacterOperator(char* buffer, OperatorType* whichOp);
 
@@ -176,6 +176,7 @@ TOKEN gettok(void)
     else
     {
         current_token = lex();
+        lookahead = NULL;
     }
     return current_token;
 }
@@ -317,7 +318,7 @@ static void make_identifier(TOKEN tok)
     get_identifier_string(buffer);
     setStringVal(tok, buffer);
 
-    int whichKeyword = isKeyword(getStringVal(tok));
+    int whichKeyword = isKeywordString(getStringVal(tok));
     if(-1 != whichKeyword)
     {
         setWhichVal(tok, whichKeyword);
@@ -328,7 +329,7 @@ static void make_identifier(TOKEN tok)
 //returns which keyword the string represents
 //or returns NOT_A_KEYWORD if it isn't in the
 //dictionary of keywords
-static int isKeyword(char* string)
+static int isKeywordString(char* string)
 {
 #define NOT_A_KEYWORD (-1)
     int i = 0;
@@ -462,7 +463,7 @@ static void make_special(TOKEN tok)
     buffer[1] = peek2char();
     buffer[2] = 0; //terminate the string
 
-    if(TRUE == isDelimiter(buffer[0], &whichDelimiter))
+    if(TRUE == isDelimiterCharacter(buffer[0], &whichDelimiter))
     {
         buffer[1] = 0; //terminate the delimiter after 1 character
         setTokenType(tok, DELIMITER_TOKEN); 
@@ -498,7 +499,7 @@ static void make_special(TOKEN tok)
 
 //answers the question whether it is a delimiter, and if so which one
 //if it is not a delimiter, then the value stored in whichDelim is invalid
-static BOOLEAN isDelimiter(char c, DelimiterType* whichDelim)
+static BOOLEAN isDelimiterCharacter(char c, DelimiterType* whichDelim)
 {
     int i = 0;
     BOOLEAN result = FALSE;

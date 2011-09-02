@@ -488,24 +488,7 @@ void copy_symbol(SYMBOL original, SYMBOL destination)
 
 //FIXME: this is a hack to avoid circular dependencies between token.h and symtab.h
 //figure out how to fix this properly
-void setStorageClass(SYMBOL s, TOKEN storage_class)
+void setStorageClass(SYMBOL s, StorageClass whichStorage)
 {
-    int whichStorage = getWhichVal(storage_class);
-
-    if( EXTERN == whichStorage)
-    {
-        s->storageclass = EXTERNAL_STORAGE_CLASS;
-    }
-    else if( TYPEDEF == whichStorage)
-    {
-        s->storageclass = TYPEDEF_STORAGE_CLASS;
-    }
-    else if( STATIC == whichStorage)
-    {
-        s->storageclass = STATIC_STORAGE_CLASS;
-    }
-    else //automatic variables and everything else
-    {
-        s->storageclass = UNKNOWN_STORAGE_CLASS;
-    }
+    s->storageclass = whichStorage;
 }

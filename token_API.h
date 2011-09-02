@@ -24,6 +24,7 @@
  */
 
 #include "symtab.h"
+#include "global_defs.h" //for the BOOLEAN definition
 
 TOKEN makeToken(void);
 void setTokenType(TOKEN t, enum token_type tType);
@@ -54,6 +55,15 @@ void setSymbolTableEntry(TOKEN tok, SYMBOL sym_entry);
 
 double getRealVal(TOKEN tok);
 void setRealVal(TOKEN tok, double value);
+
+StorageClass getTokenStorageClass(TOKEN tok);
+
+BOOLEAN isKeyword(TOKEN tok);
+BOOLEAN isOperator(TOKEN tok);
+BOOLEAN isDelimiter(TOKEN tok);
+BOOLEAN reserved(TOKEN tok, KeywordType keyword);
+BOOLEAN operator(TOKEN tok, OperatorType operator);
+BOOLEAN delimiter(TOKEN tok, DelimiterType delim);
 
 void printToken(TOKEN t);
 void printTokenType(TOKEN t);

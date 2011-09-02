@@ -98,7 +98,7 @@ SYMBOL insertfn(char name[], SYMBOL resulttp, SYMBOL argtp);
 void initsyms(void);
 void copy_symbol(SYMBOL original, SYMBOL destination);
 void setSymbolNameString(SYMBOL sym, char* s);
-void setStorageClass(SYMBOL s, TOKEN storage_class);
+void setStorageClass(SYMBOL s, StorageClass whichStorage);
 
 int SYMTAB_DEBUG;
 int blocknumber;           /* Number of current block being compiled */
