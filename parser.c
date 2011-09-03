@@ -25,6 +25,7 @@
 #include <stdlib.h> //for exit()
 #include "global_defs.h"
 #include "symtab.h"
+#include "error_handlers.h"
 
 
 TOKEN translation_unit(void);
@@ -45,7 +46,9 @@ TOKEN parameter_type_list(void);
 TOKEN parameter_list(void);
 TOKEN parameter_declaration(void);
 void compound_statement(void);
-void expect(TokenType tType, unsigned int whichToken, char* errorMessage);
+void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void));
+void block_item_list(void);
+void block_item(void);
 
 //parses the program
 TOKEN parse(void)
@@ -114,31 +117,17 @@ TOKEN function_definition(SYMBOL s)
 {
     beacon();
     TOKEN func_definition = NULL;
-    TOKEN tok;
     //we didn't find a global var so assume we found a function
     //we already parsed the declaration specifiers and the declarator in the earlier parsing attempt
     //so just repurpose the information we collected instead of backtracking and re-parsing
 
-    //since we 
-    beacon();
-    tok = gettok(); //consume the OPEN_PAREN
-    printToken(tok);
-
+    expect(DELIMITER_TOKEN, OPEN_PAREN, NO_ERROR_HANDLER);
     TOKEN params = parameter_type_list(); //we already found the return type and function name earlier, so we just pick up from there
-    beacon();
-
-
-
+    expect(DELIMITER_TOKEN, CLOSE_PAREN, NO_ERROR_HANDLER);
     SYMBOL return_type = s;
     insertfn(s->namestring, return_type, getSymbolType(params)); //FIXME: extend this to more than just one parameter
-    
-    tok = gettok();
-    printToken(tok);
-
-    //declaration_list(); //FIXME: This allows K&R style function declarations. I may want to disallow this.
-    //if(declaration_list == NULL) //blah
     compound_statement();
-    //beacon();
+
     func_definition = makeToken(); //FIXME: we need to create the tree structure for the function here
     return func_definition;
 }
@@ -451,31 +440,32 @@ TOKEN parameter_declaration(void)
     return dec;
 }
 
+
 // <compound-statement> ::= { <block-item-list>* }
 //
 
-
+//FIXME: stub for now
 void compound_statement(void)
 {
-    //FIXME: stub for now
-    //TOKEN tok = peektok();
-    //printToken(tok);
-    //beacon();
-    //exit(0);
-    expect(DELIMITER_TOKEN, OPEN_BRACE, NULL);
-    while( FALSE == delimiter(peektok(), CLOSE_BRACE))
-    {
-       printToken(gettok());//skip everything between the braces
-    }
+    startBlock();
+    expect(DELIMITER_TOKEN, OPEN_BRACE, compound_statement_error_handler);
+    block_item_list();
     expect(DELIMITER_TOKEN, CLOSE_BRACE, NULL);
     //beacon();
+    endBlock();
 }
+
 
 // <block-item-list> ::= <block-item> <block-item-list>*
 //
 
 void block_item_list(void)
 {
+    block_item();
+    if(FALSE == delimiter(peektok(), CLOSE_BRACE))
+    {
+        block_item_list();
+    }
 }
 
 // <block-item> ::= <declaration> |
@@ -483,23 +473,25 @@ void block_item_list(void)
 
 void block_item(void)
 {
-
+    SYMBOL sym = symalloc();
+    setStorageClass(sym, AUTO_STORAGE_CLASS);
+    declaration(sym);
 }
 
-void expect(TokenType tType, unsigned int whichToken, char* errorMessage)
+void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void))
 {
     TOKEN peek = peektok();
     beacon();
     printToken(peek);
     if((tType != getTokenType(peek)) || (whichToken != getWhichVal(peek)))
     {
-        if(NULL == errorMessage)
+        if(NULL == errorAction)
         {
-            printf("FUCK YOU!\n");
+            printf("ERROR: an unexpected token was encountered on line %5lu of the source file\n", getSourceLine());
         }
         else
         {
-            printf("%s", errorMessage);
+            errorAction();
         }
         //if(recovery options are set)
         //{

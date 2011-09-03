@@ -62,6 +62,24 @@ char* symprint[10]  = {" ", "BASIC", "CONST", "VAR", "SUBRANGE",
 int symsize[10] = { 1, 5, 5, 3, 8, 8, 5, 6, 4, 7 };
 
 
+//every time we begin a new lexical block, its symbols should go in a new block in the symbol table
+void startBlock(void)
+{
+    blocknumber++;
+}
+
+//every time we reach the end of a lexical block, return to the previous block level
+void endBlock(void)
+{
+    blocknumber--;
+}
+
+int getBlockLevel(void)
+{
+    return blocknumber;
+}
+
+
 void setSymbolNameString(SYMBOL sym, char* s)
 {
     int i = 0;
@@ -291,6 +309,9 @@ char* printStorageClass(SYMBOL sym)
             break;
         case STATIC_STORAGE_CLASS:
             s = "STATIC";
+            break;
+        case AUTO_STORAGE_CLASS:
+            s = "AUTO";
             break;
     }
     return s;

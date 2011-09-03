@@ -163,23 +163,26 @@ int main(void)
 //#include "lexer.h"
 //#include "scanner.h"
 
-char a;
-short b;
+//char a;
+//short b;
+//typedef int c;
+//extern long d;
 
 long l(long b, char c, char d, char f)
 {
-    abcd
-    abcde
+   long abcd;
+   int abcde;
 }
 
 long fn(char a)
 {
-    lkdsjfasdf
-    lkdsjfasdf
+   int a; 
+   int b; 
+   int c; 
+   int d; 
+   int e; 
 }
 
-typedef int c;
-extern long d;
 
 /*
 void test_lexer(void)

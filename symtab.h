@@ -54,7 +54,8 @@ typedef enum storage_class
     UNKNOWN_STORAGE_CLASS = 0,
     TYPEDEF_STORAGE_CLASS,
     EXTERNAL_STORAGE_CLASS,
-    STATIC_STORAGE_CLASS
+    STATIC_STORAGE_CLASS,
+    AUTO_STORAGE_CLASS     //meant for temporary locals that exist only on the stack NOTE: WE ARE NOT ALLOWING USE OF THE 'auto' KEYWORD!
 } StorageClass;
 
 typedef struct symtbr 
@@ -78,6 +79,8 @@ typedef struct symtbr
     int    highbound;
 } SYMBOLREC, *SYMBOL;
 
+void startBlock(void);
+void endBlock(void);
 
 
 SYMBOL symalloc(void);

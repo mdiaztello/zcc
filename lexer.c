@@ -191,6 +191,12 @@ TOKEN peektok(void)
     return lookahead;
 }
 
+//gets the line of source that the compiler is currently analyzing
+unsigned long getSourceLine(void)
+{
+    return source_code_line_number;
+}
+
 
 /*************** END OF LEXER ************************************************************************/
 
