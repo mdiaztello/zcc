@@ -26,29 +26,10 @@
 #include "global_defs.h"
 #include "symtab.h"
 #include "error_handlers.h"
+#include "statements.h"
+#include "parser.h"
 
 
-TOKEN translation_unit(void);
-TOKEN external_declaration(void);
-TOKEN function_definition(SYMBOL s);
-TOKEN declaration(SYMBOL s);
-TOKEN declaration_specifiers(SYMBOL s);
-TOKEN init_declarator_list(SYMBOL s);
-TOKEN storage_class_specifier(void);
-TOKEN type_specifier(void);
-TOKEN init_declarator(SYMBOL s);
-TOKEN pointer(void);
-TOKEN direct_declarator(SYMBOL s);
-TOKEN identifier(void);
-TOKEN declarator(SYMBOL s);
-
-TOKEN parameter_type_list(void);
-TOKEN parameter_list(void);
-TOKEN parameter_declaration(void);
-void compound_statement(void);
-void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void));
-void block_item_list(void);
-void block_item(void);
 
 //parses the program
 TOKEN parse(void)
@@ -67,11 +48,6 @@ TOKEN translation_unit(void)
     TOKEN trans_unit = NULL;
     trans_unit = external_declaration(); 
     TOKEN tok = peektok();
-    beacon();
-    if(tok != NULL)
-    {
-        printToken(tok);
-    }
     if(tok != NULL)
     {
         setLink(trans_unit, translation_unit());
@@ -87,7 +63,6 @@ TOKEN translation_unit(void)
 
 TOKEN external_declaration(void)
 {
-    beacon();
     TOKEN ext_declaration = NULL;
     SYMBOL sym = symalloc(); //symbol for the declaration we are dealing with
     //used as a temporary place to aggregate data about the declaration until
@@ -115,7 +90,6 @@ TOKEN external_declaration(void)
 
 TOKEN function_definition(SYMBOL s)
 {
-    beacon();
     TOKEN func_definition = NULL;
     //we didn't find a global var so assume we found a function
     //we already parsed the declaration specifiers and the declarator in the earlier parsing attempt
@@ -150,13 +124,11 @@ TOKEN declaration_list(SYMBOL s)
 
 TOKEN declaration(SYMBOL s)
 {
-    beacon();
     TOKEN t = NULL;
     TOKEN dec = NULL;
     s->kind = VARSYM; //if we have made it this far, i think it's safe to assume we are declaring a variable      
     declaration_specifiers(s);
     dec = init_declarator_list(s);
-    beacon();
     t = peektok();
 
     if(FALSE == delimiter(t, SEMICOLON))
@@ -170,10 +142,8 @@ TOKEN declaration(SYMBOL s)
         t = gettok(); //consume the SEMICOLON
         SYMBOL entry = searchins(s->namestring);
         copy_symbol(s, entry);
-        printToken(t);
     }
 
-    beacon();printToken(dec);
     return dec;
 }
 
@@ -184,7 +154,6 @@ TOKEN declaration(SYMBOL s)
 
 TOKEN declaration_specifiers(SYMBOL s)
 {
-    beacon();
     TOKEN t = NULL;
     //check the storage class of the thing being declared
     //if the storage class is specified, else use the default
@@ -195,7 +164,6 @@ TOKEN declaration_specifiers(SYMBOL s)
         setStorageClass(s, getTokenStorageClass(storage_class));
     }
     TOKEN type_spec = type_specifier();
-    printToken(type_spec);
     
     SYMBOL type = searchst(getStringVal(type_spec));
     s->basicdt = type->basicdt;
@@ -203,7 +171,6 @@ TOKEN declaration_specifiers(SYMBOL s)
     s->size = type->size;
     //TOKEN type_qual = type_qualifier();
     //TOKEN function_spec = function_specifier();
-    beacon();
     return t;
 }
 
@@ -256,7 +223,6 @@ TOKEN storage_class_specifier(void)
 
 TOKEN type_specifier(void)
 {
-    beacon();
     TOKEN tok = peektok();
     if(tok == NULL)
     {
@@ -294,9 +260,7 @@ TOKEN type_specifier(void)
 TOKEN init_declarator_list(SYMBOL s)
 {
     TOKEN init_dec_list = init_declarator(s);
-    beacon();
     TOKEN tok = peektok();
-    printToken(tok);
     if( TRUE == delimiter(tok, COMMA) )
     {
         //FIXME: this might be a bug but i'm not sure yet
@@ -308,7 +272,6 @@ TOKEN init_declarator_list(SYMBOL s)
         //FIXME: this might be a bug but i'm not sure yet
         setLink(init_dec_list, NULL);
     }
-    beacon();
     return init_dec_list;
 }
 
@@ -363,11 +326,8 @@ TOKEN pointer(void)
 
 TOKEN direct_declarator(SYMBOL s)
 {
-    beacon();
     TOKEN direct_decl = identifier();
     setSymbolNameString(s, getStringVal(direct_decl));
-
-    printToken(direct_decl);
     return direct_decl;
 }
 
@@ -441,48 +401,9 @@ TOKEN parameter_declaration(void)
 }
 
 
-// <compound-statement> ::= { <block-item-list>* }
-//
-
-//FIXME: stub for now
-void compound_statement(void)
-{
-    startBlock();
-    expect(DELIMITER_TOKEN, OPEN_BRACE, compound_statement_error_handler);
-    block_item_list();
-    expect(DELIMITER_TOKEN, CLOSE_BRACE, NULL);
-    //beacon();
-    endBlock();
-}
-
-
-// <block-item-list> ::= <block-item> <block-item-list>*
-//
-
-void block_item_list(void)
-{
-    block_item();
-    if(FALSE == delimiter(peektok(), CLOSE_BRACE))
-    {
-        block_item_list();
-    }
-}
-
-// <block-item> ::= <declaration> |
-//                  <statement>
-
-void block_item(void)
-{
-    SYMBOL sym = symalloc();
-    setStorageClass(sym, AUTO_STORAGE_CLASS);
-    declaration(sym);
-}
-
 void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void))
 {
     TOKEN peek = peektok();
-    beacon();
-    printToken(peek);
     if((tType != getTokenType(peek)) || (whichToken != getWhichVal(peek)))
     {
         if(NULL == errorAction)

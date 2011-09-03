@@ -138,6 +138,7 @@ enum keyword_types
     SWITCH,
     CASE,
     BREAK,
+    DEFAULT,
     RETURN,
     GOTO,
     EXTERN,
