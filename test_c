@@ -170,18 +170,33 @@ int main(void)
 
 long l(long b, char c, char d, char f)
 {
-   long abcd;
-   int abcde;
+    //a+b*c/d-q %F;
+    //a || b && d && c;
+    //(q + b + d + a + d - f -g -h);
+    //(a);
+    //(a | ((a || (b)) && e));
+    //int abcde;
+    //a = b || a || c || d;
+    //a = b && a && c && d;
+    //a = b && i || a && j || c && k || d && l;
+    //(b && i) || (a && j) || (c && k) || (d && l);
+    a % b;
+    //a = b | c;
+    //a = b ^ c;
+    
+    //abcd = b;
 }
 
-long fn(char a)
-{
-   int a; 
-   int b; 
-   int c; 
-   int d; 
-   int e; 
-}
+//long fn(char a)
+//{
+    //a = b && i || a && j || c && k || d && l;
+    //a = b && i || a && j || c && k || d && l;
+    //int a; 
+    //int b; 
+    //int c; 
+    //int d; 
+    //int e; 
+//}
 
 
 /*

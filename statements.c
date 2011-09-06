@@ -19,16 +19,15 @@
  * =====================================================================================
  */
 
-
-
-
 #include "token.h"
 #include "token_API.h"
 #include "lexer.h"
 #include "statements.h"
+#include "expressions.h"
 #include "parser.h"
 #include "error_handlers.h"
 #include <stdio.h>
+#include "debug.h"
 
 // <statement> ::= <labeled-statement> |
 //                 <compound-statement> |
@@ -41,9 +40,13 @@ void statement(void)
 {
     TOKEN tok = peektok();
 
-    if(getTokenType(tok) == IDENTIFIER_TOKEN || (TRUE == reserved(tok, CASE)) || (TRUE == reserved(tok, DEFAULT)))
+    if((getTokenType(tok) == IDENTIFIER_TOKEN) || 
+            (TRUE == reserved(tok, CASE)) || 
+            (TRUE == reserved(tok, DEFAULT)) || 
+            (TRUE == delimiter(tok, OPEN_PAREN)))
     {
         //labeled_statement();
+        expression_statement();
     }
     else if(TRUE == delimiter(tok, OPEN_BRACE))
     {
@@ -61,9 +64,10 @@ void statement(void)
     {
         //jump_statement();
     }
-    else //we must have an expression-statement
+    else //we must have a primary expression
     {
-        //expression_statement();
+        //primary_expression();//FIXME this may be the incorrect action
+        //expect(DELIMITER_TOKEN, SEMICOLON, NULL);
     }
 }
 
@@ -101,5 +105,27 @@ void block_item(void)
 {
     SYMBOL sym = symalloc();
     setStorageClass(sym, AUTO_STORAGE_CLASS);
-    declaration(sym);
+    //to see if we have a declaration, for now we will check in the symbol table to see if the token
+    //we are peeking at is a basic type. If it is, we will assume we have a declaration instead of a statement
+    TOKEN tok = peektok();
+    SYMBOL s = searchst(getStringVal(tok));
+    if (s != NULL && s->kind == BASICTYPE)
+    {
+        declaration(sym);
+    }
+    else
+    {
+        statement();
+    }
+
+}
+
+// <expression-statement> ::= <expression>? ;
+
+void expression_statement(void)
+{
+    beacon();
+    expression();
+    expect(DELIMITER_TOKEN, SEMICOLON, NULL);
+    printf("found statement\n");
 }
