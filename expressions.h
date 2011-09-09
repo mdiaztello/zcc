@@ -1,26 +1,26 @@
 #ifndef __EXPRESSIONS_H_
 #define __EXPRESSIONS_H_
 
-void expression(void);
-void assignment_expression(void);
-void unary_expression(void);
-void primary_expression(void);
-void postfix_expression(void);
-void primary_expression(void);
-void assignment_operator(void);
+TOKEN expression(void);
+TOKEN assignment_expression(void);
+TOKEN unary_expression(void);
+TOKEN unary_operator(void);
+TOKEN primary_expression(void);
+TOKEN postfix_expression(void);
+TOKEN assignment_operator(void);
 
-void conditional_expression(void);
-void logical_OR_expression(void);
-void logical_AND_expression(void);
-void inclusive_OR_expression(void);
-void exclusive_OR_expression(void);
-void AND_expression(void);
-void equality_expression(void);
-void relational_expression(void);
-void shift_expression(void);
-void additive_expression(void);
-void multiplicative_expression(void);
-void cast_expression(void);
+TOKEN conditional_expression(void);
+TOKEN logical_OR_expression(void);
+TOKEN logical_AND_expression(void);
+TOKEN inclusive_OR_expression(void);
+TOKEN exclusive_OR_expression(void);
+TOKEN AND_expression(void);
+TOKEN equality_expression(void);
+TOKEN relational_expression(void);
+TOKEN shift_expression(void);
+TOKEN additive_expression(void);
+TOKEN multiplicative_expression(void);
+TOKEN cast_expression(void);
 
 
 #endif //__EXPRESSIONS_H_

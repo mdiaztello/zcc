@@ -28,6 +28,7 @@
 #include "error_handlers.h"
 #include <stdio.h>
 #include "debug.h"
+#include "pprint.h"
 
 // <statement> ::= <labeled-statement> |
 //                 <compound-statement> |
@@ -43,7 +44,8 @@ void statement(void)
     if((getTokenType(tok) == IDENTIFIER_TOKEN) || 
             (TRUE == reserved(tok, CASE)) || 
             (TRUE == reserved(tok, DEFAULT)) || 
-            (TRUE == delimiter(tok, OPEN_PAREN)))
+            (TRUE == delimiter(tok, OPEN_PAREN)) ||
+            (TRUE == delimiter(tok, SEMICOLON)))
     {
         //labeled_statement();
         expression_statement();
@@ -66,9 +68,11 @@ void statement(void)
     }
     else //we must have a primary expression
     {
+        expression_statement();
         //primary_expression();//FIXME this may be the incorrect action
         //expect(DELIMITER_TOKEN, SEMICOLON, NULL);
     }
+
 }
 
 
@@ -124,8 +128,8 @@ void block_item(void)
 
 void expression_statement(void)
 {
-    beacon();
-    expression();
+    TOKEN exp = expression();
     expect(DELIMITER_TOKEN, SEMICOLON, NULL);
     printf("found statement\n");
+    ppexpr(exp);
 }

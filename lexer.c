@@ -69,16 +69,16 @@ static char operators[NUM_OPERATOR_TYPES+1][MAX_OPERATOR_LENGTH] =
 {
     "+",    // ADDITION
     "-",    // SUBTRACTION,            
-    "*",    // MULTIPLICATION,         
+    "",     // MULTIPLICATION,         //empty so the lexer will recognize the token as a STAR first
     "/",    // DIVISION,               
     "%",    // MODULAR_DIVISION,       
     "!",    // BOOLEAN_NOT,            
     "~",    // BITWISE_NOT,            
-    "&",    // BITWISE_AND,            
+    "",     // BITWISE_AND,          //empty so the lexer will recognize the token as an AMPERSAND first  
     "|",    // BITWISE_OR,             
     "^",    // BITWISE_XOR,            
-    //"&",  // REFERENCE,              
-    //"*",  // DEREFERENCE,            
+    "",     // REFERENCE,           //empty so the lexer will recognize the token as an AMPERSAND first
+    "",     // DEREFERENCE,            //empty so the lexer will recognize the token as a STAR first
     ".",    // DOT,                    
     "=",    // ASSIGNMENT,             
     ">",    // GREATER_THAN,           
@@ -101,7 +101,10 @@ static char operators[NUM_OPERATOR_TYPES+1][MAX_OPERATOR_LENGTH] =
     "%=",   //MOD_EQUAL
     "&=",   //BITWISE_AND_EQUAL
     "|=",   //BITWISE_OR_EQUAL
-    "->"    //ARROW  (same as a dereference followed by a dot operator)
+    "->",   //ARROW  (same as a dereference followed by a dot operator)
+    "*",    //STAR 
+    "&",    //AMPERSAND
+
 };
 
 //TODO: consider using hash tables for all of this stuff since it may be faster/easier

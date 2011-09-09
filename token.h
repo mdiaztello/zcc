@@ -36,8 +36,8 @@ enum operator_type
     BITWISE_AND,            // "&"
     BITWISE_OR,             // "|"
     BITWISE_XOR,            // "^"
-    //REFERENCE,            // "&"
-    //DEREFERENCE,          // "*"
+    REFERENCE,              // "&"
+    DEREFERENCE,            // "*"
     DOT,                    // "."
     ASSIGNMENT,             // "="
     GREATER_THAN,           // ">"
@@ -62,6 +62,11 @@ enum operator_type
     BITWISE_AND_EQUAL,      //"&=",   
     BITWISE_OR_EQUAL,       //"|=",   
     ARROW,                  //"->"   (same as a dereference followed by a dot operator)
+    //the "STAR" operator stands for both multiplication and dereferencing/pointers
+    //because both operations share the same symbol, so disambiguation can't be done in the lexer
+    //rather, it must be done while the statements are being parsed
+    STAR,
+    AMPERSAND,
 
     // this last enum is here just to be able to iterate across
     // all of the operator types

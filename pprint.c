@@ -33,39 +33,53 @@
 #include "debug.h"
 
 #define PRINTEXPRDEBUG 0     /* Set to 1 to print each node in printexpr */
-
+    
 char* opprint[] = 
 {
-    " ",
-    "+",
-    "-",
-    "*",
-    "/",
-    ":=",
-    "=",
-    "<>",
+
+    "+", 
+    "-", 
+    "*", 
+    "/", 
+    "%", 
+    "!", 
+    "~", 
+    "&", 
+    "|", 
+    "^", 
+    "REFERENCE", 
+    "DEREFERENCE",
+    ".", 
+    "=", 
+    ">", 
     "<",
-    "<=",
-    ">=",
-    ">",
-    "^",
-    ".",
-    "and",
-    "or",
-    "not",
-    "div",
-    "mod",
-    "in",
-    "if",
-    "goto",
-    "progn",
-    "label",
-    "funcall",
-    "aref",
-    "program",
-    "float",
-    "fix"
-};
+    "==", 
+    "!=", 
+    ">=", 
+    "<=", 
+    "||", 
+    "&&", 
+    "<<", 
+    ">>", 
+    "++", 
+    "--", 
+    "+=", 
+    "-=", 
+    "*=", 
+    "/=", 
+    "%=", 
+    "&=", 
+    "|=", 
+    "->", 
+    "goto",             
+    "progn",            
+    "label",           
+    "funcall",         
+    "aref",            
+    "program",         
+    "float",           
+    "fix"                            
+};                                   
 
 int opsize[] = 
 {
@@ -87,7 +101,7 @@ int opsize[] =
     2,
     3,
     3,
-    3,
+    2,
     2,
     2,
     4,
@@ -269,12 +283,12 @@ void dbugprinttok(TOKEN tok)  /* print a token in 'nice' debugging form */
 void printexpr(TOKEN tok, int col)     /* print an expression in prefix form */
 { 
 	TOKEN opnds; int nextcol, start, i;
-	if (PRINTEXPRDEBUG != 0)
+	if(PRINTEXPRDEBUG != 0)
 	{ 
 		printf ("printexpr: col %d\n", col);
 		dbugprinttok(tok);
 	};
-	if (getTokenType(tok) == OPERATOR_TOKEN)
+	if(getTokenType(tok) == OPERATOR_TOKEN)
 	{ 
 		printf ("(%s", opprint[getWhichVal(tok)]);
 		nextcol = col + 2 + opsize[getWhichVal(tok)];
@@ -317,7 +331,8 @@ void ppexpr(TOKEN tok)              /* print an expression in prefix form */
 { 
 	if ( tok == NULL)
 	{ 
-		printf("ppexpr called with bad pointer %p\n", tok);
+		//printf("ppexpr called with bad pointer %p\n", tok);
+        printf("NULL expression found\n");
 		return; 
 	}
 

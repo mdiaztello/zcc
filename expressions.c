@@ -13,104 +13,109 @@
 // <expression> ::= <assignment-expression> |
 //                  <expression> , <assignment-expression>  FIXME: figure out how to left factor this
 
-void expression(void)
+TOKEN expression(void)
 {
-    beacon();
+    TOKEN result = NULL;
     TOKEN tok = peektok();
-    printToken(tok);
-    if(TRUE == delimiter(tok, SEMICOLON))
+    beacon();
+    if(FALSE == delimiter(tok, SEMICOLON))
     {
-        //we have a null statement
+        result = assignment_expression();
     }
-    else
-    {
-        beacon();
-        assignment_expression();
-    }
+    return result;
 }
 
 
 // <assignment-expression> ::= <conditional-expression> |  
 //                             <unary-expression> <assignment-operator> <assignment-expression>
 
-void assignment_expression(void)
+TOKEN assignment_expression(void)
 {
-    //beacon();
-    //unary_expression();
-
-    //assignment_operator();
-    //beacon();
-    conditional_expression();
+    TOKEN result = NULL;
     beacon();
+    result = conditional_expression();
+    beacon();
+    TOKEN tok = peektok();
+    if(result == NULL) 
+    {
+        beacon();
+        result = unary_expression();
+        assignment_operator();
+        assignment_expression();
+    }
+    else
+    {
+        if(TRUE == isAssignmentOperator(tok))
+        {
+            TOKEN lhs = result;
+            TOKEN assign = assignment_operator();
+            TOKEN rhs = assignment_expression();
+            result = make_binary_operation(assign, lhs, rhs);
+        }
+    }
+    return result;
 }
 
-void assignment_operator(void)
+TOKEN assignment_operator(void)
 {
+    TOKEN result = NULL;
     TOKEN tok = peektok();
     printToken(tok);
-    if(FALSE == isOperator(tok))
+    if(TRUE == isAssignmentOperator(tok))
     {
-        printf("The token we saw was not an assignment operator!\n");
-        exit(0);
+        result = gettok();
     }
-    tok = gettok();
-    printToken(tok);
-    switch(getWhichVal(tok))
-    {
-        case PLUS_EQUAL:
-            break;
-        case MINUS_EQUAL:
-            break;
-        case MULTIPLY_EQUAL:
-            break;
-        case DIVIDE_EQUAL:
-            break;
-        case MOD_EQUAL:
-            break;
-        case BITWISE_AND_EQUAL:
-            break;
-        case BITWISE_OR_EQUAL:
-            break;
-    }
+    return result;
 }
 
 // <conditional-expression> ::= <logical-OR-expression>  //NOTE: I am explicitly disallowing use of the ternary conditional operator
 
-void conditional_expression(void)
+TOKEN conditional_expression(void)
 {
-    beacon();
-    logical_OR_expression();
+    return logical_OR_expression();
 }
 
 // <logical-OR-expression> ::= <logical-AND-expression> |
 //                             <logical-AND-expression || <logical-OR-expression>
 
-void logical_OR_expression(void)
+TOKEN logical_OR_expression(void)
 {
-    beacon();
-    logical_AND_expression();
+    TOKEN result = NULL;
+    TOKEN operand = logical_AND_expression();
+    TOKEN op = NULL;
     TOKEN tok = peektok();
     if(TRUE == operator(tok, BOOLEAN_OR))
     {
-        tok = gettok();
-        logical_OR_expression();
+        op = gettok();
+        result = make_binary_operation(op, operand, logical_OR_expression());
     }
+    else
+    {
+        result = operand;
+    }
+    return result;
 }
 
 // <logical-AND-expression> ::= <inclusive-OR-expression> |
 //                              <inclusive-OR-expression> && <logical-AND-expression>
 //
 
-void logical_AND_expression(void)
+TOKEN logical_AND_expression(void)
 {
-    beacon();
-    inclusive_OR_expression();
+    TOKEN result = NULL;
+    TOKEN operand = inclusive_OR_expression();
+    TOKEN op = NULL;
     TOKEN tok = peektok();
     if(TRUE == operator(tok, BOOLEAN_AND))
     {
-        tok = gettok();
-        logical_AND_expression();
+        op = gettok();
+        result = make_binary_operation(op, operand, logical_AND_expression());
     }
+    else
+    {
+        result = operand;
+    }
+    return result;
 }
 
 // "inclusive-OR-expression" in the C standard seems to be synonymous with what I would call
@@ -118,64 +123,91 @@ void logical_AND_expression(void)
 // <inclusive-OR-expression> ::= <exclusive-OR-expression>  |
 //                               <exclusive-OR-expression> '|' <inclusive-OR-expression>
 
-void inclusive_OR_expression(void)
+TOKEN inclusive_OR_expression(void)
 {
-    beacon();
-    exclusive_OR_expression();
+    TOKEN result = NULL;
+    TOKEN op = NULL;
+    TOKEN operand = exclusive_OR_expression();
     TOKEN tok = peektok();
     if(TRUE == operator(tok, BITWISE_OR))
     {
-        tok = gettok();
-        inclusive_OR_expression();
+        op = gettok();
+        result = make_binary_operation(op, operand, inclusive_OR_expression());
     }
+    else
+    {
+        result = operand;
+    }
+    return result;
 }
 
 // <exclusive-OR-expression> ::= <AND-expression>  |
 //                               <AND-expression> ^ <exclusive-OR-expression>
 //
 
-void exclusive_OR_expression(void)
+TOKEN exclusive_OR_expression(void)
 {
-    AND_expression();
+    TOKEN result = NULL;
+    TOKEN op = NULL;
+    TOKEN operand = AND_expression();
     TOKEN tok = peektok();
     if(TRUE == operator(tok, BITWISE_XOR))
     {
-        tok = gettok();
-        exclusive_OR_expression();
+        op = gettok();
+        result = make_binary_operation(op, operand, exclusive_OR_expression());
     }
+    else
+    {
+        result = operand;
+    }
+
+    return result;
 }
 
 // <AND-expression> ::= <equality-expression> |
 //                      <equality-expression & <AND-expression>
 //
 
-void AND_expression(void)
+TOKEN AND_expression(void)
 {
-    equality_expression();
+    TOKEN result = NULL;
+    TOKEN op = NULL;
+    TOKEN operand = equality_expression();
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, BITWISE_AND))
+    if(TRUE == operator(tok, AMPERSAND))
     {
-        tok = gettok();
-        AND_expression();
+        op = gettok();
+        setWhichVal(op, BITWISE_AND);
+        result = make_binary_operation(op, operand, AND_expression());
     }
+    else
+    {
+        result = operand;
+    }
+    return result;
 }
 
 // <equality-expression> ::= <relational-expression> |
 //                           <relational-expression> == <equality-expression> |
 //                           <relational-expression> != <equality-expression>
 
-void equality_expression(void)
+TOKEN equality_expression(void)
 {
-    beacon();
-    relational_expression();
+    TOKEN result = NULL;
+    TOKEN op = NULL;
+    TOKEN operand = relational_expression();
     TOKEN tok = peektok();
     if(TRUE == operator(tok, EQUALS) ||
             TRUE == operator(tok, NOT_EQUALS))
     {
-        tok = gettok();
-        equality_expression();
+        op = gettok();
+        result = make_binary_operation(op, operand, equality_expression());
     }
-    
+    else
+    {
+        result = operand;
+    }
+    return result;
 }
 
 // <relational-expression> ::= <shift-expression> |
@@ -184,35 +216,48 @@ void equality_expression(void)
 //                             <shift-expression> '<=' <relational-expression>  |
 //                             <shift-expression> '>=' <relational-expression>
 
-void relational_expression(void)
+TOKEN relational_expression(void)
 {
-    shift_expression();
+    TOKEN result = NULL;
+    TOKEN op = NULL;
+    TOKEN operand = shift_expression();
     TOKEN tok = peektok();
     if(TRUE == operator(tok, GREATER_THAN) ||
             TRUE == operator(tok, GREATER_THAN_OR_EQUAL) ||
             TRUE == operator(tok, LESS_THAN) ||
             TRUE == operator(tok, LESS_THAN_OR_EQUAL) )
     {
-        tok = gettok();
-        relational_expression();
+        op = gettok();
+        result = make_binary_operation(op, operand, relational_expression());
     }
+    else
+    {
+        result = operand;
+    }
+    return result;
 }
 
 // <shift-expression> ::= <additive-expression>
 //                        <additive-expression> << <shift-expression>
 //                        <additive-expression> >> <shift-expression>
 
-void shift_expression(void)
+TOKEN shift_expression(void)
 {
-    additive_expression();
+    TOKEN result = NULL;
+    TOKEN op = NULL;
+    TOKEN operand = additive_expression();
     TOKEN tok = peektok();
     if(TRUE == operator(tok, SHIFT_LEFT) ||
             TRUE == operator(tok, SHIFT_RIGHT) )
     {
-        tok = gettok();
-        shift_expression();
+        op = gettok();
+        result = make_binary_operation(op, operand, shift_expression());
     }
-
+    else
+    {
+        result = operand;
+    }
+    return result;
 }
 
 // <additive-expression> ::= <multiplicative-expression> |
@@ -220,17 +265,20 @@ void shift_expression(void)
 //                           <multiplicative-expression> - <additive-expression>
 //
 
-void additive_expression(void)
+TOKEN additive_expression(void)
 {
-    multiplicative_expression();
+    TOKEN op = NULL;
+    TOKEN operand = NULL;
+    TOKEN result = multiplicative_expression();
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, ADDITION) ||
-            TRUE == operator(tok, SUBTRACTION) )
+    while(TRUE == isAdditiveOperator(tok))
     {
-        tok = gettok();
-        additive_expression();
+        op = gettok();
+        operand = multiplicative_expression();
+        result = make_binary_operation(op, result, operand);
+        tok = peektok();
     }
-
+    return result;
 }
 
 
@@ -239,26 +287,46 @@ void additive_expression(void)
 //                                 <cast-expression> / <multiplicative-expression>  |
 //                                 <cast-expression> % <multiplicative-expression>
 
-void multiplicative_expression(void)
+TOKEN multiplicative_expression(void)
 {
-    cast_expression();
+    TOKEN result = cast_expression();
+    TOKEN op = NULL;
+    TOKEN operand = NULL;
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, MULTIPLICATION) ||
-            TRUE == operator(tok, DIVISION) ||
-            TRUE == operator(tok, MODULAR_DIVISION) )
+    while(TRUE == isMultiplicativeOperator(tok))
     {
-        tok = gettok();
-        multiplicative_expression();
+        op = gettok();
+        //we know we are parsing a multiplicative expression at this time, so we can
+        //resolve STAR operators to MULTIPLICATION
+        if(TRUE == operator(tok, STAR))
+        {
+            setWhichVal(op, MULTIPLICATION);
+        }
+        operand = cast_expression();
+
+        result = make_binary_operation(op, result, operand);
+        tok = peektok();
     }
+
+    return result;
 }
 
 // <cast-expression> ::= <unary-expression> |
 //                       ( <type-name> ) cast-expression
 
-void cast_expression(void)
+TOKEN cast_expression(void)
 {
-    beacon(); 
-    primary_expression();
+    TOKEN type_name = NULL;
+    TOKEN result = NULL;
+    result = unary_expression();
+    if(result == NULL)
+    {
+        expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
+        type_name = gettok();
+        expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);
+        result = cast_expression();
+    }
+    return result;
 }
 
 // <unary-expression> ::= <postfix-expression>  |
@@ -268,10 +336,20 @@ void cast_expression(void)
 //                        sizeof <unary-expression> |
 //                        sizeof ( <type-name> )
 
-void unary_expression(void)
+TOKEN unary_expression(void)
 {
-    printToken(peektok());
-    postfix_expression();
+    TOKEN result = NULL;
+    TOKEN op = unary_operator();
+    if( op == NULL )
+    {
+        result = postfix_expression();
+    }
+    else
+    {
+        TOKEN operand = cast_expression();
+        result = make_unary_operation(op, operand);
+    }
+    return result;
 }
 
 // <unary-operator> ::= & |
@@ -280,6 +358,29 @@ void unary_expression(void)
 //                      - |
 //                      ~ |
 //                      !
+
+TOKEN unary_operator(void)
+{
+    TOKEN op = NULL;
+    TOKEN tok = peektok();
+    if(TRUE == isUnaryOperator(tok))
+    {
+        op = gettok();
+        //resolve all unary STARS and AMPERSANDS to DEREFERENCES and REFERENCES
+        if(TRUE == operator(tok, AMPERSAND))
+        {
+            setWhichVal(op, REFERENCE);
+        }
+        else
+        {
+            if(TRUE == operator(tok, STAR))
+            {
+                setWhichVal(op, DEREFERENCE);
+            }
+        }
+    }
+    return op;
+}
 
 // <argument-expression-list> ::= <assignment-expression>   |
 //                                <assignment-expression> , <argument-expression-list>
@@ -296,10 +397,11 @@ void unary_expression(void)
 //                           ( <type-name> ) { <initializer-list> }     |
 //                           ( <type-name> ) { <initializer-list> , }
 
-void postfix_expression(void)
+TOKEN postfix_expression(void)
 {
-    printToken(peektok());
-    primary_expression();
+    TOKEN result = NULL;
+    result = primary_expression();
+    return result;
 }
 
 
@@ -308,18 +410,17 @@ void postfix_expression(void)
 //                          <string-literal> |
 //                          ( <expression> )
 
-void primary_expression(void)
+TOKEN primary_expression(void)
 {
-    TOKEN tok = peektok();
-    if(TRUE == delimiter(tok, OPEN_PAREN))
+    TOKEN result = NULL;
+    result = identifier();
+    beacon();printToken(result);
+    if(NULL == result)
     {
-        expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
         beacon();
-        expression();
+        expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
+        result = expression();
         expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);
     }
-    else
-    {
-        identifier();
-    }
+    return result;
 }

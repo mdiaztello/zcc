@@ -60,6 +60,10 @@ StorageClass getTokenStorageClass(TOKEN tok);
 
 BOOLEAN isKeyword(TOKEN tok);
 BOOLEAN isOperator(TOKEN tok);
+BOOLEAN isAssignmentOperator(TOKEN tok);
+BOOLEAN isUnaryOperator(TOKEN tok);
+BOOLEAN isMultiplicativeOperator(TOKEN tok);
+BOOLEAN isAdditiveOperator(TOKEN tok);
 BOOLEAN isDelimiter(TOKEN tok);
 BOOLEAN reserved(TOKEN tok, KeywordType keyword);
 BOOLEAN operator(TOKEN tok, OperatorType operator);

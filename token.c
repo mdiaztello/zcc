@@ -268,7 +268,66 @@ BOOLEAN operator(TOKEN tok, OperatorType operator)
 }
 
 
+//checks to see if the token is an assignment type operator 
+//like "=" or "+=" or any of the other variants
+BOOLEAN isAssignmentOperator(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if((TRUE == operator(tok, ASSIGNMENT)) ||
+       (TRUE == operator(tok, PLUS_EQUAL)) ||
+       (TRUE == operator(tok, MINUS_EQUAL)) ||
+       (TRUE == operator(tok, MULTIPLY_EQUAL)) ||
+       (TRUE == operator(tok, DIVIDE_EQUAL)) ||
+       (TRUE == operator(tok, MOD_EQUAL)) ||
+       (TRUE == operator(tok, BITWISE_AND_EQUAL)) ||
+       (TRUE == operator(tok, BITWISE_OR_EQUAL)))
+    {
+        result = TRUE;
+    }
+    return result;
+}
 
+//checks to see if the operator is one of the possible unary operators
+
+BOOLEAN isUnaryOperator(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if((TRUE == operator(tok, AMPERSAND)) || 
+       (TRUE == operator(tok, STAR)) ||
+       (TRUE == operator(tok, ADDITION)) ||
+       (TRUE == operator(tok, SUBTRACTION)) ||
+       (TRUE == operator(tok, BITWISE_NOT)) ||
+       (TRUE == operator(tok, BOOLEAN_NOT)))
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+//checks to see if we have a *, a / or a %
+BOOLEAN isMultiplicativeOperator(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if(TRUE == operator(tok, STAR) ||  
+            TRUE == operator(tok, MULTIPLICATION) ||
+            TRUE == operator(tok, DIVISION) ||
+            TRUE == operator(tok, MODULAR_DIVISION) )
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN isAdditiveOperator(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if((TRUE == operator(tok, ADDITION)) ||
+            (TRUE == operator(tok, SUBTRACTION)))
+    {
+        result = TRUE;
+    }
+    return result;
+}
 
 /************************** TOKEN PRINTING FUNCTIONS *************************************************/
 
@@ -586,6 +645,12 @@ void printOperator(TOKEN t)
             break;
         case ARROW:
             printf("ARROW ");
+            break;
+        case STAR:
+            printf("STAR ");
+            break;
+        case AMPERSAND:
+            printf("AMPERSAND ");
             break;
         default:
             printf("UNKNOWN ");
