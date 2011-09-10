@@ -30,6 +30,8 @@
 #include "debug.h"
 #include "pprint.h"
 
+
+
 // <statement> ::= <labeled-statement> |
 //                 <compound-statement> |
 //                 <expression-statement> |
@@ -37,8 +39,9 @@
 //                 <iteration-statement> |
 //                 <jump-statement>
 
-void statement(void)
+TOKEN statement(void)
 {
+    TOKEN result = NULL;
     TOKEN tok = peektok();
 
     if((getTokenType(tok) == IDENTIFIER_TOKEN) || 
@@ -48,65 +51,98 @@ void statement(void)
             (TRUE == delimiter(tok, SEMICOLON)))
     {
         //labeled_statement();
-        expression_statement();
+        result = expression_statement();
     }
     else if(TRUE == delimiter(tok, OPEN_BRACE))
     {
-        compound_statement();
+        result = compound_statement();
     }
-    else if( (TRUE == reserved(tok, IF)) || (TRUE == reserved(tok, SWITCH)) )
+    else if(TRUE == isSelectionKeyword(tok))
     {
-        //selection_statement();
+        result = selection_statement();
     }
-    else if( (TRUE == reserved(tok, WHILE)) || (TRUE == reserved(tok, DO)) || (TRUE == reserved(tok, FOR)) )
+    else if(TRUE == isIterationKeyword(tok))
     {
-        //iteration_statement();
+        // result = iteration_statement();
     }
-    else if( (TRUE == reserved(tok, GOTO)) || (TRUE == reserved(tok, CONTINUE)) || (TRUE == reserved(tok, BREAK)) )
+    else if(TRUE == isJumpKeyword(tok))
     {
-        //jump_statement();
+        result = jump_statement();
     }
     else //we must have a primary expression
     {
-        expression_statement();
+        result = expression_statement();
         //primary_expression();//FIXME this may be the incorrect action
         //expect(DELIMITER_TOKEN, SEMICOLON, NULL);
     }
+    return result;
 
 }
 
+// <jump-statement> ::= GOTO identifier; |
+//                      CONTINUE ; |
+//                      BREAK ; |
+//                      RETURN <expression>? ;
 
-// <compound-statement> ::= { <block-item-list>* }
+TOKEN jump_statement(void)
+{
+    beacon();
+    TOKEN result = NULL;
+    TOKEN keyword = gettok();
+    if(TRUE == reserved(keyword, RETURN))
+    {
+        result = expression();
+        result = make_return_statement(result);
+    }
+    expect(DELIMITER_TOKEN, SEMICOLON, NULL);
+    return result;
+}
+
+
+// <compound-statement> ::= { <block-item-list>? }
 //
 
-//FIXME: stub for now
-void compound_statement(void)
+TOKEN compound_statement(void)
 {
+    TOKEN result = NULL;
+    TOKEN statements = NULL;
     startBlock();
     expect(DELIMITER_TOKEN, OPEN_BRACE, compound_statement_error_handler);
-    block_item_list();
+    statements = block_item_list();
     expect(DELIMITER_TOKEN, CLOSE_BRACE, NULL);
     endBlock();
+    if(statements != NULL)
+    {
+        result = make_statement_list(statements);
+    }
+    
+    return result;
 }
 
 
 // <block-item-list> ::= <block-item> <block-item-list>*
 //
 
-void block_item_list(void)
+TOKEN block_item_list(void)
 {
-    block_item();
+    TOKEN result = NULL;
+    result = block_item();
     if(FALSE == delimiter(peektok(), CLOSE_BRACE))
     {
-        block_item_list();
+        if(result != NULL)
+        {
+            setLink(result, block_item_list());
+        }
     }
+    return result;
 }
 
 // <block-item> ::= <declaration> |
 //                  <statement>
 
-void block_item(void)
+TOKEN block_item(void)
 {
+    TOKEN result = NULL;
     SYMBOL sym = symalloc();
     setStorageClass(sym, AUTO_STORAGE_CLASS);
     //to see if we have a declaration, for now we will check in the symbol table to see if the token
@@ -119,17 +155,53 @@ void block_item(void)
     }
     else
     {
-        statement();
+        result = statement();
     }
-
+    return result;
 }
 
 // <expression-statement> ::= <expression>? ;
 
-void expression_statement(void)
+TOKEN expression_statement(void)
 {
     TOKEN exp = expression();
     expect(DELIMITER_TOKEN, SEMICOLON, NULL);
-    printf("found statement\n");
-    ppexpr(exp);
+    if(exp == NULL)
+    {
+        exp = make_statement_list(exp);
+    }
+    return exp;
 }
+
+
+//NOTE: I am changing the grammar to dissallow single-line if statements
+// <selection-statement> ::= IF ( <expression> ) <compound-statement> |
+//                           IF ( <expression> ) <compound-statement> ELSE <compound-statement> | //FIXME figure out how to resolve the "else if" problem
+//                           SWITCH ( <expression> ) <compound-statement>
+//
+
+TOKEN selection_statement(void)
+{
+    TOKEN result = NULL;
+    TOKEN conditional = gettok();
+    expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
+    TOKEN exp = expression();
+    expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);
+    TOKEN actions = compound_statement();
+    result = makeif(exp, actions, NULL);
+    if(getWhichVal(conditional))
+    {
+    }
+    
+    return result;
+}
+
+
+//NOTE: I am changing the grammar to dissallow single-line loops
+// <iteration-statement> ::= WHILE ( <expression> ) <compound-statement>
+//                           DO <compound-statement> WHILE ( <expression> ) ;
+//                           FOR ( <expression>? ; <expression>? ; <expression>? ) <compound-statement>
+//                           FOR ( <declaration> <expression>? ; <expression>? ) <compound-statement>
+
+
+

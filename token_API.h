@@ -65,6 +65,12 @@ BOOLEAN isUnaryOperator(TOKEN tok);
 BOOLEAN isMultiplicativeOperator(TOKEN tok);
 BOOLEAN isAdditiveOperator(TOKEN tok);
 BOOLEAN isDelimiter(TOKEN tok);
+
+BOOLEAN isIterationKeyword(TOKEN tok);
+BOOLEAN isJumpKeyword(TOKEN tok);
+BOOLEAN isSelectionKeyword(TOKEN tok);
+
+
 BOOLEAN reserved(TOKEN tok, KeywordType keyword);
 BOOLEAN operator(TOKEN tok, OperatorType operator);
 BOOLEAN delimiter(TOKEN tok, DelimiterType delim);

@@ -329,6 +329,44 @@ BOOLEAN isAdditiveOperator(TOKEN tok)
     return result;
 }
 
+BOOLEAN isIterationKeyword(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if( TRUE == reserved(tok, WHILE) ||
+            TRUE == reserved(tok, FOR) ||
+            TRUE == reserved(tok, DO) )
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN isJumpKeyword(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    printToken(tok);
+    if( (TRUE == reserved(tok, GOTO)) || 
+            (TRUE == reserved(tok, CONTINUE)) || 
+            (TRUE == reserved(tok, BREAK)) ||
+            (TRUE == reserved(tok, RETURN)) )
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+BOOLEAN isSelectionKeyword(TOKEN tok)
+{
+    BOOLEAN result = FALSE;
+    if( (TRUE == reserved(tok, IF)) || 
+            (TRUE == reserved(tok, SWITCH)))
+    {
+        result = TRUE;
+    }
+    return result;
+}
+
+
 /************************** TOKEN PRINTING FUNCTIONS *************************************************/
 
 void printToken(TOKEN t)

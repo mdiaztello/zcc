@@ -21,6 +21,7 @@ TOKEN shift_expression(void);
 TOKEN additive_expression(void);
 TOKEN multiplicative_expression(void);
 TOKEN cast_expression(void);
+TOKEN argument_expression_list(void);
 
 
 #endif //__EXPRESSIONS_H_

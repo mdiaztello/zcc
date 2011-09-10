@@ -23,6 +23,7 @@
 #include "scanner.h"
 #include "parser.h"
 #include "symtab.h"
+#include "pprint.h"
 
 
 void test_lexer(void)
@@ -66,10 +67,15 @@ void test_lexer(void)
 
 void test_parser(void)
 {
-    TOKEN parse_tree;
+    TOKEN parse_tree = NULL;
     printf("*** TESTING THE PARSER ***\n\n");
     parse_tree = parse();
-    printf("\n*** DONE TESTING THE PARSER ***\n");
+    printf("The total number of lines of source code is %lu\n", source_code_line_number);
+    printf("\n*** DONE TESTING THE PARSER ***\n\n");
+    printf("\n\n*** PRINTING THE SYMBOL TABLE ***\n\n");
+    printst();
+    printf("\n\n*** PRINTING THE PARSE TREE ***\n\n");
+    ppexpr(parse_tree);
 }
 
 
@@ -79,7 +85,5 @@ int main(void)
     initsyms();
     //test_lexer();
     test_parser();
-    printf("the total number of lines of source code is %lu\n", source_code_line_number);
-    printst();
     return 0;
 }

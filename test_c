@@ -168,7 +168,7 @@ int main(void)
 //typedef int c;
 //extern long d;
 
-long l(long b, char c, char d, char f)
+int l(long b, char c, char d, char f)
 {
     //int abcde;
     //a+b+c+d;
@@ -194,6 +194,38 @@ long l(long b, char c, char d, char f)
     //a>=b>=c;
     //a<=b<=c;
 
+    //;
+    //;
+    //a = b*c;
+    //a = b+a;
+    //a = b/d;
+    //a = b&q;
+    //*a+*a+*a;
+
+    //if( a == b ) 
+    //{
+    //    a+b;
+    //    b+c;
+    //    c*d;
+    //    d||e;
+    //    e&&f;
+    //}
+
+    //a(b, c);
+    //f(a, b);
+
+    //if( b(c)) 
+    //{
+        //;
+    //}
+
+    //A(a,b,c)(a);
+
+    a = b;
+    q = ***f/(*t);
+
+
+    //a =  +c/(d/e)*f - g -h;
     //a = b + c / d * e;
     //a *b / c*d;
     //a*b/c*d;
@@ -209,16 +241,21 @@ long l(long b, char c, char d, char f)
    // abcd = b;
 }
 
-//long fn(char a)
-//{
-    //a = b && i || a && j || c && k || d && l;
-    //a = b && i || a && j || c && k || d && l;
-    //int a; 
-    //int b; 
-    //int c; 
-    //int d; 
-    //int e; 
-//}
+int fn(char a)
+{
+  //a = b;
+  //a = b + c;
+  //c = d*e;
+  //f = A(a) + B(b)*C(c);
+  return A;
+  //a = b && i || a && j || c && k || d && l;
+  //a = b && i || a && j || c && k || d && l;
+//  int a; 
+//  int b; 
+//  int c; 
+//  int d; 
+//  int e; 
+}
 
 
 /*

@@ -17,7 +17,6 @@ TOKEN expression(void)
 {
     TOKEN result = NULL;
     TOKEN tok = peektok();
-    beacon();
     if(FALSE == delimiter(tok, SEMICOLON))
     {
         result = assignment_expression();
@@ -32,13 +31,10 @@ TOKEN expression(void)
 TOKEN assignment_expression(void)
 {
     TOKEN result = NULL;
-    beacon();
     result = conditional_expression();
-    beacon();
     TOKEN tok = peektok();
     if(result == NULL) 
     {
-        beacon();
         result = unary_expression();
         assignment_operator();
         assignment_expression();
@@ -60,7 +56,6 @@ TOKEN assignment_operator(void)
 {
     TOKEN result = NULL;
     TOKEN tok = peektok();
-    printToken(tok);
     if(TRUE == isAssignmentOperator(tok))
     {
         result = gettok();
@@ -385,8 +380,21 @@ TOKEN unary_operator(void)
 // <argument-expression-list> ::= <assignment-expression>   |
 //                                <assignment-expression> , <argument-expression-list>
 
+TOKEN argument_expression_list(void)
+{
+    TOKEN result = NULL;
+    result = assignment_expression();
+    TOKEN tok = peektok();
+    if( TRUE == delimiter(tok, COMMA) )
+    {
+        expect(DELIMITER_TOKEN, COMMA, NULL);
+        setLink(result, argument_expression_list());
+    }
 
-//FIXME: find a way to left factor this production
+    return result;
+}
+
+// Since left-factoring might be painful, we just use a loop to deal with parsing the other possible productions
 // <postfix-expression> ::=  <primary-expression>   |
 //                           <postfix-expression> [ <expression> ]      |
 //                           <postfix-expression> ( <argument-expression-list>? )       |
@@ -401,9 +409,35 @@ TOKEN postfix_expression(void)
 {
     TOKEN result = NULL;
     result = primary_expression();
+    TOKEN tok = peektok();
+    while( TRUE == delimiter(tok, OPEN_BRACKET) ||
+            TRUE == delimiter(tok, OPEN_PAREN) ||
+            TRUE == operator(tok, DOT) ||
+            TRUE == operator(tok, ARROW) ||
+            TRUE == operator(tok, INCREMENT) ||
+            TRUE == operator(tok, DECREMENT))
+    {
+       if(TRUE == delimiter(tok, OPEN_PAREN))
+       {
+           TOKEN function_name = NULL;
+           if(result != NULL)
+           {
+               function_name = result;
+           }
+           else
+           {
+               printf("why is there no function name?\n");
+               exit(EXIT_FAILURE);
+           }
+           expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
+           TOKEN args = argument_expression_list();
+           expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);
+           result = make_function_call(function_name, args);
+       }
+       tok = peektok();
+    }
     return result;
 }
-
 
 // <primary-expression> ::= <identifier> |
 //                          <constant>   |
@@ -414,10 +448,8 @@ TOKEN primary_expression(void)
 {
     TOKEN result = NULL;
     result = identifier();
-    beacon();printToken(result);
     if(NULL == result)
     {
-        beacon();
         expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
         result = expression();
         expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);

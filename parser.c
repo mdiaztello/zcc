@@ -28,6 +28,7 @@
 #include "error_handlers.h"
 #include "statements.h"
 #include "parser.h"
+#include "pprint.h"
 
 
 
@@ -35,6 +36,7 @@
 TOKEN parse(void)
 {
     TOKEN parse_tree = translation_unit();
+    parse_tree = make_translation_unit(parse_tree);
     return parse_tree;
 }
 
@@ -100,9 +102,16 @@ TOKEN function_definition(SYMBOL s)
     expect(DELIMITER_TOKEN, CLOSE_PAREN, NO_ERROR_HANDLER);
     SYMBOL return_type = s;
     insertfn(s->namestring, return_type, getSymbolType(params)); //FIXME: extend this to more than just one parameter
-    compound_statement();
+    TOKEN func_body = compound_statement();
 
-    func_definition = makeToken(); //FIXME: we need to create the tree structure for the function here
+    //FIXME: this is a hack to retrieve the function name in TOKEN form
+    //figure out a better way to deal with this
+    TOKEN func_name = makeToken();
+    setTokenType(func_name, IDENTIFIER_TOKEN);
+    setStringVal(func_name, s->namestring);
+    setSymbolTableEntry(func_name, s);
+    params = make_statement_list(params);
+    func_definition = make_function_definition(func_name, params, func_body);
     return func_definition;
 }
 

@@ -67,6 +67,16 @@ enum operator_type
     //rather, it must be done while the statements are being parsed
     STAR,
     AMPERSAND,
+    IF_OPERATOR,             //for internal use in the parse tree
+    STATEMENT_LIST_OPERATOR, //for internal use in the parse tree
+    LABEL,                   //for internal use in the parse tree
+    FUNCALL,                 //for internal use in the parse tree
+    ARRAY_REFERENCE,         //for internal use in the parse tree
+    FUNCTION_DEFINITION,     //for internal use in the parse tree
+    TRANSLATION_UNIT,        //for internal use in the parse tree
+    MAKE_FLOAT,              //for internal use in the parse tree
+    RETURN_OPERATOR,         //for internal use in the parse tree
+    
 
     // this last enum is here just to be able to iterate across
     // all of the operator types
