@@ -144,7 +144,12 @@ void setOperands(TOKEN tok, TOKEN operand)
 
 SYMBOL getSymbolType(TOKEN tok)
 {
-    return tok->symtype;
+    SYMBOL result = NULL;
+    if(tok != NULL)
+    {
+        result = tok->symtype;
+    }
+    return result;
 }
 
 void setSymbolType(TOKEN tok, SYMBOL sym_t)
@@ -344,7 +349,6 @@ BOOLEAN isIterationKeyword(TOKEN tok)
 BOOLEAN isJumpKeyword(TOKEN tok)
 {
     BOOLEAN result = FALSE;
-    printToken(tok);
     if( (TRUE == reserved(tok, GOTO)) || 
             (TRUE == reserved(tok, CONTINUE)) || 
             (TRUE == reserved(tok, BREAK)) ||

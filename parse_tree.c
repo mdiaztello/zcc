@@ -1,10 +1,14 @@
 
 #include "token.h"
 #include "token_API.h"
+#include "symtab.h"
 #include <stdio.h>
+#include "debug.h"
 
 //contains helper functions for constructing the parse tree for the program
 
+
+static unsigned long labelnum = 0;
 
 TOKEN make_binary_operation(TOKEN operation, TOKEN leftSide, TOKEN rightSide)
 {
@@ -28,16 +32,30 @@ TOKEN make_statement_list(TOKEN statements)
 {  
     TOKEN result = makeToken();
     setTokenType(result, OPERATOR_TOKEN); 
-    setWhichVal(result, STATEMENT_LIST_OPERATOR);
+    setWhichVal(result, PARSE_TREE_STATEMENT_LIST);
     setOperands(result, statements);
     return result;
 }
 
-TOKEN makeif(TOKEN exp, TOKEN if_body, TOKEN else_body)
+//appends a statement to an existing statement list.
+//The resulting 
+TOKEN append_statement(TOKEN statement_list, TOKEN end_statement)
+{
+    TOKEN tail = getOperands(statement_list);
+
+    while(getLink(tail) != NULL)
+    {
+        tail = getLink(tail);
+    }
+    setLink(tail, end_statement);
+    return statement_list;
+}
+
+TOKEN make_if(TOKEN exp, TOKEN if_body, TOKEN else_body)
 {
     TOKEN result = makeToken();
     setTokenType(result, OPERATOR_TOKEN);
-    setWhichVal(result, IF_OPERATOR);
+    setWhichVal(result, PARSE_TREE_IF);
     setLink(exp, if_body);
     setLink(if_body, else_body);
     if(else_body != NULL)
@@ -53,7 +71,7 @@ TOKEN make_function_call(TOKEN function_name, TOKEN args)
 {
     TOKEN function_call = makeToken();
     setTokenType(function_call, OPERATOR_TOKEN);
-    setWhichVal(function_call, FUNCALL);
+    setWhichVal(function_call, PARSE_TREE_FUNCALL);
     setOperands(function_call, function_name);
     setLink(function_name, args);
     return function_call;
@@ -63,7 +81,7 @@ TOKEN make_function_definition(TOKEN function_name, TOKEN parameters, TOKEN func
 {
     TOKEN function_def = makeToken();
     setTokenType(function_def, OPERATOR_TOKEN);
-    setWhichVal(function_def, FUNCTION_DEFINITION);
+    setWhichVal(function_def, PARSE_TREE_FUNCTION_DEFINITION);
     setOperands(function_def, function_name);
     setLink(function_name, parameters);
     setLink(parameters, function_body);
@@ -74,7 +92,7 @@ TOKEN make_return_statement(TOKEN return_exp)
 {
     TOKEN ret_statement = makeToken();
     setTokenType(ret_statement, OPERATOR_TOKEN);
-    setWhichVal(ret_statement, RETURN_OPERATOR);
+    setWhichVal(ret_statement, PARSE_TREE_RETURN);
     setOperands(ret_statement, return_exp);
     return ret_statement;
 }
@@ -83,7 +101,7 @@ TOKEN make_translation_unit(TOKEN function_list)
 {
     TOKEN trans_unit = makeToken();
     setTokenType(trans_unit, OPERATOR_TOKEN);
-    setWhichVal(trans_unit, TRANSLATION_UNIT);
+    setWhichVal(trans_unit, PARSE_TREE_TRANSLATION_UNIT);
     setOperands(trans_unit, function_list);
     return trans_unit;
 }
@@ -103,31 +121,44 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
 
     return program;
 }
+#endif
 
-TOKEN makelabel(void)
+TOKEN make_label(void)
 {
-    TOKEN label = talloc();
-    TOKEN label_number = talloc();
-    label->tokentype = OPERATOR;
-    label->whichval = LABELOP;
-    label->link = NULL;
-    label->operands = label_number;
-    label_number->tokentype = NUMBERTOK;
-    label_number->intval = labelnum++;
-    label_number->datatype = INTEGER;
-    label_number->link = NULL;
-    label_number->operands = NULL;
+    TOKEN label = makeToken();
+    TOKEN label_number = makeToken();
+    setTokenType(label, OPERATOR_TOKEN);
+    setWhichVal(label, PARSE_TREE_LABEL);
+    setLink(label, NULL);
+    setOperands(label, label_number);
+    setTokenType(label_number, NUMBER_TOKEN);
+    setIntegerValue(label_number, labelnum++);
+    setDataType(label_number, INTEGER);
+    setLink(label_number, NULL);
+    setOperands(label_number, NULL);
     return label;
 }
 
 
-TOKEN makegoto(TOKEN label)
+TOKEN make_goto(TOKEN label)
 {
-    TOKEN goto_tok = talloc();
-    goto_tok->tokentype = OPERATOR;
-    goto_tok->whichval = GOTOOP;
-    goto_tok->operands = label->operands;//copy_token(label); //FIXME: we might need to change this to search for the label in the label table instead of just making a label
+    TOKEN goto_tok = makeToken();
+    setTokenType(goto_tok, OPERATOR_TOKEN);
+    setWhichVal(goto_tok, PARSE_TREE_GOTO);
+    setOperands(goto_tok, getOperands(label));//copy_token(label); //FIXME: we might need to change this to search for the label in the label table instead of just making a label
     return goto_tok;
 }
-#endif
 
+
+TOKEN make_while_loop(TOKEN exp, TOKEN body)
+{
+    TOKEN loop_start = make_label();
+    TOKEN loop_branch = make_goto(loop_start);
+    body = append_statement(body, loop_branch);
+    TOKEN loop_body = make_if(exp, body, NULL);
+    
+    setLink(loop_start, loop_body);
+    TOKEN while_loop = make_statement_list(loop_start);
+
+    return while_loop;
+}

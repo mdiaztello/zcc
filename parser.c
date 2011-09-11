@@ -135,6 +135,7 @@ TOKEN declaration(SYMBOL s)
 {
     TOKEN t = NULL;
     TOKEN dec = NULL;
+
     s->kind = VARSYM; //if we have made it this far, i think it's safe to assume we are declaring a variable      
     declaration_specifiers(s);
     dec = init_declarator_list(s);
@@ -174,10 +175,19 @@ TOKEN declaration_specifiers(SYMBOL s)
     }
     TOKEN type_spec = type_specifier();
     
-    SYMBOL type = searchst(getStringVal(type_spec));
-    s->basicdt = type->basicdt;
-    s->datatype = type;
-    s->size = type->size;
+    if( FALSE == reserved(type_spec, VOID))
+    {
+        SYMBOL type = searchst(getStringVal(type_spec));
+        s->basicdt = type->basicdt;
+        s->datatype = type;
+        s->size = type->size;
+    }
+    else
+    {
+        s->basicdt = 0;
+        s->datatype = 0;
+        s->size = 0;
+    }
     //TOKEN type_qual = type_qualifier();
     //TOKEN function_spec = function_specifier();
     return t;
@@ -348,12 +358,10 @@ TOKEN direct_declarator(SYMBOL s)
 
 TOKEN identifier(void)
 {
-    TOKEN tok = peektok(); 
-    if(tok == NULL)
-    {
-        return NULL;
-    }
-    if( getTokenType(tok) == IDENTIFIER_TOKEN )
+    TOKEN tok = NULL;
+    tok = peektok(); 
+    if( (tok != NULL) && 
+            (getTokenType(tok) == IDENTIFIER_TOKEN))
     {
         tok = gettok();
     }
@@ -364,13 +372,79 @@ TOKEN identifier(void)
     return tok;
 }
 
+//Looks at the next token in the stream and returns it if it is, in fact, a constant token
+//FIXME: this doesn't actually follow the C-grammar at the moment. We will need to fix this to handle enums later
+TOKEN constant(void)
+{
+    TOKEN tok = NULL;
+    tok = peektok();
+    if((tok != NULL) &&
+            ((getTokenType(tok) == NUMBER_TOKEN) ||
+             (getTokenType(tok) == CHARACTER_LITERAL))) //FIXME: character literals are broken in the lexer right now and I don't feel like
+                        //fixing the lexer to recognize them at the moment.
+    {
+        tok = gettok();
+    }
+    else
+    {
+        tok = NULL;
+    }
+    return tok;
+}
+//Looks at the next token in the stream and returns it if it is, in fact, a string 
+TOKEN string_literal(void)
+{
+    TOKEN tok = NULL;
+    tok = peektok();
+    if((tok != NULL) &&
+            ((getTokenType(tok) == STRING_LITERAL) ||
+             (getTokenType(tok) == CHARACTER_LITERAL)))
+    {
+        tok = gettok();
+    }
+    else
+    {
+        tok = NULL;
+    }
+    return tok;
+}
+
+#if 0
+//Looks at the next token in the stream and returns it if it is, in fact, a character
+TOKEN character_constant(void)
+{
+    TOKEN tok = NULL;
+    tok = peektok();
+    if((tok != NULL) &&
+             (getTokenType(tok) == CHARACTER_LITERAL))
+    {
+        tok = gettok();
+    }
+    else
+    {
+        tok = NULL;
+    }
+    return tok;
+}
+#endif
+
 
 // <parameter-type-list> ::= <parameter-list> |
 //                           <parameter-list> , ... //FIXME: NO SUPPORT FOR VARIADIC FUNCTIONS FOR THE MOMENT
 
 TOKEN parameter_type_list(void)
 {
-    TOKEN param_list = parameter_list();
+    TOKEN param_list = NULL;
+    TOKEN tok = peektok();
+    //if we have a void list, there should be no other parameters
+    if(FALSE == reserved(tok, VOID)) //FIXME: this will cause us to be unable to use void* in our parameter list.
+    {
+        param_list = parameter_list();
+    }
+    else
+    {
+        gettok(); //consume the "void" token
+    }
     return param_list;
 }
 

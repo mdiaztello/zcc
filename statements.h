@@ -8,5 +8,6 @@ TOKEN block_item(void);
 TOKEN expression_statement(void);
 TOKEN selection_statement(void);
 TOKEN jump_statement(void);
+TOKEN iteration_statement(void);
 
 #endif //__STATEMENTS_H_

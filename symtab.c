@@ -463,6 +463,7 @@ void initsyms(void)
 {  
     SYMBOL sym; 
     //SYMBOL realsym; 
+    //SYMBOL voidsym;
     SYMBOL intsym; 
     SYMBOL charsym; 
     SYMBOL shortsym; 
@@ -471,10 +472,12 @@ void initsyms(void)
     blocknumber = 0;               /* Put compiler symbols in block 0 */
     blockoffs[1] = BASEOFFSET;     /* offset of first variable */
     //realsym = insertbt("real", REAL, 8);
+    //voidsym = insertbt("void", INTEGER, 0);
     charsym = insertbt("char", INTEGER, 1);
     shortsym  = insertbt("short", INTEGER, 2);
     intsym  = insertbt("int", INTEGER, 4);
     longsym  = insertbt("long", INTEGER, 8);
+
 
     //boolsym = insertbt("boolean", BOOLEAN_TYPE, 4);
     //sym = insertfn("exp", realsym, realsym);

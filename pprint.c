@@ -81,6 +81,7 @@ char* opprint[] =
     "translation-unit",
     "float",                
     "return",                
+    "goto",
     "fix"                   
 };
 
@@ -135,6 +136,7 @@ int opsize[] =
     16,                // "translation-unit",                
     5,                 // "float",                
     6,                 // "return",                
+    4,                 // "goto",                  
     3                  // "fix"                   
 };
 

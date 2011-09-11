@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include "debug.h"
 #include "pprint.h"
+#include <stdlib.h>
 
 
 
@@ -63,7 +64,7 @@ TOKEN statement(void)
     }
     else if(TRUE == isIterationKeyword(tok))
     {
-        // result = iteration_statement();
+         result = iteration_statement();
     }
     else if(TRUE == isJumpKeyword(tok))
     {
@@ -86,7 +87,6 @@ TOKEN statement(void)
 
 TOKEN jump_statement(void)
 {
-    beacon();
     TOKEN result = NULL;
     TOKEN keyword = gettok();
     if(TRUE == reserved(keyword, RETURN))
@@ -188,7 +188,7 @@ TOKEN selection_statement(void)
     TOKEN exp = expression();
     expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);
     TOKEN actions = compound_statement();
-    result = makeif(exp, actions, NULL);
+    result = make_if(exp, actions, NULL);
     if(getWhichVal(conditional))
     {
     }
@@ -204,4 +204,33 @@ TOKEN selection_statement(void)
 //                           FOR ( <declaration> <expression>? ; <expression>? ) <compound-statement>
 
 
+TOKEN iteration_statement(void)
+{
+    TOKEN result = NULL;
+    TOKEN loop_type = gettok();
+
+    if( TRUE == reserved(loop_type, WHILE) )
+    {
+        expect(DELIMITER_TOKEN, OPEN_PAREN, NO_ERROR_HANDLER);
+        TOKEN exp = expression();
+        expect(DELIMITER_TOKEN, CLOSE_PAREN, NO_ERROR_HANDLER);
+        TOKEN body = compound_statement();
+        result = make_while_loop(exp, body);
+    }
+    else if( TRUE == reserved(loop_type, DO) )
+    {
+    }
+    else if( TRUE == reserved(loop_type, FOR) )
+    {
+        expect(DELIMITER_TOKEN, OPEN_PAREN, NO_ERROR_HANDLER);
+        expect(DELIMITER_TOKEN, CLOSE_PAREN, NO_ERROR_HANDLER);
+    }
+    else
+    {
+        printf("Something got screwed up while processing a loop...\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return result;
+}
 

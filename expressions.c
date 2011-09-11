@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "debug.h"
+#include "error_handlers.h"
 
 
 
@@ -383,12 +384,21 @@ TOKEN unary_operator(void)
 TOKEN argument_expression_list(void)
 {
     TOKEN result = NULL;
-    result = assignment_expression();
     TOKEN tok = peektok();
-    if( TRUE == delimiter(tok, COMMA) )
+    if( TRUE == delimiter(tok, CLOSE_PAREN) )
     {
-        expect(DELIMITER_TOKEN, COMMA, NULL);
-        setLink(result, argument_expression_list());
+        //if this happens we are reading an empty argument list
+        result = NULL;
+    }
+    else
+    {
+        result = assignment_expression();
+        tok = peektok();
+        if( TRUE == delimiter(tok, COMMA) )
+        {
+            expect(DELIMITER_TOKEN, COMMA, NULL);
+            setLink(result, argument_expression_list());
+        }
     }
 
     return result;
@@ -444,15 +454,43 @@ TOKEN postfix_expression(void)
 //                          <string-literal> |
 //                          ( <expression> )
 
+//FIXME: this seems somewhat hacky...
 TOKEN primary_expression(void)
 {
     TOKEN result = NULL;
-    result = identifier();
-    if(NULL == result)
+    TOKEN tok = peektok();
+
+    switch(getTokenType(tok))
     {
-        expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
-        result = expression();
-        expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);
+        case IDENTIFIER_TOKEN:
+            result = identifier();
+            break;
+        case CHARACTER_LITERAL:
+            result = constant();
+            break;
+        case NUMBER_TOKEN:
+            result = constant();
+            break;
+        case STRING_LITERAL:
+            result = string_literal();
+            break;
+        case DELIMITER_TOKEN:
+            if(TRUE == delimiter(tok, OPEN_PAREN))
+            {
+                expect(DELIMITER_TOKEN, OPEN_PAREN, NO_ERROR_HANDLER);
+                result = expression();
+                expect(DELIMITER_TOKEN, CLOSE_PAREN, NO_ERROR_HANDLER);
+            }
+            else
+            {
+                result = NULL;
+            }
+            break;
+        default:
+            beacon();
+            printf("Why did this happen?");
+            exit(0);
+            break;
     }
     return result;
 }

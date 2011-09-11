@@ -16,6 +16,9 @@ TOKEN init_declarator(SYMBOL s);
 TOKEN pointer(void);
 TOKEN direct_declarator(SYMBOL s);
 TOKEN identifier(void);
+TOKEN constant(void);
+TOKEN string_literal(void);
+TOKEN character_constant(void);
 TOKEN declarator(SYMBOL s);
 
 TOKEN parameter_type_list(void);
