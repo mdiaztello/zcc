@@ -269,14 +269,17 @@ void test_lexer(void)
 {
     //TOKEN t;
     printf("*** TESTING THE LEXER ***\n\n");
-    while(EOFFLG == 0)
+    if(EOFFLG == 0)
     {
-        
         t = lex();
-        if(EOFFLG == 0)
-        {
-            printToken(t);
-        }
+        //if(EOFFLG == 0)
+        //{
+            //printToken(t);
+        //}
+    }
+    else
+    {
+        blah();
     }
     printf("\n*** DONE TESTING THE LEXER ***\n");
 }

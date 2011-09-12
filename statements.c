@@ -184,14 +184,37 @@ TOKEN selection_statement(void)
 {
     TOKEN result = NULL;
     TOKEN conditional = gettok();
+    TOKEN else_part = NULL; //the body of the potential "else" part of a conditional statement
     expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
     TOKEN exp = expression();
     expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);
     TOKEN actions = compound_statement();
-    result = make_if(exp, actions, NULL);
+
+
+    TOKEN tok = peektok();
+    if(TRUE == reserved(tok, ELSE))
+    {
+        tok = gettok();
+        tok = peektok();
+        if(TRUE == reserved(tok, IF)) //handle "else if"
+        {
+            else_part = selection_statement();
+        }
+        else
+        {
+            else_part = compound_statement();
+        }
+    }
+
     if(getWhichVal(conditional))
     {
     }
+
+
+
+
+
+    result = make_if(exp, actions, else_part);
     
     return result;
 }
