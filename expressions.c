@@ -1,11 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "symtab.h"
 #include "token.h"
 #include "token_API.h"
 #include "lexer.h"
 #include "parser.h"
 #include "expressions.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include "debug.h"
 #include "error_handlers.h"
 

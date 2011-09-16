@@ -4,11 +4,25 @@
 #include "symtab.h"
 #include <stdio.h>
 #include "debug.h"
+#include "parse_tree.h"
+#include <stdint.h>
 
 //contains helper functions for constructing the parse tree for the program
 
 
-static unsigned long labelnum = 0;
+static uint64_t labelnum = 0;
+
+uint64_t get_new_label_number(void)
+{
+    labelnum++;
+    return labelnum;
+}
+
+//returns the name of the most recent label
+uint64_t get_current_label(void)
+{
+    return labelnum;
+}
 
 TOKEN make_binary_operation(TOKEN operation, TOKEN leftSide, TOKEN rightSide)
 {
@@ -123,7 +137,7 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
 }
 #endif
 
-TOKEN make_label(void)
+TOKEN make_label(uint64_t label_name)
 {
     TOKEN label = makeToken();
     TOKEN label_number = makeToken();
@@ -132,7 +146,7 @@ TOKEN make_label(void)
     setLink(label, NULL);
     setOperands(label, label_number);
     setTokenType(label_number, NUMBER_TOKEN);
-    setIntegerValue(label_number, labelnum++);
+    setIntegerValue(label_number, label_name);
     setDataType(label_number, INTEGER);
     setLink(label_number, NULL);
     setOperands(label_number, NULL);
@@ -150,14 +164,36 @@ TOKEN make_goto(TOKEN label)
 }
 
 
+//Output takes the form
+//      (PROGN (LABEL X)
+//             (IF EXP (PROGN BODY (GOTO X))))
+
 TOKEN make_while_loop(TOKEN exp, TOKEN body)
 {
-    TOKEN loop_start = make_label();
+    TOKEN loop_start = make_label(get_new_label_number());
     TOKEN loop_branch = make_goto(loop_start);
     body = append_statement(body, loop_branch);
     TOKEN loop_body = make_if(exp, body, NULL);
     
     setLink(loop_start, loop_body);
+    TOKEN while_loop = make_statement_list(loop_start);
+
+    return while_loop;
+}
+
+//Output takes the form
+//         (PROGN (LABEL X)
+//                (BODY)
+//                (IF EXP (GOTO X))
+
+TOKEN make_do_loop(TOKEN exp, TOKEN body)
+{
+    TOKEN loop_start = make_label(get_new_label_number());
+    TOKEN loop_branch = make_goto(loop_start);
+    TOKEN loop_test = make_if(exp, loop_branch, NULL);
+    
+    body = append_statement(body, loop_test);
+    setLink(loop_start, body);
     TOKEN while_loop = make_statement_list(loop_start);
 
     return while_loop;

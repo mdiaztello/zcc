@@ -94,6 +94,11 @@ TOKEN jump_statement(void)
         result = expression();
         result = make_return_statement(result);
     }
+    else if(TRUE == reserved(keyword, BREAK))
+    {
+        //TOKEN break_jump_target = make_label(get_new_label_number());
+        //result = make_goto(
+    }
     expect(DELIMITER_TOKEN, SEMICOLON, NULL);
     return result;
 }
@@ -242,6 +247,14 @@ TOKEN iteration_statement(void)
     }
     else if( TRUE == reserved(loop_type, DO) )
     {
+
+        TOKEN body = compound_statement();
+        expect(KEYWORD_TOKEN, WHILE, NO_ERROR_HANDLER);
+        expect(DELIMITER_TOKEN, OPEN_PAREN, NO_ERROR_HANDLER);
+        TOKEN exp = expression();
+        expect(DELIMITER_TOKEN, CLOSE_PAREN, NO_ERROR_HANDLER);
+        expect(DELIMITER_TOKEN, SEMICOLON, NO_ERROR_HANDLER);
+        result = make_do_loop(exp, body);
     }
     else if( TRUE == reserved(loop_type, FOR) )
     {

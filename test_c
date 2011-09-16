@@ -264,7 +264,6 @@ int l(long b, char c, char d, char f)
 
 
 /*
-*/
 void test_lexer(void)
 {
     //TOKEN t;
@@ -291,4 +290,12 @@ int main(void)
     test_lexer();
     printf("the total number of lines of source code is %lu\n", source_code_line_number);
     return 0;
+}
+*/
+int main(void)
+{
+    while(a)
+    {
+        b;
+    }
 }
