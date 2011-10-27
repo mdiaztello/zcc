@@ -401,7 +401,7 @@ void printstlevel(int level)
     sym =  symtab[level];
     if ( sym != NULL )
     { 
-        printf("Symbol table level %d\n", level);
+        printf("\nSYMBOL TABLE LEVEL %d ************************************\n\n", level);
         while ( sym != NULL )
         { 
             printsymbol(sym);

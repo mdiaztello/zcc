@@ -48,11 +48,20 @@ TOKEN parse(void)
 TOKEN translation_unit(void)
 {
     TOKEN trans_unit = NULL;
-    trans_unit = external_declaration(); 
+    TOKEN next = NULL;
     TOKEN tok = peektok();
     if(tok != NULL)
     {
-        setLink(trans_unit, translation_unit());
+        trans_unit = external_declaration(); 
+        next = translation_unit();
+        if(trans_unit != NULL)
+        {
+            setLink(trans_unit, next);
+        }
+        else
+        {
+            trans_unit = next;
+        }
     }
     return trans_unit;
 }
@@ -77,10 +86,14 @@ TOKEN external_declaration(void)
     ext_declaration = declaration(sym);
     if( NULL == ext_declaration )
     {
-        //we have a global variable declaration instead of a function definition
-        //and global variables default to external storage
+        //we have a function definition instead of a global variable declaration
+        //and functions default to external storage
         setStorageClass(sym, EXTERNAL_STORAGE_CLASS); 
         ext_declaration = function_definition(sym);
+    }
+    else
+    {
+        ext_declaration = NULL; //we don't want the variable declaration to make its way into the parse tree, so return NULL
     }
 
     return ext_declaration;

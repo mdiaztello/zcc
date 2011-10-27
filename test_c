@@ -323,3 +323,11 @@ int main(void)
     d();
     e;
 }
+
+int d0;
+int e0;
+
+void f(void)
+{
+    f();
+}
