@@ -292,10 +292,34 @@ int main(void)
     return 0;
 }
 */
+
+//char a;
+//short b;
+//typedef int c;
+//extern long d;
+int a0;
+int b0;
+int c0;
+
 int main(void)
 {
-    while(a)
+    int a1;
+    int b1;
+    a(1,2,3);
+    b();
+    c();
+    int c1;
     {
-        b;
+        int a2;
+        int b2;
+        a();
+        int c2;
+        {
+            int a3;
+        }
+
     }
+
+    d();
+    e;
 }

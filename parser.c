@@ -140,6 +140,7 @@ TOKEN declaration(SYMBOL s)
     declaration_specifiers(s);
     dec = init_declarator_list(s);
     t = peektok();
+    printToken(t);
 
     if(FALSE == delimiter(t, SEMICOLON))
     {
