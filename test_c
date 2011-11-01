@@ -327,7 +327,8 @@ int main(void)
 int d0;
 int e0;
 
-void f(void)
+void f(int a, int b)
 {
     f();
+    a ^b ^c;
 }

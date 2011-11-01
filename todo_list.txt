@@ -1,0 +1,81 @@
+This file is a list of tasks required to complete work on my compiler. It will
+be revised and have particular tasks broken down as work progresses.
+
+- Preprocessor
+    - #include
+    - #define
+    - macro expansion
+    - #ifdef/ifndef
+    - #else/endif
+    - #if?
+    - error handling
+    - automated unit testing
+- Lexer
+    - basic lexer support                           DONE
+    - lexer clean-up/improvement
+        - hash tables?
+    - typedef problem
+    - error handling
+    - automated unit testing
+- Parser
+    - expression parsing                
+        - &&                                        DONE
+        - ||                                        DONE
+        - ^                                         DONE
+        - |                                         DONE
+        - &                                         DONE
+        - +                                         DONE
+        - -                                         DONE
+        - *                                         DONE
+        - /                                         DONE
+        - %                                         DONE
+        - >                                         DONE
+        - >=                                        DONE
+        - <=                                        DONE
+        - <                                         DONE
+        - !                                         DONE
+        - !=                                        DONE
+        - ==                                        DONE
+        - ++(post)
+        - --(post)
+        - ++(pre)
+        - --(pre)
+    
+    - statement parsing
+        - loops                         
+            - do-while                              DONE
+            - while                                 DONE
+            - for
+        - conditionals                              DONE
+        - function calls                            DONE
+        - switch statements
+        - typedefs
+        - struct declarations
+        - union declaration
+        - pointers
+        - arrays
+        - support for integer types                 DONE
+    - support for floating point
+    - fix symbol table (for variable shadowing)
+    - error handling
+    - inline assembly code
+    - abstract syntax tree construction             DONE 
+        (this is only as "done" as the parser itself)
+    - automated unit testing
+        
+- Alternative intermediate representations?
+    (supposedly 3 address code allows for extra opportunities at
+     optimization?)
+- Semantic Analysis
+    - error handling
+    
+
+- Code Generation (back end)
+- Optimizer? (i just want something that works at all first)
+
+
+For use on my custom computer project, I might need these parts:
+- Custom assembler
+- Linker?
+- Loader?
+- Runtime Libs
