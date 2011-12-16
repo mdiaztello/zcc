@@ -78,10 +78,28 @@ void test_parser(void)
     ppexpr(parse_tree);
 }
 
-
-int main(void)
+FILE* get_input_source(int argc, char** argv)
 {
-    init_scanner();
+    FILE* input;
+    if(argc > 1)
+    {
+        input = fopen(argv[1], "r+");
+        printf("reading input from file %s...\n", argv[1]);
+    }
+    else
+    {
+        input = stdin;
+        printf("reading input from file stdin...\n");
+    }
+
+    return input;
+}
+
+
+int main(int argc, char** argv)
+{
+    FILE* input = get_input_source(argc, argv);
+    init_scanner(input);
     initsyms();
     //test_lexer();
     test_parser();

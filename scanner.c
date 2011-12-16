@@ -31,33 +31,48 @@ int EOFFLG;
 static int CHARCLASS[MAXCHARCLASS]; //character class lookup table. This is basically a lookup table based on the ASCII table
 char special_characters[] = "+-*/!%&|~^=.,;:<>()[]{}"; //initialize special characters lookup table
 
-void init_scanner(void)
+//represents the source of the incoming code
+//either a file or stdin 
+//FIXME: I may want to have support for reading
+//directly from a character buffer in the future
+static FILE* input_source; 
+
+void init_scanner(FILE* input_file)
 {
     EOFFLG = 0;
     init_charclass();
+    input_source = input_file;
+}
+
+//get the next character from our input source, whatever it may be
+char nextchar(void)
+{
+    return fgetc(input_source);
 }
 
 char peekchar(void) //peek at next character w/o moving pointer
 {
     char c;
-    c = getchar();
-    ungetc(c,stdin);
+    c = nextchar();
+    ungetc(c,input_source);
     return c;
 }
 
 //peek at 2nd next character w/o moving pointer
 char peek2char(void)
 {
-    char c = getchar();
-    char cc = getchar();
-    ungetc(cc, stdin);
-    ungetc(c, stdin);
+    char c = nextchar();
+    char cc = nextchar();
+    ungetc(cc, input_source);
+    ungetc(c, input_source);
     return cc;
 }
 
+//throw away the next character from the input source
+//this is used to clarify intent
 void discard_char(void)
 {
-    (void) getchar();
+    (void) nextchar();
 }
 
 void init_charclass(void)

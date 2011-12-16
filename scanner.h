@@ -30,12 +30,13 @@ enum character_types
 
 #define DEBUG_GET_TOKEN 0
 
-int EOFFLG;
+extern int EOFFLG;
+char nextchar(void);//get the next character from our input source, whatever it may be
 char peekchar(void); //peek at next character w/o moving pointer
 char peek2char(void);
 void discard_char(void);
 void init_charclass(void);
-void init_scanner(void);
+void init_scanner(FILE* input_file);
 int get_char_class(char c);
 
 #endif // __SCANNER_H_

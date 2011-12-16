@@ -268,7 +268,7 @@ static void skip_single_line_comment(void)
        discard_char(); //get rid of everything in the comment
     }
     updateLineNumber(c);
-    discard_char(); //getchar(); //discard the newline character
+    discard_char(); //discard the newline character
 }
 
 static void skip_block_comments(void)
@@ -276,8 +276,8 @@ static void skip_block_comments(void)
     char c;
     unsigned long block_comment_starting_line = source_code_line_number;
 
-    discard_char(); //getchar(); //discard the '/'
-    discard_char(); //getchar(); //discard the '*'
+    discard_char(); //discard the '/'
+    discard_char(); //discard the '*'
 
     while(((int)(c = peekchar()) != EOF) && !detectBlockCommentClose())
     {
@@ -290,8 +290,8 @@ static void skip_block_comments(void)
         fprintf(stderr, "The comment starting on line %lu needs a terminating comment symbol\n", block_comment_starting_line);
         exit(-1);
     }
-    discard_char(); //getchar(); //discard the '*'
-    discard_char(); //getchar(); //discard the '/'
+    discard_char(); //discard the '*'
+    discard_char(); //discard the '/'
 }
 
 static BOOLEAN isWhiteSpace(char c)
@@ -369,7 +369,7 @@ static void get_identifier_string(char* buffer)
         {
             buffer[i++] = c;
         }
-        prev_char = getchar();
+        prev_char = nextchar();
         c = peekchar();
         cclass = get_char_class(c);
     }
@@ -396,7 +396,7 @@ static long long parse_number(void)
     int i = 0;
     while(get_char_class(peekchar()) == NUMERIC)
     {
-        i = getchar() - '0';
+        i = nextchar() - '0';
         result = result*10 +i;
         if(result > MAX_UNSIGNED_32_BIT_INTEGER)
         {
@@ -430,7 +430,7 @@ static void make_string(TOKEN tok)
 static void get_string_literal(char* buffer)
 {
     int i = 0;
-    getchar(); //consume the opening quotation mark
+    discard_char(); //consume the opening quotation mark
     char c = peekchar();
     char cclass = get_char_class(c);
     char prev_char;
@@ -440,8 +440,8 @@ static void get_string_literal(char* buffer)
         if((peekchar() == '\\') && ((peek2char() == '\"') || (peek2char() == '\\')))
         {
             buffer[i++] = peek2char();
-            getchar();
-            prev_char = getchar();
+            discard_char();
+            prev_char = nextchar();
             c = peekchar();
             cclass = get_char_class(c);
             continue;
@@ -450,7 +450,7 @@ static void get_string_literal(char* buffer)
         {
             buffer[i++] = c;
         }
-        prev_char = getchar();
+        prev_char = nextchar();
         c = peekchar();
         cclass = get_char_class(c);
     }
