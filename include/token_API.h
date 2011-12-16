@@ -72,7 +72,7 @@ BOOLEAN isSelectionKeyword(TOKEN tok);
 
 
 BOOLEAN reserved(TOKEN tok, KeywordType keyword);
-BOOLEAN operator(TOKEN tok, OperatorType operator);
+BOOLEAN _operator(TOKEN tok, OperatorType _operator);
 BOOLEAN delimiter(TOKEN tok, DelimiterType delim);
 
 void printToken(TOKEN t);

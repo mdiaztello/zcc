@@ -295,7 +295,7 @@ void ppsym(SYMBOL sym)             /* print a type expression in prefix form */
 
 char* printStorageClass(SYMBOL sym)
 {
-    char* s;
+    char* s = NULL;
     switch(sym->storageclass)
     {
         case UNKNOWN_STORAGE_CLASS:
@@ -312,6 +312,8 @@ char* printStorageClass(SYMBOL sym)
             break;
         case AUTO_STORAGE_CLASS:
             s = "AUTO";
+            break;
+        default: //this shouldn't happen
             break;
     }
     return s;
@@ -389,7 +391,11 @@ void printsymbol(SYMBOL sym)
                     printf(" %6p  %10s  CONST  typ  STRING  val  %12s\n",
                             sym, sym->namestring, sym->constval.stringconst);
                     break;
+                default: //this shouldn't happen
+                    break;
             }
+            break;
+        default: //this shouldn't happen
             break;
     };
 }

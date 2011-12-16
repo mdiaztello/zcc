@@ -1,3 +1,37 @@
+
+
+#------OUTPUTS-------#
+COMPONENT_NAME = mcc
+#Set this to keep the makefile quiet
+SILENCE = @
+
+#-----INPUTS---------#
+PROJECT_HOME_DIR = .
+CPPUTEST_HOME = /home/zorak/projects/CppUTest
+
+CPP_PLATFORM = Gcc
+
+SRC_DIRS = src
+TEST_SRC_DIRS = tests
+MOCKS_SRC_DIRS = mocks
+
+INCLUDE_DIRS =\
+  .\
+  include \
+  $(CPPUTEST_HOME)/include/ \
+  $(CPPUTEST_HOME)/include/Platforms/Gcc\
+  mocks
+
+CPPUTEST_WARNINGFLAGS = -Wall -Wswitch-default
+
+include $(CPPUTEST_HOME)/build/MakefileWorker.mk
+
+
+
+
+
+
+
 # Simple makefile that will compile all the .c files in the current directory
 # and make an executable called "main.exe" in the same directory
 # to build the project, type "make" in the terminal
@@ -7,23 +41,16 @@ CC := gcc
 # catch issue additional warnings and make them into hard errors
 CFLAGS := -Wall -Wextra -Werror -std=c99
 
-SOURCES := $(shell echo *.c)
-HEADERS := $(shell echo *.h)
 
-OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
-
-main: $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $(OBJECTS)
-
-scanner.o: token.h debug.h
-token.o: token.h debug.h
-lexer.o: token.h scanner.h global_defs.h debug.h
+mcc: $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $(OBJ)
 
 
-.PHONY: clean
+.PHONY: my_clean
 
-clean:
-	rm *.o main
+my_clean:
+	rm mcc
 
 ctags:
 	ctags *.{c,h}
+

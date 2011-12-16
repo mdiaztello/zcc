@@ -262,7 +262,7 @@ BOOLEAN isOperator(TOKEN tok)
     return result;
 }
 
-BOOLEAN operator(TOKEN tok, OperatorType operator)
+BOOLEAN _operator(TOKEN tok, OperatorType operator)
 {
     BOOLEAN result = FALSE;
     if(isOperator(tok) && (getWhichVal(tok) == operator))
@@ -278,14 +278,14 @@ BOOLEAN operator(TOKEN tok, OperatorType operator)
 BOOLEAN isAssignmentOperator(TOKEN tok)
 {
     BOOLEAN result = FALSE;
-    if((TRUE == operator(tok, ASSIGNMENT)) ||
-       (TRUE == operator(tok, PLUS_EQUAL)) ||
-       (TRUE == operator(tok, MINUS_EQUAL)) ||
-       (TRUE == operator(tok, MULTIPLY_EQUAL)) ||
-       (TRUE == operator(tok, DIVIDE_EQUAL)) ||
-       (TRUE == operator(tok, MOD_EQUAL)) ||
-       (TRUE == operator(tok, BITWISE_AND_EQUAL)) ||
-       (TRUE == operator(tok, BITWISE_OR_EQUAL)))
+    if((TRUE == _operator(tok, ASSIGNMENT)) ||
+       (TRUE == _operator(tok, PLUS_EQUAL)) ||
+       (TRUE == _operator(tok, MINUS_EQUAL)) ||
+       (TRUE == _operator(tok, MULTIPLY_EQUAL)) ||
+       (TRUE == _operator(tok, DIVIDE_EQUAL)) ||
+       (TRUE == _operator(tok, MOD_EQUAL)) ||
+       (TRUE == _operator(tok, BITWISE_AND_EQUAL)) ||
+       (TRUE == _operator(tok, BITWISE_OR_EQUAL)))
     {
         result = TRUE;
     }
@@ -297,12 +297,12 @@ BOOLEAN isAssignmentOperator(TOKEN tok)
 BOOLEAN isUnaryOperator(TOKEN tok)
 {
     BOOLEAN result = FALSE;
-    if((TRUE == operator(tok, AMPERSAND)) || 
-       (TRUE == operator(tok, STAR)) ||
-       (TRUE == operator(tok, ADDITION)) ||
-       (TRUE == operator(tok, SUBTRACTION)) ||
-       (TRUE == operator(tok, BITWISE_NOT)) ||
-       (TRUE == operator(tok, BOOLEAN_NOT)))
+    if((TRUE == _operator(tok, AMPERSAND)) || 
+       (TRUE == _operator(tok, STAR)) ||
+       (TRUE == _operator(tok, ADDITION)) ||
+       (TRUE == _operator(tok, SUBTRACTION)) ||
+       (TRUE == _operator(tok, BITWISE_NOT)) ||
+       (TRUE == _operator(tok, BOOLEAN_NOT)))
     {
         result = TRUE;
     }
@@ -313,10 +313,10 @@ BOOLEAN isUnaryOperator(TOKEN tok)
 BOOLEAN isMultiplicativeOperator(TOKEN tok)
 {
     BOOLEAN result = FALSE;
-    if(TRUE == operator(tok, STAR) ||  
-            TRUE == operator(tok, MULTIPLICATION) ||
-            TRUE == operator(tok, DIVISION) ||
-            TRUE == operator(tok, MODULAR_DIVISION) )
+    if(TRUE == _operator(tok, STAR) ||  
+            TRUE == _operator(tok, MULTIPLICATION) ||
+            TRUE == _operator(tok, DIVISION) ||
+            TRUE == _operator(tok, MODULAR_DIVISION) )
     {
         result = TRUE;
     }
@@ -326,8 +326,8 @@ BOOLEAN isMultiplicativeOperator(TOKEN tok)
 BOOLEAN isAdditiveOperator(TOKEN tok)
 {
     BOOLEAN result = FALSE;
-    if((TRUE == operator(tok, ADDITION)) ||
-            (TRUE == operator(tok, SUBTRACTION)))
+    if((TRUE == _operator(tok, ADDITION)) ||
+            (TRUE == _operator(tok, SUBTRACTION)))
     {
         result = TRUE;
     }

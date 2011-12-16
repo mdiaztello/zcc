@@ -320,7 +320,7 @@ TOKEN init_declarator(SYMBOL s)
         return NULL;
     }
     TOKEN initial_value = NULL;
-    if(TRUE == operator(tok, ASSIGNMENT))
+    if(TRUE == _operator(tok, ASSIGNMENT))
     {
         initial_value = NULL;//initializer();
     }

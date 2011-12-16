@@ -80,7 +80,7 @@ TOKEN logical_OR_expression(void)
     TOKEN operand = logical_AND_expression();
     TOKEN op = NULL;
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, BOOLEAN_OR))
+    if(TRUE == _operator(tok, BOOLEAN_OR))
     {
         op = gettok();
         result = make_binary_operation(op, operand, logical_OR_expression());
@@ -102,7 +102,7 @@ TOKEN logical_AND_expression(void)
     TOKEN operand = inclusive_OR_expression();
     TOKEN op = NULL;
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, BOOLEAN_AND))
+    if(TRUE == _operator(tok, BOOLEAN_AND))
     {
         op = gettok();
         result = make_binary_operation(op, operand, logical_AND_expression());
@@ -125,7 +125,7 @@ TOKEN inclusive_OR_expression(void)
     TOKEN op = NULL;
     TOKEN operand = exclusive_OR_expression();
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, BITWISE_OR))
+    if(TRUE == _operator(tok, BITWISE_OR))
     {
         op = gettok();
         result = make_binary_operation(op, operand, inclusive_OR_expression());
@@ -147,7 +147,7 @@ TOKEN exclusive_OR_expression(void)
     TOKEN op = NULL;
     TOKEN operand = AND_expression();
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, BITWISE_XOR))
+    if(TRUE == _operator(tok, BITWISE_XOR))
     {
         op = gettok();
         result = make_binary_operation(op, operand, exclusive_OR_expression());
@@ -170,7 +170,7 @@ TOKEN AND_expression(void)
     TOKEN op = NULL;
     TOKEN operand = equality_expression();
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, AMPERSAND))
+    if(TRUE == _operator(tok, AMPERSAND))
     {
         op = gettok();
         setWhichVal(op, BITWISE_AND);
@@ -193,8 +193,8 @@ TOKEN equality_expression(void)
     TOKEN op = NULL;
     TOKEN operand = relational_expression();
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, EQUALS) ||
-            TRUE == operator(tok, NOT_EQUALS))
+    if(TRUE == _operator(tok, EQUALS) ||
+            TRUE == _operator(tok, NOT_EQUALS))
     {
         op = gettok();
         result = make_binary_operation(op, operand, equality_expression());
@@ -218,10 +218,10 @@ TOKEN relational_expression(void)
     TOKEN op = NULL;
     TOKEN operand = shift_expression();
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, GREATER_THAN) ||
-            TRUE == operator(tok, GREATER_THAN_OR_EQUAL) ||
-            TRUE == operator(tok, LESS_THAN) ||
-            TRUE == operator(tok, LESS_THAN_OR_EQUAL) )
+    if(TRUE == _operator(tok, GREATER_THAN) ||
+            TRUE == _operator(tok, GREATER_THAN_OR_EQUAL) ||
+            TRUE == _operator(tok, LESS_THAN) ||
+            TRUE == _operator(tok, LESS_THAN_OR_EQUAL) )
     {
         op = gettok();
         result = make_binary_operation(op, operand, relational_expression());
@@ -243,8 +243,8 @@ TOKEN shift_expression(void)
     TOKEN op = NULL;
     TOKEN operand = additive_expression();
     TOKEN tok = peektok();
-    if(TRUE == operator(tok, SHIFT_LEFT) ||
-            TRUE == operator(tok, SHIFT_RIGHT) )
+    if(TRUE == _operator(tok, SHIFT_LEFT) ||
+            TRUE == _operator(tok, SHIFT_RIGHT) )
     {
         op = gettok();
         result = make_binary_operation(op, operand, shift_expression());
@@ -294,7 +294,7 @@ TOKEN multiplicative_expression(void)
         op = gettok();
         //we know we are parsing a multiplicative expression at this time, so we can
         //resolve STAR operators to MULTIPLICATION
-        if(TRUE == operator(tok, STAR))
+        if(TRUE == _operator(tok, STAR))
         {
             setWhichVal(op, MULTIPLICATION);
         }
@@ -363,13 +363,13 @@ TOKEN unary_operator(void)
     {
         op = gettok();
         //resolve all unary STARS and AMPERSANDS to DEREFERENCES and REFERENCES
-        if(TRUE == operator(tok, AMPERSAND))
+        if(TRUE == _operator(tok, AMPERSAND))
         {
             setWhichVal(op, REFERENCE);
         }
         else
         {
-            if(TRUE == operator(tok, STAR))
+            if(TRUE == _operator(tok, STAR))
             {
                 setWhichVal(op, DEREFERENCE);
             }
@@ -422,10 +422,10 @@ TOKEN postfix_expression(void)
     TOKEN tok = peektok();
     while( TRUE == delimiter(tok, OPEN_BRACKET) ||
             TRUE == delimiter(tok, OPEN_PAREN) ||
-            TRUE == operator(tok, DOT) ||
-            TRUE == operator(tok, ARROW) ||
-            TRUE == operator(tok, INCREMENT) ||
-            TRUE == operator(tok, DECREMENT))
+            TRUE == _operator(tok, DOT) ||
+            TRUE == _operator(tok, ARROW) ||
+            TRUE == _operator(tok, INCREMENT) ||
+            TRUE == _operator(tok, DECREMENT))
     {
        if(TRUE == delimiter(tok, OPEN_PAREN))
        {
