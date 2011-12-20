@@ -15,8 +15,6 @@
 //floating point can range from 1.17549E-38 to 3.402823E+38
 // we will assume that at most 8 significant mantissa digits can be carried.
 
-
-
 //NUMBERS
 //1
 //12
@@ -24,22 +22,6 @@
 //12345
 //123456
 //123456123456123456
-
-
-
-//TRICKY OPERATOR TESTING
-
-//+++++   //should be 2 INCREMENTS and one ADDITION
-//++=     //should be an INCREMENT and an ASSIGNMENT
-//+==     //should be a PLUS_EQUALS and an ASSIGNMENT
-//&&=     //should be a BOOLEAN_AND and an ASSIGNMENT
-//&&==    //should be a BOOLEAN_AND and an EQUALS
-//||=     //should be a BOOLEAN_OR and an ASSIGNMENT
-//|||=|   //should be a BOOLEAN_OR an BITWISE_OR_EQUALS and a BITWISE_OR
-
-//+++++++=+==&&=&&==||=|||=|/**/    //should be 3 INCREMENTS, 2 PLUS_EQUALS, an ASSIGNMENT, a BOOLEAN_AND, an ASSIGNMENT, a BOOLEAN_AND, an EQUALS, a BOOLEAN_OR, an ASSIGNMENT, a BOOLEAN_OR, a BITWISE_OR_EQUALS, a BITWISE_OR, and a block-style comment of 0-length
-
-
 
 //SAMPLE PROGRAM BEGINS BELOW
 
@@ -63,8 +45,6 @@ int main(void)
     return 0;
 }
 */
-
-
 
 /*
  * =====================================================================================

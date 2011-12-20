@@ -153,3 +153,28 @@ TEST(LEXER_TESTS, LexterProperlyDetectsOperators)
     }
 }
 
+TEST(LEXER_TESTS, LexerUsesMaximalMunchRule)
+{
+    OperatorType expectedOperators[] = { 
+        INCREMENT, INCREMENT, ADDITION, INCREMENT, 
+        ASSIGNMENT, PLUS_EQUAL, ASSIGNMENT, BOOLEAN_AND, 
+        ASSIGNMENT, BOOLEAN_AND, EQUALS, BOOLEAN_OR, 
+        ASSIGNMENT, BOOLEAN_OR, BITWISE_OR_EQUAL, BITWISE_OR,
+        INCREMENT, INCREMENT, INCREMENT, PLUS_EQUAL, 
+        PLUS_EQUAL, ASSIGNMENT, BOOLEAN_AND, ASSIGNMENT, 
+        BOOLEAN_AND, EQUALS, BOOLEAN_OR, ASSIGNMENT, 
+        BOOLEAN_OR, BITWISE_OR_EQUAL, BITWISE_OR
+    };
+
+    int i = 0;
+    set_input_source("tests/tricky_operator_test", "r+");
+    TOKEN tok = gettok();
+    
+    while(tok != NULL)
+    {
+        CHECK(TRUE == _operator(tok, expectedOperators[i]));
+        tok = gettok();
+        i++;
+    }
+}
+
