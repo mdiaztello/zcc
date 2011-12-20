@@ -129,7 +129,6 @@ TEST(LEXER_TESTS, LexerDetectsDelimiters)
     }
 }
 
-#if 0
 TEST(LEXER_TESTS, LexterProperlyDetectsOperators)
 {
     TOKEN tok;
@@ -139,9 +138,18 @@ TEST(LEXER_TESTS, LexterProperlyDetectsOperators)
     for(int op_type = ADDITION; op_type < STAR; op_type++)
     {
         tok = gettok();
-        printToken(tok);
-//        CHECK(TRUE == _operator(tok, (OperatorType)op_type));
+        if((op_type == MULTIPLICATION) || (op_type == DEREFERENCE))//the lexer reports these as "STAR" tokens until the parser can disambiguate them
+        {
+            CHECK(TRUE == _operator(tok, STAR));
+        }
+        else if((op_type == BITWISE_AND) || (op_type == REFERENCE))//the lexer reports these as "AMPERSAND" tokens until the parser can disambiguate them
+        {
+            CHECK(TRUE == _operator(tok, AMPERSAND));
+        }
+        else
+        {
+            CHECK(TRUE == _operator(tok, (OperatorType)op_type));
+        }
     }
 }
-#endif
 
