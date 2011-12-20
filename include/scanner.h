@@ -35,7 +35,6 @@ char nextchar(void);//get the next character from our input source, whatever it 
 char peekchar(void); //peek at next character w/o moving pointer
 char peek2char(void);
 void discard_char(void);
-void init_charclass(void);
 void init_scanner(FILE* input_file);
 int get_char_class(char c);
 

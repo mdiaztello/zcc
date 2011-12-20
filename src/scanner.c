@@ -28,6 +28,8 @@
 
 int EOFFLG;
 
+static void init_charclass(void);
+
 static int CHARCLASS[MAXCHARCLASS]; //character class lookup table. This is basically a lookup table based on the ASCII table
 char special_characters[] = "+-*/!%&|~^=.,;:<>()[]{}"; //initialize special characters lookup table
 
@@ -75,7 +77,7 @@ void discard_char(void)
     (void) nextchar();
 }
 
-void init_charclass(void)
+static void init_charclass(void)
 {
     int i;
     for(i = 0; i < MAXCHARCLASS; i++)
