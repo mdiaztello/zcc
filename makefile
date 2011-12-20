@@ -22,7 +22,7 @@ INCLUDE_DIRS =\
   $(CPPUTEST_HOME)/include/Platforms/Gcc\
   mocks
 
-CPPUTEST_WARNINGFLAGS = -Wall -Wswitch-default
+CPPUTEST_WARNINGFLAGS = -Wall -Wswitch-default -Wno-write-strings
 
 include $(CPPUTEST_HOME)/build/MakefileWorker.mk
 

@@ -2,50 +2,11 @@
 //The reason why this is called "test_c" instead of "test.c"
 //is so that the makefile won't attempt to compile it
 
-//KEYWORDS
-//static
-//const
-//unsigned
-//signed
-//char
-//short
-//int
-//long
-//float
-//double
-//struct
-//union
-//enum
-//void
-//typedef
-//if
-//else
-//do
-//while
-//for
-//continue
-//switch
-//case
-//break
-//return
-//goto
-//extern
-
-//IDENTIFIERS
-//an_identifier_with_underscores
-//superduperunreasonablylongidentifiernamethatshouldnotcausethelexertochoke
-//_an_identifier_with_leading_underscore
-//an_identifier_with_numbers_123_and_underscores12
-
-
 //STRING LITERALS
 //"THIS IS #&*%!"
 //"\"Don't \n\t\t\nforget\""
 
 //CHARACTER LITERALS
-
-//SOME WEIRD IN-LINE COMMENTS TO TRY TO TRICK THE LEXER
-///**/ u /***/ v /****/ w /*****/ x /******/ y /*/*/ z
 
 
 // You may assume the following limits on numbers:
@@ -55,8 +16,6 @@
 // we will assume that at most 8 significant mantissa digits can be carried.
 
 
-//DELIMITERS
-//,:;{}()[]
 
 //NUMBERS
 //1
@@ -66,39 +25,6 @@
 //123456
 //123456123456123456
 
-//OPERATORS
-//+
-//-
-//*
-///
-//%
-//!
-//~
-//&
-//|
-//^
-//.
-//=
-//>
-//<
-//==
-//!=
-//>=
-//<=
-//||
-//&&
-//<<
-//>>
-//++
-//--
-//+=
-//-=
-//*=
-///=
-//%=
-//&=
-//|=
-//->
 
 
 //TRICKY OPERATOR TESTING

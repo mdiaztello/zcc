@@ -1,0 +1,42 @@
+//OPERATORS
+//the "STAR" operator stands for both multiplication and dereferencing/pointers
+//because both operations share the same symbol, so disambiguation can't be done in the lexer
+//rather, it must be done while the statements are being parsed
+
++   // ADDITION
+-   // SUBTRACTION            
+*   // MULTIPLICATION         (will be reported as STAR until the parser can disambiguate it)
+/   // DIVISION               
+%   // MODULAR_DIVISION       
+!   // BOOLEAN_NOT            
+~   // BITWISE_NOT            
+&   // BITWISE_AND            
+|   // BITWISE_OR             
+^   // BITWISE_XOR            
+&   // REFERENCE              
+*   // DEREFERENCE            
+.   // DOT                    
+=   // ASSIGNMENT             
+>   // GREATER_THAN           
+<   // LESS_THAN              
+
+//two-character operators
+==  // EQUALS                 
+!=  // NOT_EQUALS             
+>=  // GREATER_THAN_OR_EQUAL  
+<=  // LESS_THAN_OR_EQUAL     
+||  // BOOLEAN_OR             
+&&  // BOOLEAN_AND            
+<<  // SHIFT_LEFT             
+>>  // SHIFT_RIGHT            
+++  // INCREMENT                 (post/pre)                                           
+--  // DECREMENT                 (post/pre)                                           
++=  // PLUS_EQUAL             
+-=  // MINUS_EQUAL            
+*=  // MULTIPLY_EQUAL         
+/=  // DIVIDE_EQUAL           
+%=  // MOD_EQUAL              
+&=  // BITWISE_AND_EQUAL      
+|=  // BITWISE_OR_EQUAL       
+->  // ARROW      (same as a dereference followed by a dot operator)    
+

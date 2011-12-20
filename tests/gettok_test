@@ -1,0 +1,4 @@
+//This file is supposed to check that gettok will advance the input every time it is invoked
+a
+b
+c

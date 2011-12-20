@@ -1,0 +1,6 @@
+
+//IDENTIFIERS
+an_identifier_with_underscores
+superduperunreasonablylongidentifiernamethatshouldnotcausethelexertochoke
+_an_identifier_with_leading_underscore
+an_identifier_with_numbers_123_and_underscores12

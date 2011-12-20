@@ -519,6 +519,9 @@ void printKeywordType(TOKEN t)
         case BREAK:
             printf("break");
             break;
+        case DEFAULT:
+            printf("default");
+            break;
         case RETURN:
             printf("return");
             break;

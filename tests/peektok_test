@@ -1,0 +1,4 @@
+//This file is supposed to check that peektok will look at the next token from the input without advancing the input pointer
+a
+b
+c

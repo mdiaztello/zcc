@@ -25,6 +25,7 @@ static int isKeywordString(char* string);
 static void get_identifier_string(char* buffer);
 static void get_string_literal(char* buffer);
 static long long parse_number(void);
+static TOKEN lex(void);  //just gets a token from the input stream
 
 static BOOLEAN isDelimiterCharacter(char c, DelimiterType* whichDelim);
 static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp);
