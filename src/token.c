@@ -697,6 +697,36 @@ void printOperator(TOKEN t)
         case AMPERSAND:
             printf("AMPERSAND ");
             break;
+        case PARSE_TREE_IF:                      //for internal use in the parse tree
+            printf("PARSE_TREE_IF ");
+            break;
+        case PARSE_TREE_STATEMENT_LIST:          //for internal use in the parse tree
+            printf("PARSE_TREE_STATEMENT_LIST ");
+            break;
+        case PARSE_TREE_LABEL:                   //for internal use in the parse tree
+            printf("PARSE_TREE_LABEL ");
+            break;
+        case PARSE_TREE_FUNCALL:                 //for internal use in the parse tree
+            printf("PARSE_TREE_FUNCALL ");
+            break;
+        case PARSE_TREE_ARRAY_REFERENCE:         //for internal use in the parse tree
+            printf("PARSE_TREE_ARRAY_REFERENCE ");
+            break;
+        case PARSE_TREE_FUNCTION_DEFINITION:     //for internal use in the parse tree
+            printf("PARSE_TREE_FUNCTION_DEFINITION ");
+            break;
+        case PARSE_TREE_TRANSLATION_UNIT:        //for internal use in the parse tree
+            printf("PARSE_TREE_TRANSLATION_UNIT ");
+            break;
+        case PARSE_TREE_MAKE_FLOAT:              //for internal use in the parse tree
+            printf("PARSE_TREE_MAKE_FLOAT ");
+            break;
+        case PARSE_TREE_RETURN:                  //for internal use in the parse tree
+            printf("PARSE_TREE_RETURN ");
+            break;
+        case PARSE_TREE_GOTO:                    //for internal use in the parse tree
+            printf("PARSE_TREE_GOTO ");
+            break;
         default:
             printf("UNKNOWN ");
             break;

@@ -459,6 +459,10 @@ TOKEN primary_expression(void)
 {
     TOKEN result = NULL;
     TOKEN tok = peektok();
+    if(NULL == tok)
+    {
+        return result;
+    }
 
     switch(getTokenType(tok))
     {
@@ -473,6 +477,7 @@ TOKEN primary_expression(void)
             break;
         case STRING_LITERAL:
             result = string_literal();
+            install_string_literal(result);
             break;
         case DELIMITER_TOKEN:
             if(TRUE == delimiter(tok, OPEN_PAREN))

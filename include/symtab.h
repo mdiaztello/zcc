@@ -108,4 +108,14 @@ int blocknumber;           /* Number of current block being compiled */
 int blockoffs[MAXBLOCKS];  /* Storage offsets for each block         */
 int basicsizes[4];
 
+typedef struct str_literal 
+{
+    struct str_literal *link;
+    TOKEN string_tok;
+} *STRING_LIST;
+
+//STRING_LIST make_string_literal(char* string_name);
+void install_string_literal(TOKEN string);
+STRING_LIST get_string_literal_list(void);
+
 #endif //__SYMTAB_H_

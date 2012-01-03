@@ -51,6 +51,11 @@ TOKEN make_statement_list(TOKEN statements)
     return result;
 }
 
+TOKEN get_statements(TOKEN statement_list)
+{
+    return getOperands(statement_list);
+}
+
 //appends a statement to an existing statement list.
 //The resulting 
 TOKEN append_statement(TOKEN statement_list, TOKEN end_statement)
@@ -91,6 +96,16 @@ TOKEN make_function_call(TOKEN function_name, TOKEN args)
     return function_call;
 }
 
+TOKEN get_function_call_name(TOKEN function_call)
+{
+    return getOperands(function_call);
+}
+
+TOKEN get_function_call_args(TOKEN function_call)
+{
+    return getLink(get_function_call_name(function_call));
+}
+
 TOKEN make_function_definition(TOKEN function_name, TOKEN parameters, TOKEN function_body)
 {
     TOKEN function_def = makeToken();
@@ -100,6 +115,21 @@ TOKEN make_function_definition(TOKEN function_name, TOKEN parameters, TOKEN func
     setLink(function_name, parameters);
     setLink(parameters, function_body);
     return function_def;
+}
+
+TOKEN get_function_def_body(TOKEN function_definition)
+{
+    return getLink(get_function_def_parameters(function_definition));
+}
+
+TOKEN get_function_def_parameters(TOKEN function_definition)
+{
+    return getLink(get_function_def_name(function_definition));
+}
+
+TOKEN get_function_def_name(TOKEN function_definition)
+{
+    return getOperands(function_definition);
 }
 
 TOKEN make_return_statement(TOKEN return_exp)

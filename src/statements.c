@@ -132,7 +132,6 @@ TOKEN block_item_list(void)
 {
     TOKEN result = NULL;
     TOKEN next = NULL;
-    beacon();
     if(FALSE == delimiter(peektok(), CLOSE_BRACE))
     {
         result = block_item();
@@ -146,7 +145,6 @@ TOKEN block_item_list(void)
             result = next;
         }
     }
-    beacon();
     return result;
 }
 
@@ -161,20 +159,15 @@ TOKEN block_item(void)
     //to see if we have a declaration, for now we will check in the symbol table to see if the token
     //we are peeking at is a basic type. If it is, we will assume we have a declaration instead of a statement
     TOKEN tok = peektok();
-    printToken(tok);
-    beacon();
     SYMBOL s = searchst(getStringVal(tok));
     if (s != NULL && s->kind == BASICTYPE)
     {
-        beacon();
         declaration(sym);
     }
     else
     {
-        beacon();
         result = statement();
     }
-    beacon();
     return result;
 }
 

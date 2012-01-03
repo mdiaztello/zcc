@@ -40,6 +40,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include "symtab.h"
 #include "token.h"
 #include "token_API.h"
@@ -522,3 +523,50 @@ void setStorageClass(SYMBOL s, StorageClass whichStorage)
 {
     s->storageclass = whichStorage;
 }
+
+
+STRING_LIST string_literal_list = NULL;
+
+STRING_LIST make_string_literal(void)
+{
+    STRING_LIST s = (STRING_LIST) calloc(1,sizeof(STRING_LIST));
+    s->link = NULL;
+    return s;
+}
+
+
+//installs string literal tokens in the string literal list (conceptually a separate symbol table
+//just for string literals)
+void install_string_literal(TOKEN string)
+{
+    static uint8_t string_number = 0;
+    static STRING_LIST string_list_tail = NULL;
+    char string_name[16];
+
+    sprintf(string_name, "string%d", string_number);
+    string_number++;
+    STRING_LIST str = make_string_literal();
+    SYMBOL s = makesym(string_name);
+    str->string_tok = string;
+    setSymbolTableEntry(string, s);
+
+    if(string_literal_list == NULL)
+    {
+        string_literal_list = str;
+        string_list_tail = str;
+    }
+    else
+    {
+        string_list_tail->link = str;
+        string_list_tail = str;
+    }
+}
+
+STRING_LIST get_string_literal_list(void)
+{
+    return string_literal_list;
+}
+
+
+
+

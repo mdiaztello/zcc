@@ -203,6 +203,7 @@ int main(void)
 //short b;
 //typedef int c;
 //extern long d;
+/*
 int a0;
 int b0;
 int c0;
@@ -228,6 +229,7 @@ int main(void)
 
     d();
     e;
+    return 0;
 }
 
 int d0;
@@ -237,4 +239,6 @@ void f(int a, int b)
 {
     f();
     a ^b ^c;
+    return 0;
 }
+*/
