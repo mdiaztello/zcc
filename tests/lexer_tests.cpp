@@ -25,10 +25,13 @@ TEST_GROUP(LEXER_TESTS)
 
     void set_input_source(char* file_name, char* mode)
     {
-        input_file = fopen(file_name, mode);
+        char file_path[100];
+        char* test_directory = "tests/lexer_tests/";
+        sprintf(file_path, "%s%s",test_directory, file_name);
+        input_file = fopen(file_path, mode);
         if(NULL == input_file)
         {
-            printf("couldn't open file %s...\n", file_name);
+            printf("couldn't open file %s...\n", file_path);
             exit(EXIT_FAILURE); //bail out
         }
         init_scanner(input_file);
@@ -39,7 +42,7 @@ TEST_GROUP(LEXER_TESTS)
 //without advancing the input pointer
 TEST(LEXER_TESTS, ConsecutivePeekToksDoNotAdvanceInput)
 {
-    set_input_source("tests/peektok_test", "r+");
+    set_input_source("peektok_test", "r+");
     TOKEN tok1 = peektok();
     for(int i = 0; i < 10; i++)
     {
@@ -54,7 +57,7 @@ TEST(LEXER_TESTS, ConsecutivePeekToksDoNotAdvanceInput)
 
 TEST(LEXER_TESTS, GetTokAdvancesInputOnConsecutiveCalls)
 {
-    set_input_source("tests/gettok_test", "r+");
+    set_input_source("gettok_test", "r+");
     TOKEN tok1 = gettok();
     TOKEN tok2 = gettok();
     STRCMP_EQUAL(getStringVal(tok1), "a");
@@ -64,7 +67,7 @@ TEST(LEXER_TESTS, GetTokAdvancesInputOnConsecutiveCalls)
 
 TEST(LEXER_TESTS, GetTokReturnsPeekedTokAfterPeekTokCall)
 {
-    set_input_source("tests/gettok_test", "r+");
+    set_input_source("gettok_test", "r+");
     TOKEN get1 = gettok();
     TOKEN peek = peektok();
     TOKEN get2 = gettok();
@@ -77,7 +80,7 @@ TEST(LEXER_TESTS, GetTokReturnsPeekedTokAfterPeekTokCall)
 TEST(LEXER_TESTS, LexerRecognizesKeywords)
 {
     TOKEN tok;
-    set_input_source("tests/keyword_test", "r+");
+    set_input_source("keyword_test", "r+");
     for(int keyword_type = STATIC; keyword_type < NUM_KEYWORD_TYPES; ++keyword_type)
     {
         tok = gettok();
@@ -88,7 +91,7 @@ TEST(LEXER_TESTS, LexerRecognizesKeywords)
 TEST(LEXER_TESTS, LexerCanProcessIdentifiers)
 {
     TOKEN tok;
-    set_input_source("tests/identifier_test", "r+");
+    set_input_source("identifier_test", "r+");
 
     char* identifiers[4] = {
         "an_identifier_with_underscores", 
@@ -106,7 +109,7 @@ TEST(LEXER_TESTS, LexerCanProcessIdentifiers)
 TEST(LEXER_TESTS, LexerHandlesWeirdInlineComments)
 {
     TOKEN tok;
-    set_input_source("tests/tricky_comments_test", "r+");
+    set_input_source("tricky_comments_test", "r+");
     char* expected_identifiers[6] = { "u", "v", "w", "x", "y", "z" };
 
     for(int i = 0; i < 6; i++)
@@ -120,7 +123,7 @@ TEST(LEXER_TESTS, LexerHandlesWeirdInlineComments)
 TEST(LEXER_TESTS, LexerDetectsDelimiters)
 {
     TOKEN tok;
-    set_input_source("tests/delimiter_test", "r+");
+    set_input_source("delimiter_test", "r+");
 
     for(int delimiter_type = COMMA; delimiter_type < NUM_DELIMITER_TYPES; delimiter_type++)
     {
@@ -133,7 +136,7 @@ TEST(LEXER_TESTS, LexterProperlyDetectsOperators)
 {
     TOKEN tok;
 
-    set_input_source("tests/operator_test", "r+");
+    set_input_source("operator_test", "r+");
 
     for(int op_type = ADDITION; op_type < STAR; op_type++)
     {
@@ -167,7 +170,7 @@ TEST(LEXER_TESTS, LexerUsesMaximalMunchRule)
     };
 
     int i = 0;
-    set_input_source("tests/tricky_operator_test", "r+");
+    set_input_source("tricky_operator_test", "r+");
     TOKEN tok = gettok();
     
     while(tok != NULL)
