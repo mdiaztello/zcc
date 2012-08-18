@@ -504,7 +504,7 @@ void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void))
     {
         if(NULL == errorAction)
         {
-            printf("ERROR: an unexpected token was encountered on line %5lu of the source file\n", getSourceLine());
+            printf("ERROR: an unexpected token was encountered on line %5lu of the source file\n", get_source_code_line_number());
         }
         else
         {

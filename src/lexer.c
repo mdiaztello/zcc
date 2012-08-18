@@ -199,9 +199,18 @@ TOKEN peektok(void)
 }
 
 //gets the line of source that the compiler is currently analyzing
-unsigned long getSourceLine(void)
+uint64_t get_source_code_line_number(void)
 {
     return source_code_line_number;
+}
+
+//updates the line number when a newline is encountered in the source code
+static void update_line_number(char c)
+{
+    if(c == '\n')
+    {
+        source_code_line_number++;
+    }
 }
 
 
@@ -277,7 +286,7 @@ static void skip_single_line_comment(void)
 static void skip_block_comments(void)
 {
     char c;
-    unsigned long block_comment_starting_line = source_code_line_number;
+    uint64_t block_comment_starting_line = get_source_code_line_number();
 
     discard_char(); //discard the '/'
     discard_char(); //discard the '*'
@@ -305,14 +314,6 @@ static bool is_white_space(char c)
         result = true;
     }
     return result;
-}
-
-static void update_line_number(char c)
-{
-    if(c == '\n')
-    {
-        source_code_line_number++;
-    }
 }
 
 /************************** END OF COMMENT PROCESSING FUNCTIONS **************************************/
@@ -403,7 +404,7 @@ static uint64_t parse_number(void)
         result = result*10 +i;
         if(result > MAX_UNSIGNED_32_BIT_INTEGER)
         {
-            printf("\nNUMERIC CONSTANT ON LINE %lu BIGGER THAN MAX 32-BIT INTEGER VALUE\n", source_code_line_number);
+            printf("\nNUMERIC CONSTANT ON LINE %lu BIGGER THAN MAX 32-BIT INTEGER VALUE\n", get_source_code_line_number());
             printf("CAPPING VALUE OF THE CONSTANT TO MAX_UNSIGNED_32_BIT_INTEGER\n");
             result = MAX_UNSIGNED_32_BIT_INTEGER;
             while(get_char_class(peekchar()) == NUMERIC)

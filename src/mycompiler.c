@@ -42,7 +42,7 @@ void test_parser(void)
     TOKEN parse_tree = NULL;
     printf("*** TESTING THE PARSER ***\n\n");
     parse_tree = parse();
-    printf("The total number of lines of source code is %lu\n", source_code_line_number);
+    printf("The total number of lines of source code is %lu\n", get_source_code_line_number());
     printf("\n*** DONE TESTING THE PARSER ***\n\n");
     printf("\n\n*** PRINTING THE SYMBOL TABLE ***\n\n");
     printst();
@@ -55,7 +55,7 @@ void test_code_generator(void)
     TOKEN parse_tree = NULL;
     parse_tree = parse();
 #if 0
-    printf("The total number of lines of source code is %lu\n", source_code_line_number);
+    printf("The total number of lines of source code is %lu\n", get_source_code_line_number());
     printf("\n\n*** PRINTING THE SYMBOL TABLE ***\n\n");
     printst();
     printf("\n\n*** PRINTING THE PARSE TREE ***\n\n");
