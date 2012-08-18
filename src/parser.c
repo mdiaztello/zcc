@@ -121,7 +121,7 @@ TOKEN function_definition(SYMBOL s)
     //figure out a better way to deal with this
     TOKEN func_name = make_token();
     set_token_type(func_name, IDENTIFIER_TOKEN);
-    setStringVal(func_name, s->namestring);
+    set_string_value(func_name, s->namestring);
     setSymbolTableEntry(func_name, s);
     params = make_statement_list(params);
     func_definition = make_function_definition(func_name, params, func_body);
@@ -190,7 +190,7 @@ TOKEN declaration_specifiers(SYMBOL s)
     
     if( false == reserved(type_spec, VOID))
     {
-        SYMBOL type = searchst(getStringVal(type_spec));
+        SYMBOL type = searchst(get_string_value(type_spec));
         s->basicdt = type->basicdt;
         s->datatype = type;
         s->size = type->size;
@@ -359,7 +359,7 @@ TOKEN pointer(void)
 TOKEN direct_declarator(SYMBOL s)
 {
     TOKEN direct_decl = identifier();
-    setSymbolNameString(s, getStringVal(direct_decl));
+    setSymbolNameString(s, get_string_value(direct_decl));
     return direct_decl;
 }
 

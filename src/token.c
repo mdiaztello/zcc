@@ -62,7 +62,7 @@ DataType get_data_type(TOKEN t)
     return t->dataType;
 }
 
-void setStringVal(TOKEN t, char* string)
+void set_string_value(TOKEN t, char* string)
 {
     int i = 0;
 
@@ -73,7 +73,7 @@ void setStringVal(TOKEN t, char* string)
     t->stringval[i] = 0; //terminate the string FIXME: there may be an off-by-one buffer overflow here...
 }
 
-char* getStringVal(TOKEN t)
+char* get_string_value(TOKEN t)
 {
     char* s;
     if(t->tokenType == KEYWORD_TOKEN)
@@ -391,7 +391,7 @@ void printToken(TOKEN t)
                 printIdentifier(t);
                 break;
             case STRING_LITERAL:
-                printf("The string is \"%s\"\n", getStringVal(t));
+                printf("The string is \"%s\"\n", get_string_value(t));
                 break;
             case DELIMITER_TOKEN:
                 printDelimiterType(t);
@@ -544,7 +544,7 @@ void printKeywordType(TOKEN t)
 
 void printIdentifier(TOKEN t)
 {
-    printf("The identifier is \"%s\"\n", getStringVal(t));
+    printf("The identifier is \"%s\"\n", get_string_value(t));
 }
 
 void printDelimiterType(TOKEN t)

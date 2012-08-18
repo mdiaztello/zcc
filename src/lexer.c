@@ -331,9 +331,9 @@ static TOKEN make_identifier_token(void)
     set_data_type(tok, STRING_TYPE);
 
     get_identifier_string(buffer);
-    setStringVal(tok, buffer);
+    set_string_value(tok, buffer);
 
-    int whichKeyword = is_keyword_string(getStringVal(tok));
+    int whichKeyword = is_keyword_string(get_string_value(tok));
     if(-1 != whichKeyword)
     {
         setWhichVal(tok, whichKeyword);
@@ -431,7 +431,7 @@ static TOKEN make_string_token(void)
     set_token_type(tok, STRING_LITERAL);
     set_data_type(tok, STRING_TYPE);
     get_string_literal(buffer);
-    setStringVal(tok, buffer);
+    set_string_value(tok, buffer);
     return tok;
 }
 

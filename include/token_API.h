@@ -32,8 +32,8 @@ TokenType get_token_type(TOKEN t);
 void set_data_type(TOKEN t, DataType dType);
 DataType get_data_type(TOKEN t);
 
-void setStringVal(TOKEN t, char* string);
-char* getStringVal(TOKEN t);
+void set_string_value(TOKEN t, char* string);
+char* get_string_value(TOKEN t);
 
 unsigned int getWhichVal(TOKEN t);
 void setWhichVal(TOKEN t, int which);

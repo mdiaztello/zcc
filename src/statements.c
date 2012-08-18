@@ -160,7 +160,7 @@ TOKEN block_item(void)
     //to see if we have a declaration, for now we will check in the symbol table to see if the token
     //we are peeking at is a basic type. If it is, we will assume we have a declaration instead of a statement
     TOKEN tok = peek_token();
-    SYMBOL s = searchst(getStringVal(tok));
+    SYMBOL s = searchst(get_string_value(tok));
     if (s != NULL && s->kind == BASICTYPE)
     {
         declaration(sym);

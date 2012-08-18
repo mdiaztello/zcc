@@ -233,10 +233,10 @@ void printtok(TOKEN tok)             /* print a token in abbreviated form */
 	switch (get_token_type(tok))
 	{
 		case IDENTIFIER_TOKEN:
-			printf ("%s", getStringVal(tok));
+			printf ("%s", get_string_value(tok));
 			break;
 		case STRING_LITERAL:
-			printf ("'%s'", getStringVal(tok));
+			printf ("'%s'", get_string_value(tok));
 			break;
 		case NUMBER_TOKEN:
 			switch (get_data_type(tok))
@@ -272,11 +272,11 @@ void dbugprinttok(TOKEN tok)  /* print a token in 'nice' debugging form */
 		{ 
 			case IDENTIFIER_TOKEN:
 				printf("token %6p    ID:  \"%s\"    dtype %2d    link %6p\n",
-						tok, getStringVal(tok), get_data_type(tok), getLink(tok));
+						tok, get_string_value(tok), get_data_type(tok), getLink(tok));
 				break;
 			case STRING_LITERAL:
 				printf("token %6p    STR: \"%s\"    dtype %2d    link %6p\n",
-						tok, getStringVal(tok), get_data_type(tok), getLink(tok));
+						tok, get_string_value(tok), get_data_type(tok), getLink(tok));
 				break;
 			case NUMBER_TOKEN:
 				switch (get_data_type(tok))
@@ -338,7 +338,7 @@ void printexpr(TOKEN tok, int col)     /* print an expression in prefix form */
 			printexpr(opnds, nextcol);
 			if ( get_token_type(opnds) == IDENTIFIER_TOKEN && nextcol < 60 )
 			{
-				nextcol = nextcol + 1 + strlength(getStringVal(opnds));
+				nextcol = nextcol + 1 + strlength(get_string_value(opnds));
 			}
 			else
 			{

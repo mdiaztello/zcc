@@ -67,9 +67,9 @@ static void generate_function(TOKEN function_definition)
 void generate_function_label(TOKEN function_definition)
 {
     TOKEN function_name = get_function_def_name(function_definition);
-    register_function_name(getStringVal(function_name));
+    register_function_name(get_string_value(function_name));
     emit("\n");
-    emit(getStringVal(function_name));
+    emit(get_string_value(function_name));
     emit(":\n");
 }
 

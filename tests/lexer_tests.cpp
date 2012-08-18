@@ -51,7 +51,7 @@ TEST(LEXER_TESTS, ConsecutivePeekToksDoNotAdvanceInput)
     TOKEN tok2 = peek_token();
     CHECK(get_token_type(tok1) == IDENTIFIER_TOKEN);
     CHECK(get_token_type(tok2) == IDENTIFIER_TOKEN);
-    STRCMP_EQUAL(getStringVal(tok1), getStringVal(tok2));
+    STRCMP_EQUAL(get_string_value(tok1), get_string_value(tok2));
     POINTERS_EQUAL(tok1, tok2);
 }
 
@@ -60,8 +60,8 @@ TEST(LEXER_TESTS, GetTokAdvancesInputOnConsecutiveCalls)
     set_input_source("gettok_test", "r+");
     TOKEN tok1 = get_token();
     TOKEN tok2 = get_token();
-    STRCMP_EQUAL(getStringVal(tok1), "a");
-    STRCMP_EQUAL(getStringVal(tok2), "b");
+    STRCMP_EQUAL(get_string_value(tok1), "a");
+    STRCMP_EQUAL(get_string_value(tok2), "b");
     CHECK(tok1 != tok2);
 }
 
@@ -71,9 +71,9 @@ TEST(LEXER_TESTS, GetTokReturnsPeekedTokAfterPeekTokCall)
     TOKEN get1 = get_token();
     TOKEN peek = peek_token();
     TOKEN get2 = get_token();
-    STRCMP_EQUAL("a", getStringVal(get1));
-    STRCMP_EQUAL("b", getStringVal(peek));
-    STRCMP_EQUAL("b", getStringVal(get2));
+    STRCMP_EQUAL("a", get_string_value(get1));
+    STRCMP_EQUAL("b", get_string_value(peek));
+    STRCMP_EQUAL("b", get_string_value(get2));
     POINTERS_EQUAL(peek, get2);
 }
 
@@ -102,7 +102,7 @@ TEST(LEXER_TESTS, LexerCanProcessIdentifiers)
     for(int i = 0; i < 4; i++)
     {
         tok = get_token();
-        STRCMP_EQUAL(identifiers[i], getStringVal(tok));
+        STRCMP_EQUAL(identifiers[i], get_string_value(tok));
     }
 }
 
@@ -116,7 +116,7 @@ TEST(LEXER_TESTS, LexerHandlesWeirdInlineComments)
     {
         tok = get_token();
         CHECK(false == isKeyword(tok));
-        STRCMP_EQUAL(expected_identifiers[i], getStringVal(tok));
+        STRCMP_EQUAL(expected_identifiers[i], get_string_value(tok));
     }
 }
 
