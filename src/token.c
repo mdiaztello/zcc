@@ -42,7 +42,7 @@ TOKEN make_token(void)
     return t;
 }
 
-void setTokenType(TOKEN t, TokenType tType)
+void set_token_type(TOKEN t, TokenType tType)
 {
     t->tokenType = tType;
 }

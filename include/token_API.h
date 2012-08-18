@@ -27,7 +27,7 @@
 #include "symtab.h"
 
 TOKEN make_token(void);
-void setTokenType(TOKEN t, enum token_type tType);
+void set_token_type(TOKEN t, enum token_type tType);
 TokenType getTokenType(TOKEN t);
 void setDataType(TOKEN t, DataType dType);
 DataType getDataType(TOKEN t);

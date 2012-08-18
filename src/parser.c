@@ -120,7 +120,7 @@ TOKEN function_definition(SYMBOL s)
     //FIXME: this is a hack to retrieve the function name in TOKEN form
     //figure out a better way to deal with this
     TOKEN func_name = make_token();
-    setTokenType(func_name, IDENTIFIER_TOKEN);
+    set_token_type(func_name, IDENTIFIER_TOKEN);
     setStringVal(func_name, s->namestring);
     setSymbolTableEntry(func_name, s);
     params = make_statement_list(params);

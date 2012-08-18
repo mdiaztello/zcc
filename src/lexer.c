@@ -327,7 +327,7 @@ static TOKEN make_identifier_token(void)
     TOKEN tok = make_token();
 
     //assume that the token is an identifier, then check if it is a reserved word
-    setTokenType(tok, IDENTIFIER_TOKEN);
+    set_token_type(tok, IDENTIFIER_TOKEN);
     setDataType(tok, STRING_TYPE);
 
     get_identifier_string(buffer);
@@ -337,7 +337,7 @@ static TOKEN make_identifier_token(void)
     if(-1 != whichKeyword)
     {
         setWhichVal(tok, whichKeyword);
-        setTokenType(tok, KEYWORD_TOKEN);
+        set_token_type(tok, KEYWORD_TOKEN);
     }
     return tok;
 }
@@ -390,7 +390,7 @@ static void get_identifier_string(char* buffer)
 static TOKEN make_number_token(void)
 {
     TOKEN tok = make_token();
-    setTokenType(tok, NUMBER_TOKEN); 
+    set_token_type(tok, NUMBER_TOKEN); 
     uint64_t number = parse_number();
     setIntegerValue(tok, number);
     return tok;
@@ -428,7 +428,7 @@ static TOKEN make_string_token(void)
 {
     TOKEN tok = make_token();
     char buffer[MAX_TOKEN_STRING_LENGTH];
-    setTokenType(tok, STRING_LITERAL);
+    set_token_type(tok, STRING_LITERAL);
     setDataType(tok, STRING_TYPE);
     get_string_literal(buffer);
     setStringVal(tok, buffer);
@@ -485,7 +485,7 @@ static TOKEN make_special_token(void)
     if(true == is_delimiter_character(buffer[0], &whichDelimiter))
     {
         buffer[1] = 0; //terminate the delimiter after 1 character
-        setTokenType(tok, DELIMITER_TOKEN); 
+        set_token_type(tok, DELIMITER_TOKEN); 
         setWhichVal(tok, (int)whichDelimiter);
         discard_char();
     }
@@ -494,7 +494,7 @@ static TOKEN make_special_token(void)
         OperatorType whichOp;
         if(true == is_double_character_operator(buffer, &whichOp))
         {
-            setTokenType(tok, OPERATOR_TOKEN); 
+            set_token_type(tok, OPERATOR_TOKEN); 
             setWhichVal(tok, (int)whichOp);
             discard_char();
             discard_char(); //discard the characters to move to the next token
@@ -504,7 +504,7 @@ static TOKEN make_special_token(void)
             buffer[1] = 0; //terminate the delimiter after 1 character
             if(true == is_single_character_operator(buffer, &whichOp))
             {
-                setTokenType(tok, OPERATOR_TOKEN); 
+                set_token_type(tok, OPERATOR_TOKEN); 
                 setWhichVal(tok, (int)whichOp);
                 discard_char();
             }
