@@ -23,7 +23,7 @@
 #include "lexer.h"
 #include <stdio.h> //for debugging purposes
 #include <stdlib.h> //for exit()
-#include "global_defs.h"
+#include <stdbool.h>
 #include "symtab.h"
 #include "error_handlers.h"
 #include "statements.h"
@@ -154,7 +154,7 @@ TOKEN declaration(SYMBOL s)
     dec = init_declarator_list(s);
     t = peektok();
 
-    if(FALSE == delimiter(t, SEMICOLON))
+    if(false == delimiter(t, SEMICOLON))
     {
         //it turns out that we haven't found a variable declaration, so exit
         //and allow the function definition recognizer take a stab at parsing
@@ -188,7 +188,7 @@ TOKEN declaration_specifiers(SYMBOL s)
     }
     TOKEN type_spec = type_specifier();
     
-    if( FALSE == reserved(type_spec, VOID))
+    if( false == reserved(type_spec, VOID))
     {
         SYMBOL type = searchst(getStringVal(type_spec));
         s->basicdt = type->basicdt;
@@ -222,9 +222,9 @@ TOKEN storage_class_specifier(void)
         return NULL;
     }
 
-    if(TRUE == reserved(tok, TYPEDEF) ||
-            TRUE == reserved(tok, EXTERN) ||
-            TRUE == reserved(tok, STATIC))
+    if(true == reserved(tok, TYPEDEF) ||
+            true == reserved(tok, EXTERN) ||
+            true == reserved(tok, STATIC))
     {
         storage_class = gettok();
     }
@@ -264,15 +264,15 @@ TOKEN type_specifier(void)
 
     TOKEN type_spec;
 
-    if( TRUE == reserved(tok, VOID) ||
-            TRUE == reserved(tok, CHAR) ||
-            TRUE == reserved(tok, SHORT) ||
-            TRUE == reserved(tok, INT) ||
-            TRUE == reserved(tok, LONG) ||
-            //TRUE == reserved(tok, FLOAT) ||
-            //TRUE == reserved(tok, DOUBLE) ||
-            TRUE == reserved(tok, SIGNED) ||
-            TRUE == reserved(tok, UNSIGNED) )
+    if( true == reserved(tok, VOID) ||
+            true == reserved(tok, CHAR) ||
+            true == reserved(tok, SHORT) ||
+            true == reserved(tok, INT) ||
+            true == reserved(tok, LONG) ||
+            //true == reserved(tok, FLOAT) ||
+            //true == reserved(tok, DOUBLE) ||
+            true == reserved(tok, SIGNED) ||
+            true == reserved(tok, UNSIGNED) )
     {
         type_spec = gettok();
     }
@@ -293,7 +293,7 @@ TOKEN init_declarator_list(SYMBOL s)
 {
     TOKEN init_dec_list = init_declarator(s);
     TOKEN tok = peektok();
-    if( TRUE == delimiter(tok, COMMA) )
+    if( true == delimiter(tok, COMMA) )
     {
         //FIXME: this might be a bug but i'm not sure yet
         tok = gettok(); //consume the COMMA
@@ -319,7 +319,7 @@ TOKEN init_declarator(SYMBOL s)
         return NULL;
     }
     TOKEN initial_value = NULL;
-    if(TRUE == _operator(tok, ASSIGNMENT))
+    if(true == _operator(tok, ASSIGNMENT))
     {
         initial_value = NULL;//initializer();
     }
@@ -450,7 +450,7 @@ TOKEN parameter_type_list(void)
     TOKEN param_list = NULL;
     TOKEN tok = peektok();
     //if we have a void list, there should be no other parameters
-    if(FALSE == reserved(tok, VOID)) //FIXME: this will cause us to be unable to use void* in our parameter list.
+    if(false == reserved(tok, VOID)) //FIXME: this will cause us to be unable to use void* in our parameter list.
     {
         param_list = parameter_list();
     }
@@ -468,7 +468,7 @@ TOKEN parameter_list(void)
 {
     TOKEN param_list = parameter_declaration();
     TOKEN tok = peektok();
-    if( TRUE == delimiter(tok, COMMA) )
+    if( true == delimiter(tok, COMMA) )
     {
         //FIXME: this might be a bug but i'm not sure yet
         tok = gettok(); //consume the COMMA
