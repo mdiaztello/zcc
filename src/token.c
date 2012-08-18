@@ -29,12 +29,15 @@ struct token
 #define intval tokenvalue.integer_number
 #define realval tokenvalue.floating_number
 
+//Token allocation function; either we succeed or we die (b/c we are out of
+//memory)
 TOKEN makeToken(void)
 {
-    TOKEN t = (TOKEN)malloc(sizeof(struct token));
+    TOKEN t = malloc(sizeof(struct token));
     if(t == NULL)
     {
-        printf("Token allocation failed\n");
+        fprintf(stderr, "Token allocation failed. are we out of memory?\n");
+        exit(-1);
     }
     return t;
 }

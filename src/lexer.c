@@ -7,6 +7,7 @@
 #include "token_API.h"
 #include "scanner.h"
 #include "debug.h"
+#include "lexer.h"
 
 /**************************** STATIC HELPER FUNCTION PROTOTYPES **************************************/
 
@@ -18,10 +19,10 @@ static void skip_block_comments(void);
 static bool block_comment_open_detected(void);
 static bool block_comment_close_detected(void);
 static bool single_line_comment_detected(void);
-static void make_identifier(TOKEN tok);
-static void make_number(TOKEN tok);
-static void make_string(TOKEN tok);
-static void make_special(TOKEN tok);
+static TOKEN make_identifier_token(void);
+static TOKEN make_number_token(void);
+static TOKEN make_string_token(void);
+static TOKEN make_special_token(void);
 static void update_line_number(char c);
 static int is_keyword_string(char* string);
 static void get_identifier_string(char* buffer);
@@ -126,34 +127,33 @@ TOKEN lex(void)
 
     if(((int)(c = peek_char())) != EOF)
     {
-        token = makeToken();
         character_class = get_char_class(c);
 
         if(ALPHA == character_class)
         {
-            make_identifier(token);
+            token = make_identifier_token();
         }
         else if(NUMERIC == character_class)
         {
-            make_number(token);
+            token = make_number_token();
         }
         else if(SPECIAL == character_class)
         {
-            make_special(token);
+            token = make_special_token();
         }
         else
         {
             if('\"' == c)
             {
-                make_string(token);
+                token = make_string_token();
             }
             else if('\'' == c)
             {
-                make_string(token);
+                token = make_string_token();
             }
             else
             {
-                printf("what the fuck just happened?\n");
+                fprintf(stderr, "Unkown character type 'c' encountered on line %lu\n", get_source_code_line_number());
             }
         }
     }
@@ -170,8 +170,8 @@ TOKEN lex(void)
     return token;
 }
 
-TOKEN lookahead = NULL;
-TOKEN current_token = NULL;
+static TOKEN lookahead = NULL;
+static TOKEN current_token = NULL;
 
 TOKEN get_token(void)
 {
@@ -320,10 +320,11 @@ static bool is_white_space(char c)
 
 /************************** IDENTIFIER PROCESSING FUNCTIONS ******************************************/
 
-//makes an identifier token from a pre-allocated token object
-static void make_identifier(TOKEN tok)
+//makes an identifier token from the input stream
+static TOKEN make_identifier_token(void)
 {
     char buffer[MAX_TOKEN_STRING_LENGTH];
+    TOKEN tok = makeToken();
 
     //assume that the token is an identifier, then check if it is a reserved word
     setTokenType(tok, IDENTIFIER_TOKEN);
@@ -338,6 +339,7 @@ static void make_identifier(TOKEN tok)
         setWhichVal(tok, whichKeyword);
         setTokenType(tok, KEYWORD_TOKEN);
     }
+    return tok;
 }
 
 //returns which keyword the string represents
@@ -384,12 +386,14 @@ static void get_identifier_string(char* buffer)
 
 /************************** NUMBER PROCESSING FUNCTIONS **********************************************/
 
-//makes number token from pre-allocated token object
-static void make_number(TOKEN tok)
+//makes number token from the input stream
+static TOKEN make_number_token(void)
 {
+    TOKEN tok = makeToken();
     setTokenType(tok, NUMBER_TOKEN); 
     uint64_t number = parse_number();
     setIntegerValue(tok, number);
+    return tok;
 }
 
 #define MAX_UNSIGNED_32_BIT_INTEGER 4294967295U
@@ -421,14 +425,16 @@ static uint64_t parse_number(void)
 
 /************************** STRING PROCESSING FUNCTIONS **********************************************/
 
-//makes string token from pre-allocated token object
-static void make_string(TOKEN tok)
+//makes string token from the input stream
+static TOKEN make_string_token(void)
 {
+    TOKEN tok = makeToken();
     char buffer[MAX_TOKEN_STRING_LENGTH];
     setTokenType(tok, STRING_LITERAL);
     setDataType(tok, STRING_TYPE);
     get_string_literal(buffer);
     setStringVal(tok, buffer);
+    return tok;
 }
 
 static void get_string_literal(char* buffer)
@@ -466,10 +472,11 @@ static void get_string_literal(char* buffer)
 
 /************************** SPECIAL TOKEN PROCESSING FUNCTIONS ***************************************/
 
-//make special token from pre-allocated token object
+//make special token from the input stream
 //handles all the delimiters and operators (both single and double character operators)
-static void make_special(TOKEN tok)
+static TOKEN make_special_token(void)
 {
+    TOKEN tok = makeToken();
     char buffer[MAX_OPERATOR_LENGTH];
     DelimiterType whichDelimiter;
 
@@ -509,6 +516,7 @@ static void make_special(TOKEN tok)
             }
         }
     }
+    return tok;
 }
 
 //answers the question whether it is a delimiter, and if so which one
