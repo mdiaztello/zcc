@@ -153,7 +153,7 @@ TOKEN lex(void)
             }
             else
             {
-                fprintf(stderr, "Unkown character type 'c' encountered on line %lu\n", get_source_code_line_number());
+                fprintf(stderr, "Unkown character type '%c' encountered on line %lu\n", c, get_source_code_line_number());
             }
         }
     }
