@@ -27,6 +27,7 @@
 #include "parser.h"
 #include "error_handlers.h"
 #include <stdio.h>
+#include <stdbool.h>
 #include "debug.h"
 #include "pprint.h"
 #include <stdlib.h>
@@ -46,27 +47,27 @@ TOKEN statement(void)
     TOKEN tok = peektok();
 
     if((getTokenType(tok) == IDENTIFIER_TOKEN) || 
-            (TRUE == reserved(tok, CASE)) || 
-            (TRUE == reserved(tok, DEFAULT)) || 
-            (TRUE == delimiter(tok, OPEN_PAREN)) ||
-            (TRUE == delimiter(tok, SEMICOLON)))
+            (true == reserved(tok, CASE)) || 
+            (true == reserved(tok, DEFAULT)) || 
+            (true == delimiter(tok, OPEN_PAREN)) ||
+            (true == delimiter(tok, SEMICOLON)))
     {
         //labeled_statement();
         result = expression_statement();
     }
-    else if(TRUE == delimiter(tok, OPEN_BRACE))
+    else if(true == delimiter(tok, OPEN_BRACE))
     {
         result = compound_statement();
     }
-    else if(TRUE == isSelectionKeyword(tok))
+    else if(true == isSelectionKeyword(tok))
     {
         result = selection_statement();
     }
-    else if(TRUE == isIterationKeyword(tok))
+    else if(true == isIterationKeyword(tok))
     {
          result = iteration_statement();
     }
-    else if(TRUE == isJumpKeyword(tok))
+    else if(true == isJumpKeyword(tok))
     {
         result = jump_statement();
     }
@@ -89,12 +90,12 @@ TOKEN jump_statement(void)
 {
     TOKEN result = NULL;
     TOKEN keyword = gettok();
-    if(TRUE == reserved(keyword, RETURN))
+    if(true == reserved(keyword, RETURN))
     {
         result = expression();
         result = make_return_statement(result);
     }
-    else if(TRUE == reserved(keyword, BREAK))
+    else if(true == reserved(keyword, BREAK))
     {
         //TOKEN break_jump_target = make_label(get_new_label_number());
         //result = make_goto(
@@ -132,7 +133,7 @@ TOKEN block_item_list(void)
 {
     TOKEN result = NULL;
     TOKEN next = NULL;
-    if(FALSE == delimiter(peektok(), CLOSE_BRACE))
+    if(false == delimiter(peektok(), CLOSE_BRACE))
     {
         result = block_item();
         next = block_item_list();
@@ -203,11 +204,11 @@ TOKEN selection_statement(void)
 
 
     TOKEN tok = peektok();
-    if(TRUE == reserved(tok, ELSE))
+    if(true == reserved(tok, ELSE))
     {
         tok = gettok();
         tok = peektok();
-        if(TRUE == reserved(tok, IF)) //handle "else if"
+        if(true == reserved(tok, IF)) //handle "else if"
         {
             else_part = selection_statement();
         }
@@ -243,7 +244,7 @@ TOKEN iteration_statement(void)
     TOKEN result = NULL;
     TOKEN loop_type = gettok();
 
-    if( TRUE == reserved(loop_type, WHILE) )
+    if( true == reserved(loop_type, WHILE) )
     {
         expect(DELIMITER_TOKEN, OPEN_PAREN, NO_ERROR_HANDLER);
         TOKEN exp = expression();
@@ -251,7 +252,7 @@ TOKEN iteration_statement(void)
         TOKEN body = compound_statement();
         result = make_while_loop(exp, body);
     }
-    else if( TRUE == reserved(loop_type, DO) )
+    else if( true == reserved(loop_type, DO) )
     {
 
         TOKEN body = compound_statement();
@@ -262,7 +263,7 @@ TOKEN iteration_statement(void)
         expect(DELIMITER_TOKEN, SEMICOLON, NO_ERROR_HANDLER);
         result = make_do_loop(exp, body);
     }
-    else if( TRUE == reserved(loop_type, FOR) )
+    else if( true == reserved(loop_type, FOR) )
     {
         expect(DELIMITER_TOKEN, OPEN_PAREN, NO_ERROR_HANDLER);
         expect(DELIMITER_TOKEN, CLOSE_PAREN, NO_ERROR_HANDLER);
