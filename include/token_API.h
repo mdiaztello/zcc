@@ -29,8 +29,8 @@
 TOKEN make_token(void);
 void set_token_type(TOKEN t, enum token_type tType);
 TokenType get_token_type(TOKEN t);
-void setDataType(TOKEN t, DataType dType);
-DataType getDataType(TOKEN t);
+void set_data_type(TOKEN t, DataType dType);
+DataType get_data_type(TOKEN t);
 
 void setStringVal(TOKEN t, char* string);
 char* getStringVal(TOKEN t);

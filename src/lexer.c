@@ -328,7 +328,7 @@ static TOKEN make_identifier_token(void)
 
     //assume that the token is an identifier, then check if it is a reserved word
     set_token_type(tok, IDENTIFIER_TOKEN);
-    setDataType(tok, STRING_TYPE);
+    set_data_type(tok, STRING_TYPE);
 
     get_identifier_string(buffer);
     setStringVal(tok, buffer);
@@ -429,7 +429,7 @@ static TOKEN make_string_token(void)
     TOKEN tok = make_token();
     char buffer[MAX_TOKEN_STRING_LENGTH];
     set_token_type(tok, STRING_LITERAL);
-    setDataType(tok, STRING_TYPE);
+    set_data_type(tok, STRING_TYPE);
     get_string_literal(buffer);
     setStringVal(tok, buffer);
     return tok;

@@ -177,7 +177,7 @@ TOKEN make_label(uint64_t label_name)
     setOperands(label, label_number);
     set_token_type(label_number, NUMBER_TOKEN);
     setIntegerValue(label_number, label_name);
-    setDataType(label_number, INTEGER);
+    set_data_type(label_number, INTEGER);
     setLink(label_number, NULL);
     setOperands(label_number, NULL);
     return label;

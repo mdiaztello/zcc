@@ -52,12 +52,12 @@ TokenType get_token_type(TOKEN t)
     return t->tokenType;
 }
 
-void setDataType(TOKEN t, DataType dType)
+void set_data_type(TOKEN t, DataType dType)
 {
     t->dataType = dType;
 }
 
-DataType getDataType(TOKEN t)
+DataType get_data_type(TOKEN t)
 {
     return t->dataType;
 }
