@@ -46,24 +46,24 @@ void init_scanner(FILE* input_file)
 }
 
 //get the next character from our input source, whatever it may be
-char nextchar(void)
+char get_char(void)
 {
     return fgetc(input_source);
 }
 
-char peekchar(void) //peek at next character w/o moving pointer
+char peek_char(void) //peek at next character w/o moving pointer
 {
     char c;
-    c = nextchar();
+    c = get_char();
     ungetc(c,input_source);
     return c;
 }
 
 //peek at 2nd next character w/o moving pointer
-char peek2char(void)
+char peek_2_char(void)
 {
-    char c = nextchar();
-    char cc = nextchar();
+    char c = get_char();
+    char cc = get_char();
     ungetc(cc, input_source);
     ungetc(c, input_source);
     return cc;
@@ -73,7 +73,7 @@ char peek2char(void)
 //this is used to clarify intent
 void discard_char(void)
 {
-    (void) nextchar();
+    (void) get_char();
 }
 
 static void init_charclass(void)

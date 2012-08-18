@@ -31,9 +31,9 @@ enum character_types
 #define DEBUG_GET_TOKEN 0
 
 extern int EOFFLG;
-char nextchar(void);//get the next character from our input source, whatever it may be
-char peekchar(void); //peek at next character w/o moving pointer
-char peek2char(void);
+char get_char(void);//get the next character from our input source, wherever that may be
+char peek_char(void); //peek at next character w/o moving pointer
+char peek_2_char(void); //look ahead 2 characters w/o moving the input pointer
 void discard_char(void);
 void init_scanner(FILE* input_file);
 int get_char_class(char c);

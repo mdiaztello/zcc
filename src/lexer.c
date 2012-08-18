@@ -124,7 +124,7 @@ TOKEN lex(void)
 
     skip_whitespace_and_comments();
 
-    if(((int)(c = peekchar())) != EOF)
+    if(((int)(c = peek_char())) != EOF)
     {
         token = makeToken();
         character_class = get_char_class(c);
@@ -220,9 +220,9 @@ static void update_line_number(char c)
 
 static void skip_whitespace_and_comments(void)
 {
-    char c = peekchar();
+    char c = peek_char();
     
-    while((((int)(c = peekchar())) != EOF) && (is_white_space(c) || single_line_comment_detected() || block_comment_open_detected()))
+    while((((int)(c = peek_char())) != EOF) && (is_white_space(c) || single_line_comment_detected() || block_comment_open_detected()))
     {
         if(single_line_comment_detected())
         {
@@ -244,7 +244,7 @@ static bool single_line_comment_detected(void)
 {
     bool result = false;
 
-    if((peekchar() == '/') && (peek2char() == '/'))
+    if((peek_char() == '/') && (peek_2_char() == '/'))
     {
         result = true;
     }
@@ -254,7 +254,7 @@ static bool single_line_comment_detected(void)
 static bool block_comment_open_detected(void)
 {
     bool result = false;
-    if((peekchar() == '/') && (peek2char() == '*'))
+    if((peek_char() == '/') && (peek_2_char() == '*'))
     {
         result = true;
     }
@@ -264,7 +264,7 @@ static bool block_comment_open_detected(void)
 static bool block_comment_close_detected(void)
 {
     bool result = false;
-    if((peekchar() == '*') && (peek2char() == '/'))
+    if((peek_char() == '*') && (peek_2_char() == '/'))
     {
         result = true;
     }
@@ -273,9 +273,9 @@ static bool block_comment_close_detected(void)
 
 static void skip_single_line_comment(void)
 {
-    char c = peekchar();
+    char c = peek_char();
 
-    while(((c = peekchar()) != '\n') && ((int)c != EOF))
+    while(((c = peek_char()) != '\n') && ((int)c != EOF))
     {
        discard_char(); //get rid of everything in the comment
     }
@@ -291,7 +291,7 @@ static void skip_block_comments(void)
     discard_char(); //discard the '/'
     discard_char(); //discard the '*'
 
-    while(((int)(c = peekchar()) != EOF) && !block_comment_close_detected())
+    while(((int)(c = peek_char()) != EOF) && !block_comment_close_detected())
     {
         discard_char();
         update_line_number(c);
@@ -363,18 +363,18 @@ static int is_keyword_string(char* string)
 static void get_identifier_string(char* buffer)
 {
     int i = 0;
-    char c = peekchar();
+    char c = peek_char();
     char cclass = get_char_class(c);
     char prev_char;
 
-    while( ((cclass == ALPHA) || (cclass == NUMERIC)) && (EOF != peekchar()) )
+    while( ((cclass == ALPHA) || (cclass == NUMERIC)) && (EOF != peek_char()) )
     {
         if(i < MAX_TOKEN_STRING_LENGTH)
         {
             buffer[i++] = c;
         }
-        prev_char = nextchar();
-        c = peekchar();
+        prev_char = get_char();
+        c = peek_char();
         cclass = get_char_class(c);
     }
     buffer[i] = 0; //terminate the string
@@ -398,16 +398,16 @@ static uint64_t parse_number(void)
 {
     uint64_t result = 0;
     int i = 0;
-    while(get_char_class(peekchar()) == NUMERIC)
+    while(get_char_class(peek_char()) == NUMERIC)
     {
-        i = nextchar() - '0';
+        i = get_char() - '0';
         result = result*10 +i;
         if(result > MAX_UNSIGNED_32_BIT_INTEGER)
         {
             printf("\nNUMERIC CONSTANT ON LINE %lu BIGGER THAN MAX 32-BIT INTEGER VALUE\n", get_source_code_line_number());
             printf("CAPPING VALUE OF THE CONSTANT TO MAX_UNSIGNED_32_BIT_INTEGER\n");
             result = MAX_UNSIGNED_32_BIT_INTEGER;
-            while(get_char_class(peekchar()) == NUMERIC)
+            while(get_char_class(peek_char()) == NUMERIC)
             {
                 discard_char(); //discard the rest of the digits
             }
@@ -435,18 +435,18 @@ static void get_string_literal(char* buffer)
 {
     int i = 0;
     discard_char(); //consume the opening quotation mark
-    char c = peekchar();
+    char c = peek_char();
     char cclass = get_char_class(c);
     char prev_char;
 
-    while( (c != '\"')  && (EOF != peekchar()) )
+    while( (c != '\"')  && (EOF != peek_char()) )
     {
-        if((peekchar() == '\\') && ((peek2char() == '\"') || (peek2char() == '\\')))
+        if((peek_char() == '\\') && ((peek_2_char() == '\"') || (peek_2_char() == '\\')))
         {
-            buffer[i++] = peek2char();
+            buffer[i++] = peek_2_char();
             discard_char();
-            prev_char = nextchar();
-            c = peekchar();
+            prev_char = get_char();
+            c = peek_char();
             cclass = get_char_class(c);
             continue;
         }
@@ -454,8 +454,8 @@ static void get_string_literal(char* buffer)
         {
             buffer[i++] = c;
         }
-        prev_char = nextchar();
-        c = peekchar();
+        prev_char = get_char();
+        c = peek_char();
         cclass = get_char_class(c);
     }
     buffer[i] = 0; //terminate the string
@@ -473,8 +473,8 @@ static void make_special(TOKEN tok)
     char buffer[MAX_OPERATOR_LENGTH];
     DelimiterType whichDelimiter;
 
-    buffer[0] = peekchar();
-    buffer[1] = peek2char();
+    buffer[0] = peek_char();
+    buffer[1] = peek_2_char();
     buffer[2] = 0; //terminate the string
 
     if(true == is_delimiter_character(buffer[0], &whichDelimiter))
