@@ -84,7 +84,7 @@ TEST(LEXER_TESTS, LexerRecognizesKeywords)
     for(int keyword_type = STATIC; keyword_type < NUM_KEYWORD_TYPES; ++keyword_type)
     {
         tok = gettok();
-        CHECK(TRUE == reserved(tok, (KeywordType)keyword_type));
+        CHECK(true == reserved(tok, (KeywordType)keyword_type));
     }
 }
 
@@ -115,7 +115,7 @@ TEST(LEXER_TESTS, LexerHandlesWeirdInlineComments)
     for(int i = 0; i < 6; i++)
     {
         tok = gettok();
-        CHECK(FALSE == isKeyword(tok));
+        CHECK(false == isKeyword(tok));
         STRCMP_EQUAL(expected_identifiers[i], getStringVal(tok));
     }
 }
@@ -128,7 +128,7 @@ TEST(LEXER_TESTS, LexerDetectsDelimiters)
     for(int delimiter_type = COMMA; delimiter_type < NUM_DELIMITER_TYPES; delimiter_type++)
     {
         tok = gettok();
-        CHECK(TRUE == delimiter(tok, (DelimiterType)delimiter_type));
+        CHECK(true == delimiter(tok, (DelimiterType)delimiter_type));
     }
 }
 
@@ -143,15 +143,15 @@ TEST(LEXER_TESTS, LexterProperlyDetectsOperators)
         tok = gettok();
         if((op_type == MULTIPLICATION) || (op_type == DEREFERENCE))//the lexer reports these as "STAR" tokens until the parser can disambiguate them
         {
-            CHECK(TRUE == _operator(tok, STAR));
+            CHECK(true == _operator(tok, STAR));
         }
         else if((op_type == BITWISE_AND) || (op_type == REFERENCE))//the lexer reports these as "AMPERSAND" tokens until the parser can disambiguate them
         {
-            CHECK(TRUE == _operator(tok, AMPERSAND));
+            CHECK(true == _operator(tok, AMPERSAND));
         }
         else
         {
-            CHECK(TRUE == _operator(tok, (OperatorType)op_type));
+            CHECK(true == _operator(tok, (OperatorType)op_type));
         }
     }
 }
@@ -175,7 +175,7 @@ TEST(LEXER_TESTS, LexerUsesMaximalMunchRule)
     
     while(tok != NULL)
     {
-        CHECK(TRUE == _operator(tok, expectedOperators[i]));
+        CHECK(true == _operator(tok, expectedOperators[i]));
         tok = gettok();
         i++;
     }
