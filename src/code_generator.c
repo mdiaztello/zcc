@@ -40,7 +40,7 @@ void generate_code(TOKEN parse_tree)
     while(NULL != function_definition)
     {
         generate_function(function_definition);
-        function_definition = getLink(function_definition);
+        function_definition = get_token_link(function_definition);
     }
 }
 
@@ -89,6 +89,6 @@ void generate_function_body(TOKEN function_definition)
         {
             generate_return_code(function_body);
         }
-        function_body = getLink(function_body);
+        function_body = get_token_link(function_body);
     }
 }

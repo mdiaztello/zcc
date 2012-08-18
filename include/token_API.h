@@ -42,8 +42,8 @@ void set_token_subtype(TOKEN t, int which);
 void set_token_integer_value(TOKEN t, uint64_t intvalue);
 uint64_t get_token_integer_value(TOKEN t);
 
-TOKEN getLink(TOKEN tok);
-void setLink(TOKEN tok, TOKEN linked_tok);
+TOKEN get_token_link(TOKEN tok);
+void set_token_link(TOKEN tok, TOKEN linked_tok);
 
 void setOperands(TOKEN tok, TOKEN operand);
 TOKEN getOperands(TOKEN tok);

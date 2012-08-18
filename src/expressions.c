@@ -398,7 +398,7 @@ TOKEN argument_expression_list(void)
         if( true == delimiter(tok, COMMA) )
         {
             expect(DELIMITER_TOKEN, COMMA, NULL);
-            setLink(result, argument_expression_list());
+            set_token_link(result, argument_expression_list());
         }
     }
 

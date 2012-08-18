@@ -139,7 +139,7 @@ TOKEN block_item_list(void)
         next = block_item_list();
         if(result != NULL)
         {
-            setLink(result, next);
+            set_token_link(result, next);
         }
         else
         {

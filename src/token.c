@@ -136,13 +136,13 @@ uint64_t get_token_integer_value(TOKEN t)
 }
 
 //gets the next token in a linked-list of tokens
-TOKEN getLink(TOKEN tok)
+TOKEN get_token_link(TOKEN tok)
 {
     return tok->link;
 }
 
 //links two tokens together to form a list (or as part of a tree structure)
-void setLink(TOKEN tok, TOKEN linked_tok)
+void set_token_link(TOKEN tok, TOKEN linked_tok)
 {
     tok->link = linked_tok;
 }

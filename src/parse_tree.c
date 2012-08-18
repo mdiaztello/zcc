@@ -27,8 +27,8 @@ uint64_t get_current_label(void)
 TOKEN make_binary_operation(TOKEN operation, TOKEN leftSide, TOKEN rightSide)
 {
     setOperands(operation, leftSide);
-    setLink(leftSide, rightSide);
-    setLink(rightSide, NULL);
+    set_token_link(leftSide, rightSide);
+    set_token_link(rightSide, NULL);
     return operation;
 }
 
@@ -36,7 +36,7 @@ TOKEN make_binary_operation(TOKEN operation, TOKEN leftSide, TOKEN rightSide)
 TOKEN make_unary_operation(TOKEN operation, TOKEN operand)
 {
     setOperands(operation, operand);
-    setLink(operand, NULL);
+    set_token_link(operand, NULL);
     return operation;
 }
 
@@ -62,11 +62,11 @@ TOKEN append_statement(TOKEN statement_list, TOKEN end_statement)
 {
     TOKEN tail = getOperands(statement_list);
 
-    while(getLink(tail) != NULL)
+    while(get_token_link(tail) != NULL)
     {
-        tail = getLink(tail);
+        tail = get_token_link(tail);
     }
-    setLink(tail, end_statement);
+    set_token_link(tail, end_statement);
     return statement_list;
 }
 
@@ -75,11 +75,11 @@ TOKEN make_if(TOKEN exp, TOKEN if_body, TOKEN else_body)
     TOKEN result = make_token();
     set_token_type(result, OPERATOR_TOKEN);
     set_token_subtype(result, PARSE_TREE_IF);
-    setLink(exp, if_body);
-    setLink(if_body, else_body);
+    set_token_link(exp, if_body);
+    set_token_link(if_body, else_body);
     if(else_body != NULL)
     {
-        setLink(else_body, NULL);
+        set_token_link(else_body, NULL);
     }
     setOperands(result, exp);
     return result;
@@ -92,7 +92,7 @@ TOKEN make_function_call(TOKEN function_name, TOKEN args)
     set_token_type(function_call, OPERATOR_TOKEN);
     set_token_subtype(function_call, PARSE_TREE_FUNCALL);
     setOperands(function_call, function_name);
-    setLink(function_name, args);
+    set_token_link(function_name, args);
     return function_call;
 }
 
@@ -103,7 +103,7 @@ TOKEN get_function_call_name(TOKEN function_call)
 
 TOKEN get_function_call_args(TOKEN function_call)
 {
-    return getLink(get_function_call_name(function_call));
+    return get_token_link(get_function_call_name(function_call));
 }
 
 TOKEN make_function_definition(TOKEN function_name, TOKEN parameters, TOKEN function_body)
@@ -112,19 +112,19 @@ TOKEN make_function_definition(TOKEN function_name, TOKEN parameters, TOKEN func
     set_token_type(function_def, OPERATOR_TOKEN);
     set_token_subtype(function_def, PARSE_TREE_FUNCTION_DEFINITION);
     setOperands(function_def, function_name);
-    setLink(function_name, parameters);
-    setLink(parameters, function_body);
+    set_token_link(function_name, parameters);
+    set_token_link(parameters, function_body);
     return function_def;
 }
 
 TOKEN get_function_def_body(TOKEN function_definition)
 {
-    return getLink(get_function_def_parameters(function_definition));
+    return get_token_link(get_function_def_parameters(function_definition));
 }
 
 TOKEN get_function_def_parameters(TOKEN function_definition)
 {
-    return getLink(get_function_def_name(function_definition));
+    return get_token_link(get_function_def_name(function_definition));
 }
 
 TOKEN get_function_def_name(TOKEN function_definition)
@@ -173,12 +173,12 @@ TOKEN make_label(uint64_t label_name)
     TOKEN label_number = make_token();
     set_token_type(label, OPERATOR_TOKEN);
     set_token_subtype(label, PARSE_TREE_LABEL);
-    setLink(label, NULL);
+    set_token_link(label, NULL);
     setOperands(label, label_number);
     set_token_type(label_number, NUMBER_TOKEN);
     set_token_integer_value(label_number, label_name);
     set_data_type(label_number, INTEGER);
-    setLink(label_number, NULL);
+    set_token_link(label_number, NULL);
     setOperands(label_number, NULL);
     return label;
 }
@@ -205,7 +205,7 @@ TOKEN make_while_loop(TOKEN exp, TOKEN body)
     body = append_statement(body, loop_branch);
     TOKEN loop_body = make_if(exp, body, NULL);
     
-    setLink(loop_start, loop_body);
+    set_token_link(loop_start, loop_body);
     TOKEN while_loop = make_statement_list(loop_start);
 
     return while_loop;
@@ -223,7 +223,7 @@ TOKEN make_do_loop(TOKEN exp, TOKEN body)
     TOKEN loop_test = make_if(exp, loop_branch, NULL);
     
     body = append_statement(body, loop_test);
-    setLink(loop_start, body);
+    set_token_link(loop_start, body);
     TOKEN while_loop = make_statement_list(loop_start);
 
     return while_loop;

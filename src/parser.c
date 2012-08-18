@@ -56,7 +56,7 @@ TOKEN translation_unit(void)
         next = translation_unit();
         if(trans_unit != NULL)
         {
-            setLink(trans_unit, next);
+            set_token_link(trans_unit, next);
         }
         else
         {
@@ -137,7 +137,7 @@ TOKEN declaration_list(SYMBOL s)
     if( dec_list != NULL)
     {
         //FIXME this might be a bug, but I'm not sure yet
-        setLink(dec_list, declaration_list(s));
+        set_token_link(dec_list, declaration_list(s));
     }
     return dec_list;
 }
@@ -297,12 +297,12 @@ TOKEN init_declarator_list(SYMBOL s)
     {
         //FIXME: this might be a bug but i'm not sure yet
         tok = get_token(); //consume the COMMA
-        setLink(init_dec_list, init_declarator(s));
+        set_token_link(init_dec_list, init_declarator(s));
     }
     else
     {
         //FIXME: this might be a bug but i'm not sure yet
-        setLink(init_dec_list, NULL);
+        set_token_link(init_dec_list, NULL);
     }
     return init_dec_list;
 }
@@ -472,12 +472,12 @@ TOKEN parameter_list(void)
     {
         //FIXME: this might be a bug but i'm not sure yet
         tok = get_token(); //consume the COMMA
-        setLink(param_list, parameter_list());
+        set_token_link(param_list, parameter_list());
     }
     else
     {
         //FIXME: this might be a bug but i'm not sure yet
-        setLink(param_list, NULL);
+        set_token_link(param_list, NULL);
     }
     return param_list;
 }
