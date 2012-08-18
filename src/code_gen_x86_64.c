@@ -90,7 +90,7 @@ void generate_return_code(TOKEN return_statement)
     TOKEN return_val = getOperands(return_statement);
     emit("\tmovl $");
     char value[10];
-    sprintf(value, "%lu", getIntegerValue(return_val));
+    sprintf(value, "%lu", get_token_integer_value(return_val));
     emit(value);
     emit(", %eax\n");
 }

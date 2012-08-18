@@ -8,8 +8,8 @@
 
 struct token
 {
-    enum token_type tokenType;
-    enum data_type dataType;
+    enum token_type tokenType; //high-level token type: e.g. delimiter, operator, etc
+    enum data_type dataType;   //data type of variable tokens : e.g. int, char, long
     struct symtbr * symtype;   //pointer to the symbols type in the symbol table
     struct symtbr * symentry;  //pointer to entry in the symbol table
     struct token* operands;
@@ -19,7 +19,7 @@ struct token
         char tokenstring[MAX_TOKEN_STRING_LENGTH]; //contains the identifier name or string constant value
         unsigned int which; //The whichval further disambiguates what subtype
                             //of token we have. E.g. what type of OPERATOR_TOKEN we are looking at
-        long integer_number;    //contains the value of an integer constant
+        uint64_t integer_number;    //contains the value of an integer constant
         double floating_number; //contains the value of a floating point constant
     } tokenvalue;
 
@@ -43,11 +43,15 @@ TOKEN make_token(void)
     return t;
 }
 
+//sets the high-level type of the token; the types correspond to broad
+//categories like delimiters, keywords, number constants, and strings
 void set_token_type(TOKEN t, TokenType tType)
 {
     t->tokenType = tType;
 }
 
+//returns the high-level type of the token; e.g. operator, delimiter,
+//string constant, etc
 TokenType get_token_type(TOKEN t)
 {
     return t->tokenType;
@@ -106,41 +110,53 @@ char* get_string_value(TOKEN t)
     return s;
 }
 
+//sets the subtype of the token: e.g. an OPERATOR_TOKEN might have a subtype of ADDITION
 void set_token_subtype(TOKEN t, int which)
 {
     t->whichval = which;
 }
 
+//disambiguates the token type by returning the subtype of the token: e.g. an
+//OPERATOR_TOKEN might have a subtype of ADDITION
 unsigned int get_token_subtype(TOKEN t)
 {
     return t->whichval;
 }
 
-void setIntegerValue(TOKEN t, long intvalue)
+//sets the value of a token representing an integer constant
+void set_token_integer_value(TOKEN t, uint64_t intvalue)
 {
     t->intval = intvalue;
 }
 
-long getIntegerValue(TOKEN t)
+//returns the value of a token representing an integer constant
+uint64_t get_token_integer_value(TOKEN t)
 {
     return t->intval;
 }
 
+//gets the next token in a linked-list of tokens
 TOKEN getLink(TOKEN tok)
 {
     return tok->link;
 }
 
+//links two tokens together to form a list (or as part of a tree structure)
 void setLink(TOKEN tok, TOKEN linked_tok)
 {
     tok->link = linked_tok;
 }
 
+//gets the associated operands from an OPERATOR_TOKEN; together, they form a
+//tree that forms an expression. The trees can be connected together to form
+//arbitrarily complex expressions.
 TOKEN getOperands(TOKEN tok)
 {
     return tok->operands;
 }
 
+//attaches an operand token (an identifier or a constant) to the operator to 
+//form an expression tree
 void setOperands(TOKEN tok, TOKEN operand)
 {
     tok->operands = operand;
@@ -297,7 +313,6 @@ bool isAssignmentOperator(TOKEN tok)
 }
 
 //checks to see if the operator is one of the possible unary operators
-
 bool isUnaryOperator(TOKEN tok)
 {
     bool result = false;
@@ -588,7 +603,7 @@ void printDelimiterType(TOKEN t)
 
 void printNumericValue(TOKEN t)
 {
-    printf("The value of this NUMBER_TOKEN is %lu\n", getIntegerValue(t));
+    printf("The value of this NUMBER_TOKEN is %lu\n", get_token_integer_value(t));
 }
 
 void printOperator(TOKEN t)

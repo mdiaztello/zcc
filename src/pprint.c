@@ -242,7 +242,7 @@ void printtok(TOKEN tok)             /* print a token in abbreviated form */
 			switch (get_data_type(tok))
 			{
 				case INTEGER:
-					printf ("%ld", getIntegerValue(tok));
+					printf ("%ld", get_token_integer_value(tok));
 					break;
 				//case REAL:
 				//	printf ("%e", getRealVal(tok));
@@ -283,7 +283,7 @@ void dbugprinttok(TOKEN tok)  /* print a token in 'nice' debugging form */
 				{
 					case INTEGER:
 						printf("token %6p    NUM: %12ld    dtype %2d    link %6p\n",
-								tok, getIntegerValue(tok), get_data_type(tok), getLink(tok));
+								tok, get_token_integer_value(tok), get_data_type(tok), getLink(tok));
 						break;
 					//case REAL:
 					//	printf("token %6p    NUM: %12e    dtype %2d    link %6p\n",

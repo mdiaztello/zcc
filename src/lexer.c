@@ -392,7 +392,7 @@ static TOKEN make_number_token(void)
     TOKEN tok = make_token();
     set_token_type(tok, NUMBER_TOKEN); 
     uint64_t number = parse_number();
-    setIntegerValue(tok, number);
+    set_token_integer_value(tok, number);
     return tok;
 }
 

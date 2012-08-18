@@ -23,6 +23,7 @@
  * =====================================================================================
  */
 
+#include <stdint.h>
 #include <stdbool.h>
 #include "symtab.h"
 
@@ -38,8 +39,8 @@ char* get_string_value(TOKEN t);
 unsigned int get_token_subtype(TOKEN t);
 void set_token_subtype(TOKEN t, int which);
 
-void setIntegerValue(TOKEN t, long intvalue);
-long getIntegerValue(TOKEN t);
+void set_token_integer_value(TOKEN t, uint64_t intvalue);
+uint64_t get_token_integer_value(TOKEN t);
 
 TOKEN getLink(TOKEN tok);
 void setLink(TOKEN tok, TOKEN linked_tok);
