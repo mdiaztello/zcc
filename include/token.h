@@ -5,8 +5,14 @@
                             //really long function and variable names
 
 
+//The token is the basic lexical unit of the language, and we use them to build
+//a parse tree which represents the structure of our program. The token data
+//structure packages all of the data we need to know about a token that we
+//encounter in the source code input stream.
 typedef struct token* TOKEN;  //opaque pointer declaration; implementation is hidden in token.c
 
+//The token_type enum describes the different possible categories of tokens.
+//A token can represent a keyword, or a delimiter, or an operator, or a constant value like a string literal or number (etc).
 enum token_type
 {
     KEYWORD_TOKEN = 0,
@@ -23,6 +29,9 @@ enum token_type
 };
 typedef enum token_type TokenType;
 
+//The operator_type enum describes which type of operator a special token
+//represents Operators correspond to mathematical or logical operations like
+//addition or negation
 enum operator_type
 {
     //single character operators
@@ -85,6 +94,9 @@ enum operator_type
 };
 typedef enum operator_type OperatorType;
 
+//The delimiter_type enum describes which type of delimiter a special token
+//happens to be. The delimiters do things like group expressions, separate
+//values, and terminate statements.
 enum delimiter_type
 {
     COMMA = 0,      // ","
@@ -103,6 +115,8 @@ enum delimiter_type
 };
 typedef enum delimiter_type DelimiterType;
 
+//The data_type enum describes what data type a variable has
+//This corresponds to identifier tokens that represent variables
 enum data_type 
 {
     INTEGER = 0,
@@ -127,7 +141,11 @@ enum data_type
 typedef enum data_type DataType;
 
 #define MAX_KEYWORD_LENGTH 9 //"continue" and "unsigned" are the longest keywords
-                                //with lengths of 8 characters (+ 1 for the null terminal)
+                             //with lengths of 8 characters (+ 1 for the null terminal)
+
+//The keyword_types enum describes which C language keyword a string token
+//happens to represent Keywords function as program control constructs or aid
+//in declarations of data structures and variables
 enum keyword_types
 {
     STATIC = 0,

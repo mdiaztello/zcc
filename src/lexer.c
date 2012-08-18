@@ -336,7 +336,7 @@ static TOKEN make_identifier_token(void)
     int whichKeyword = is_keyword_string(get_string_value(tok));
     if(-1 != whichKeyword)
     {
-        setWhichVal(tok, whichKeyword);
+        set_token_subtype(tok, whichKeyword);
         set_token_type(tok, KEYWORD_TOKEN);
     }
     return tok;
@@ -486,7 +486,7 @@ static TOKEN make_special_token(void)
     {
         buffer[1] = 0; //terminate the delimiter after 1 character
         set_token_type(tok, DELIMITER_TOKEN); 
-        setWhichVal(tok, (int)whichDelimiter);
+        set_token_subtype(tok, (int)whichDelimiter);
         discard_char();
     }
     else
@@ -495,7 +495,7 @@ static TOKEN make_special_token(void)
         if(true == is_double_character_operator(buffer, &whichOp))
         {
             set_token_type(tok, OPERATOR_TOKEN); 
-            setWhichVal(tok, (int)whichOp);
+            set_token_subtype(tok, (int)whichOp);
             discard_char();
             discard_char(); //discard the characters to move to the next token
         }
@@ -505,7 +505,7 @@ static TOKEN make_special_token(void)
             if(true == is_single_character_operator(buffer, &whichOp))
             {
                 set_token_type(tok, OPERATOR_TOKEN); 
-                setWhichVal(tok, (int)whichOp);
+                set_token_subtype(tok, (int)whichOp);
                 discard_char();
             }
             else

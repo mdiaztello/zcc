@@ -500,7 +500,7 @@ TOKEN parameter_declaration(void)
 void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void))
 {
     TOKEN peek = peek_token();
-    if((tType != get_token_type(peek)) || (whichToken != getWhichVal(peek)))
+    if((tType != get_token_type(peek)) || (whichToken != get_token_subtype(peek)))
     {
         if(NULL == errorAction)
         {

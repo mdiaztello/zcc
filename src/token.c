@@ -16,10 +16,11 @@ struct token
     struct token* link;
     union
     {
-        char tokenstring[MAX_TOKEN_STRING_LENGTH];
-        unsigned int which;
-        long integer_number;
-        double floating_number;
+        char tokenstring[MAX_TOKEN_STRING_LENGTH]; //contains the identifier name or string constant value
+        unsigned int which; //The whichval further disambiguates what subtype
+                            //of token we have. E.g. what type of OPERATOR_TOKEN we are looking at
+        long integer_number;    //contains the value of an integer constant
+        double floating_number; //contains the value of a floating point constant
     } tokenvalue;
 
 };
@@ -105,12 +106,12 @@ char* get_string_value(TOKEN t)
     return s;
 }
 
-void setWhichVal(TOKEN t, int which)
+void set_token_subtype(TOKEN t, int which)
 {
     t->whichval = which;
 }
 
-unsigned int getWhichVal(TOKEN t)
+unsigned int get_token_subtype(TOKEN t)
 {
     return t->whichval;
 }
@@ -190,7 +191,7 @@ StorageClass getTokenStorageClass(TOKEN tok)
         exit(EXIT_FAILURE); //FIXME: we don't want to just barf in the future, but for now its ok
     }
 
-    int whichStorage = getWhichVal(tok);
+    int whichStorage = get_token_subtype(tok);
     StorageClass s;
 
     switch(whichStorage)
@@ -228,7 +229,7 @@ bool isKeyword(TOKEN tok)
 bool reserved(TOKEN tok, KeywordType keyword)
 {
     bool result = false;
-    if(isKeyword(tok) && (getWhichVal(tok) == keyword))
+    if(isKeyword(tok) && (get_token_subtype(tok) == keyword))
     {
         result = true;
     }
@@ -248,7 +249,7 @@ bool isDelimiter(TOKEN tok)
 bool delimiter(TOKEN tok, DelimiterType delim)
 {
     bool result = false;
-    if(isDelimiter(tok) && (getWhichVal(tok) == delim))
+    if(isDelimiter(tok) && (get_token_subtype(tok) == delim))
     {
         result = true;
     }
@@ -268,7 +269,7 @@ bool isOperator(TOKEN tok)
 bool _operator(TOKEN tok, OperatorType operator)
 {
     bool result = false;
-    if(isOperator(tok) && (getWhichVal(tok) == operator))
+    if(isOperator(tok) && (get_token_subtype(tok) == operator))
     {
         result = true;
     }
@@ -448,7 +449,7 @@ void printTokenType(TOKEN t)
 void printKeywordType(TOKEN t)
 {
     printf("This is a \"");
-    switch(getWhichVal(t))
+    switch(get_token_subtype(t))
     {
         case STATIC:
             printf("static");
@@ -550,7 +551,7 @@ void printIdentifier(TOKEN t)
 void printDelimiterType(TOKEN t)
 {
     printf("The DELIMITER we found is a ");
-    switch(getWhichVal(t))
+    switch(get_token_subtype(t))
     {
         case COMMA:
             printf("COMMA\n");
@@ -593,7 +594,7 @@ void printNumericValue(TOKEN t)
 void printOperator(TOKEN t)
 {
     printf("The OPERATOR_TOKEN is a ");
-    switch(getWhichVal(t))
+    switch(get_token_subtype(t))
     {
     //single character operators
         case ADDITION:

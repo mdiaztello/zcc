@@ -174,7 +174,7 @@ TOKEN AND_expression(void)
     if(true == _operator(tok, AMPERSAND))
     {
         op = get_token();
-        setWhichVal(op, BITWISE_AND);
+        set_token_subtype(op, BITWISE_AND);
         result = make_binary_operation(op, operand, AND_expression());
     }
     else
@@ -297,7 +297,7 @@ TOKEN multiplicative_expression(void)
         //resolve STAR operators to MULTIPLICATION
         if(true == _operator(tok, STAR))
         {
-            setWhichVal(op, MULTIPLICATION);
+            set_token_subtype(op, MULTIPLICATION);
         }
         operand = cast_expression();
 
@@ -366,13 +366,13 @@ TOKEN unary_operator(void)
         //resolve all unary STARS and AMPERSANDS to DEREFERENCES and REFERENCES
         if(true == _operator(tok, AMPERSAND))
         {
-            setWhichVal(op, REFERENCE);
+            set_token_subtype(op, REFERENCE);
         }
         else
         {
             if(true == _operator(tok, STAR))
             {
-                setWhichVal(op, DEREFERENCE);
+                set_token_subtype(op, DEREFERENCE);
             }
         }
     }

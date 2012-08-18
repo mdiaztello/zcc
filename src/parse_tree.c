@@ -46,7 +46,7 @@ TOKEN make_statement_list(TOKEN statements)
 {  
     TOKEN result = make_token();
     set_token_type(result, OPERATOR_TOKEN); 
-    setWhichVal(result, PARSE_TREE_STATEMENT_LIST);
+    set_token_subtype(result, PARSE_TREE_STATEMENT_LIST);
     setOperands(result, statements);
     return result;
 }
@@ -74,7 +74,7 @@ TOKEN make_if(TOKEN exp, TOKEN if_body, TOKEN else_body)
 {
     TOKEN result = make_token();
     set_token_type(result, OPERATOR_TOKEN);
-    setWhichVal(result, PARSE_TREE_IF);
+    set_token_subtype(result, PARSE_TREE_IF);
     setLink(exp, if_body);
     setLink(if_body, else_body);
     if(else_body != NULL)
@@ -90,7 +90,7 @@ TOKEN make_function_call(TOKEN function_name, TOKEN args)
 {
     TOKEN function_call = make_token();
     set_token_type(function_call, OPERATOR_TOKEN);
-    setWhichVal(function_call, PARSE_TREE_FUNCALL);
+    set_token_subtype(function_call, PARSE_TREE_FUNCALL);
     setOperands(function_call, function_name);
     setLink(function_name, args);
     return function_call;
@@ -110,7 +110,7 @@ TOKEN make_function_definition(TOKEN function_name, TOKEN parameters, TOKEN func
 {
     TOKEN function_def = make_token();
     set_token_type(function_def, OPERATOR_TOKEN);
-    setWhichVal(function_def, PARSE_TREE_FUNCTION_DEFINITION);
+    set_token_subtype(function_def, PARSE_TREE_FUNCTION_DEFINITION);
     setOperands(function_def, function_name);
     setLink(function_name, parameters);
     setLink(parameters, function_body);
@@ -136,7 +136,7 @@ TOKEN make_return_statement(TOKEN return_exp)
 {
     TOKEN ret_statement = make_token();
     set_token_type(ret_statement, OPERATOR_TOKEN);
-    setWhichVal(ret_statement, PARSE_TREE_RETURN);
+    set_token_subtype(ret_statement, PARSE_TREE_RETURN);
     setOperands(ret_statement, return_exp);
     return ret_statement;
 }
@@ -145,7 +145,7 @@ TOKEN make_translation_unit(TOKEN function_list)
 {
     TOKEN trans_unit = make_token();
     set_token_type(trans_unit, OPERATOR_TOKEN);
-    setWhichVal(trans_unit, PARSE_TREE_TRANSLATION_UNIT);
+    set_token_subtype(trans_unit, PARSE_TREE_TRANSLATION_UNIT);
     setOperands(trans_unit, function_list);
     return trans_unit;
 }
@@ -172,7 +172,7 @@ TOKEN make_label(uint64_t label_name)
     TOKEN label = make_token();
     TOKEN label_number = make_token();
     set_token_type(label, OPERATOR_TOKEN);
-    setWhichVal(label, PARSE_TREE_LABEL);
+    set_token_subtype(label, PARSE_TREE_LABEL);
     setLink(label, NULL);
     setOperands(label, label_number);
     set_token_type(label_number, NUMBER_TOKEN);
@@ -188,7 +188,7 @@ TOKEN make_goto(TOKEN label)
 {
     TOKEN goto_tok = make_token();
     set_token_type(goto_tok, OPERATOR_TOKEN);
-    setWhichVal(goto_tok, PARSE_TREE_GOTO);
+    set_token_subtype(goto_tok, PARSE_TREE_GOTO);
     setOperands(goto_tok, getOperands(label));//copy_token(label); //FIXME: we might need to change this to search for the label in the label table instead of just making a label
     return goto_tok;
 }

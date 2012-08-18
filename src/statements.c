@@ -218,7 +218,7 @@ TOKEN selection_statement(void)
         }
     }
 
-    if(getWhichVal(conditional))
+    if(get_token_subtype(conditional))
     {
     }
 

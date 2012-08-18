@@ -76,6 +76,8 @@ void discard_char(void)
     (void) get_char();
 }
 
+//initializes our character class lookup table, which helps us determine
+//what kind of character we've received from the input
 static void init_charclass(void)
 {
     int i;
