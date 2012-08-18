@@ -396,8 +396,6 @@ static TOKEN make_number_token(void)
     return tok;
 }
 
-#define MAX_UNSIGNED_32_BIT_INTEGER 4294967295U
-
 static uint64_t parse_number(void)
 {
     uint64_t result = 0;
@@ -406,11 +404,11 @@ static uint64_t parse_number(void)
     {
         i = get_char() - '0';
         result = result*10 +i;
-        if(result > MAX_UNSIGNED_32_BIT_INTEGER)
+        if(result > UINT32_MAX)
         {
             printf("\nNUMERIC CONSTANT ON LINE %lu BIGGER THAN MAX 32-BIT INTEGER VALUE\n", get_source_code_line_number());
-            printf("CAPPING VALUE OF THE CONSTANT TO MAX_UNSIGNED_32_BIT_INTEGER\n");
-            result = MAX_UNSIGNED_32_BIT_INTEGER;
+            printf("CAPPING VALUE OF THE CONSTANT TO UINT32_MAX\n");
+            result = UINT32_MAX;
             while(get_char_class(peek_char()) == NUMERIC)
             {
                 discard_char(); //discard the rest of the digits
