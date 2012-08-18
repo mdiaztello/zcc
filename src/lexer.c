@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> //for strcmp
+#include <stdbool.h>
 #include "token.h"
 #include "token_API.h"
 #include "scanner.h"
-#include "global_defs.h"
 #include "debug.h"
 
 /**************************** STATIC HELPER FUNCTION PROTOTYPES **************************************/
@@ -12,10 +12,10 @@
 static void skip_whitespace_and_comments(void);
 static void skip_single_line_comment(void);
 static void skip_block_comments(void);
-static BOOLEAN isWhiteSpace(char c);
-static BOOLEAN detectBlockCommentClose(void);
-static BOOLEAN detectBlockCommentOpen(void);
-static BOOLEAN detectedSingleLineComment(void);
+static bool isWhiteSpace(char c);
+static bool detectBlockCommentClose(void);
+static bool detectBlockCommentOpen(void);
+static bool detectedSingleLineComment(void);
 static void make_identifier(TOKEN tok);
 static void make_number(TOKEN tok);
 static void make_string(TOKEN tok);
@@ -27,9 +27,9 @@ static void get_string_literal(char* buffer);
 static long long parse_number(void);
 static TOKEN lex(void);  //just gets a token from the input stream
 
-static BOOLEAN isDelimiterCharacter(char c, DelimiterType* whichDelim);
-static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp);
-static BOOLEAN isSingleCharacterOperator(char* buffer, OperatorType* whichOp);
+static bool isDelimiterCharacter(char c, DelimiterType* whichDelim);
+static bool isDoubleCharacterOperator(char* buffer, OperatorType* whichOp);
+static bool isSingleCharacterOperator(char* buffer, OperatorType* whichOp);
 
 /**************************** END OF STATIC HELPER FUNCTION PROTOTYPES *******************************/
 
@@ -229,9 +229,9 @@ static void skip_whitespace_and_comments(void)
     }
 }
 
-static BOOLEAN detectedSingleLineComment(void)
+static bool detectedSingleLineComment(void)
 {
-    BOOLEAN result = FALSE;
+    bool result = FALSE;
 
     if((peekchar() == '/') && (peek2char() == '/'))
     {
@@ -240,9 +240,9 @@ static BOOLEAN detectedSingleLineComment(void)
     return result;
 }
 
-static BOOLEAN detectBlockCommentOpen(void)
+static bool detectBlockCommentOpen(void)
 {
-    BOOLEAN result = FALSE;
+    bool result = FALSE;
     if((peekchar() == '/') && (peek2char() == '*'))
     {
         result = TRUE;
@@ -250,9 +250,9 @@ static BOOLEAN detectBlockCommentOpen(void)
     return result;
 }
 
-static BOOLEAN detectBlockCommentClose(void)
+static bool detectBlockCommentClose(void)
 {
-    BOOLEAN result = FALSE;
+    bool result = FALSE;
     if((peekchar() == '*') && (peek2char() == '/'))
     {
         result = TRUE;
@@ -295,9 +295,9 @@ static void skip_block_comments(void)
     discard_char(); //discard the '/'
 }
 
-static BOOLEAN isWhiteSpace(char c)
+static bool isWhiteSpace(char c)
 {
-    BOOLEAN result = FALSE;
+    bool result = FALSE;
     if((c == '\t') || (c == '\n') || (c == ' '))
     {
         result = TRUE;
@@ -510,10 +510,10 @@ static void make_special(TOKEN tok)
 
 //answers the question whether it is a delimiter, and if so which one
 //if it is not a delimiter, then the value stored in whichDelim is invalid
-static BOOLEAN isDelimiterCharacter(char c, DelimiterType* whichDelim)
+static bool isDelimiterCharacter(char c, DelimiterType* whichDelim)
 {
     int i = 0;
-    BOOLEAN result = FALSE;
+    bool result = FALSE;
     *whichDelim = 0;
     for(i = 0; i < NUM_DELIMITER_TYPES; ++i)
     {
@@ -531,10 +531,10 @@ static BOOLEAN isDelimiterCharacter(char c, DelimiterType* whichDelim)
 
 //answers the question whether it is an operator, and if so which one
 //if it is not a operator, then the value stored in whichOp is invalid
-static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
+static bool isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
 {
     int i = 0;
-    BOOLEAN result = FALSE;
+    bool result = FALSE;
     *whichOp = 0;
 
     for(i = EQUALS; i < NUM_OPERATOR_TYPES; ++i)
@@ -550,10 +550,10 @@ static BOOLEAN isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
 
 //answers the question whether it is an operator, and if so which one
 //if it is not a operator, then the value stored in whichOp is invalid
-static BOOLEAN isSingleCharacterOperator(char* buffer, OperatorType* whichOp)
+static bool isSingleCharacterOperator(char* buffer, OperatorType* whichOp)
 {
     int i = 0;
-    BOOLEAN result = FALSE;
+    bool result = FALSE;
     *whichOp = 0;
 
     for(i = ADDITION; i < NUM_OPERATOR_TYPES; ++i)
