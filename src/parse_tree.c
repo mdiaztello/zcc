@@ -44,7 +44,7 @@ TOKEN make_unary_operation(TOKEN operation, TOKEN operand)
 
 TOKEN make_statement_list(TOKEN statements)
 {  
-    TOKEN result = makeToken();
+    TOKEN result = make_token();
     setTokenType(result, OPERATOR_TOKEN); 
     setWhichVal(result, PARSE_TREE_STATEMENT_LIST);
     setOperands(result, statements);
@@ -72,7 +72,7 @@ TOKEN append_statement(TOKEN statement_list, TOKEN end_statement)
 
 TOKEN make_if(TOKEN exp, TOKEN if_body, TOKEN else_body)
 {
-    TOKEN result = makeToken();
+    TOKEN result = make_token();
     setTokenType(result, OPERATOR_TOKEN);
     setWhichVal(result, PARSE_TREE_IF);
     setLink(exp, if_body);
@@ -88,7 +88,7 @@ TOKEN make_if(TOKEN exp, TOKEN if_body, TOKEN else_body)
 
 TOKEN make_function_call(TOKEN function_name, TOKEN args) 
 {
-    TOKEN function_call = makeToken();
+    TOKEN function_call = make_token();
     setTokenType(function_call, OPERATOR_TOKEN);
     setWhichVal(function_call, PARSE_TREE_FUNCALL);
     setOperands(function_call, function_name);
@@ -108,7 +108,7 @@ TOKEN get_function_call_args(TOKEN function_call)
 
 TOKEN make_function_definition(TOKEN function_name, TOKEN parameters, TOKEN function_body)
 {
-    TOKEN function_def = makeToken();
+    TOKEN function_def = make_token();
     setTokenType(function_def, OPERATOR_TOKEN);
     setWhichVal(function_def, PARSE_TREE_FUNCTION_DEFINITION);
     setOperands(function_def, function_name);
@@ -134,7 +134,7 @@ TOKEN get_function_def_name(TOKEN function_definition)
 
 TOKEN make_return_statement(TOKEN return_exp)
 {
-    TOKEN ret_statement = makeToken();
+    TOKEN ret_statement = make_token();
     setTokenType(ret_statement, OPERATOR_TOKEN);
     setWhichVal(ret_statement, PARSE_TREE_RETURN);
     setOperands(ret_statement, return_exp);
@@ -143,7 +143,7 @@ TOKEN make_return_statement(TOKEN return_exp)
 
 TOKEN make_translation_unit(TOKEN function_list)
 {
-    TOKEN trans_unit = makeToken();
+    TOKEN trans_unit = make_token();
     setTokenType(trans_unit, OPERATOR_TOKEN);
     setWhichVal(trans_unit, PARSE_TREE_TRANSLATION_UNIT);
     setOperands(trans_unit, function_list);
@@ -169,8 +169,8 @@ TOKEN makeprogram(TOKEN name, TOKEN args, TOKEN statements)
 
 TOKEN make_label(uint64_t label_name)
 {
-    TOKEN label = makeToken();
-    TOKEN label_number = makeToken();
+    TOKEN label = make_token();
+    TOKEN label_number = make_token();
     setTokenType(label, OPERATOR_TOKEN);
     setWhichVal(label, PARSE_TREE_LABEL);
     setLink(label, NULL);
@@ -186,7 +186,7 @@ TOKEN make_label(uint64_t label_name)
 
 TOKEN make_goto(TOKEN label)
 {
-    TOKEN goto_tok = makeToken();
+    TOKEN goto_tok = make_token();
     setTokenType(goto_tok, OPERATOR_TOKEN);
     setWhichVal(goto_tok, PARSE_TREE_GOTO);
     setOperands(goto_tok, getOperands(label));//copy_token(label); //FIXME: we might need to change this to search for the label in the label table instead of just making a label

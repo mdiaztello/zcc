@@ -26,7 +26,7 @@
 #include <stdbool.h>
 #include "symtab.h"
 
-TOKEN makeToken(void);
+TOKEN make_token(void);
 void setTokenType(TOKEN t, enum token_type tType);
 TokenType getTokenType(TOKEN t);
 void setDataType(TOKEN t, DataType dType);

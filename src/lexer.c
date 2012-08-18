@@ -324,7 +324,7 @@ static bool is_white_space(char c)
 static TOKEN make_identifier_token(void)
 {
     char buffer[MAX_TOKEN_STRING_LENGTH];
-    TOKEN tok = makeToken();
+    TOKEN tok = make_token();
 
     //assume that the token is an identifier, then check if it is a reserved word
     setTokenType(tok, IDENTIFIER_TOKEN);
@@ -389,7 +389,7 @@ static void get_identifier_string(char* buffer)
 //makes number token from the input stream
 static TOKEN make_number_token(void)
 {
-    TOKEN tok = makeToken();
+    TOKEN tok = make_token();
     setTokenType(tok, NUMBER_TOKEN); 
     uint64_t number = parse_number();
     setIntegerValue(tok, number);
@@ -426,7 +426,7 @@ static uint64_t parse_number(void)
 //makes string token from the input stream
 static TOKEN make_string_token(void)
 {
-    TOKEN tok = makeToken();
+    TOKEN tok = make_token();
     char buffer[MAX_TOKEN_STRING_LENGTH];
     setTokenType(tok, STRING_LITERAL);
     setDataType(tok, STRING_TYPE);
@@ -474,7 +474,7 @@ static void get_string_literal(char* buffer)
 //handles all the delimiters and operators (both single and double character operators)
 static TOKEN make_special_token(void)
 {
-    TOKEN tok = makeToken();
+    TOKEN tok = make_token();
     char buffer[MAX_OPERATOR_LENGTH];
     DelimiterType whichDelimiter;
 

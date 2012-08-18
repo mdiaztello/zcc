@@ -31,7 +31,7 @@ struct token
 
 //Token allocation function; either we succeed or we die (b/c we are out of
 //memory)
-TOKEN makeToken(void)
+TOKEN make_token(void)
 {
     TOKEN t = malloc(sizeof(struct token));
     if(t == NULL)
