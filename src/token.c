@@ -150,14 +150,14 @@ void set_token_link(TOKEN tok, TOKEN linked_tok)
 //gets the associated operands from an OPERATOR_TOKEN; together, they form a
 //tree that forms an expression. The trees can be connected together to form
 //arbitrarily complex expressions.
-TOKEN getOperands(TOKEN tok)
+TOKEN get_token_operands(TOKEN tok)
 {
     return tok->operands;
 }
 
 //attaches an operand token (an identifier or a constant) to the operator to 
 //form an expression tree
-void setOperands(TOKEN tok, TOKEN operand)
+void set_token_operands(TOKEN tok, TOKEN operand)
 {
     tok->operands = operand;
 }

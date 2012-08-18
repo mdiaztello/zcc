@@ -45,8 +45,8 @@ uint64_t get_token_integer_value(TOKEN t);
 TOKEN get_token_link(TOKEN tok);
 void set_token_link(TOKEN tok, TOKEN linked_tok);
 
-void setOperands(TOKEN tok, TOKEN operand);
-TOKEN getOperands(TOKEN tok);
+void set_token_operands(TOKEN tok, TOKEN operand);
+TOKEN get_token_operands(TOKEN tok);
 
 SYMBOL getSymbolType(TOKEN tok);
 void setSymbolType(TOKEN tok, SYMBOL sym_t);

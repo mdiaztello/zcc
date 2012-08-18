@@ -197,18 +197,18 @@ void debugprinttok(TOKEN tok)           /* print a token for debugging */
 	{
 		//printf( " token %6d  type %2d  which %3d  datatype %3d  symtype %6d link %6d  operands %6d\n",
 				//tok, get_token_type(tok), get_token_subtype(tok), get_data_type(tok), getSymbolType(tok),
-				//get_token_link(tok), getOperands(tok));
+				//get_token_link(tok), get_token_operands(tok));
 		switch (get_token_type(tok))
 		{
 			case DELIMITER_TOKEN:
 				printf( "token %6p    type: DELIMITER_TOKEN   which: \"%s\"    datatype %3d    symtype %6p   link %6p    operands %6p\n",
 						tok, delprnt[get_token_subtype(tok)], get_data_type(tok) , getSymbolType(tok),
-						get_token_link(tok), getOperands(tok));
+						get_token_link(tok), get_token_operands(tok));
 				break;
 			case KEYWORD_TOKEN: 
 				printf( "token %6p    type: KEYWORD_TOKEN    which: \"%s\"    datatype %3d    symtype %6p   link %6p    operands %6p\n",
 						tok, resprnt[get_token_subtype(tok)], get_data_type(tok), getSymbolType(tok),
-						get_token_link(tok), getOperands(tok));
+						get_token_link(tok), get_token_operands(tok));
 				break;
             default:
                 printf("I don't know what to do here\n"); beacon();
@@ -296,7 +296,7 @@ void dbugprinttok(TOKEN tok)  /* print a token in 'nice' debugging form */
 			case OPERATOR_TOKEN:
 				printf("token %6p    OP:  \"%s\"    dtype %2d    link %6p    operands %6p\n",
 						tok, opprint[get_token_subtype(tok)], get_data_type(tok), get_token_link(tok),
-						getOperands(tok));
+						get_token_operands(tok));
 				break;
 			case DELIMITER_TOKEN: case KEYWORD_TOKEN:
 				debugprinttok(tok);
@@ -319,7 +319,7 @@ void printexpr(TOKEN tok, int col)     /* print an expression in prefix form */
 	{ 
 		printf ("(%s", opprint[get_token_subtype(tok)]);
 		nextcol = col + 2 + opsize[get_token_subtype(tok)];
-		opnds = getOperands(tok);
+		opnds = get_token_operands(tok);
 		start = 0;
 		while (opnds != NULL)
 		{ 
@@ -382,7 +382,7 @@ void dbugbprinttok(TOKEN tok)    /* print rest of token for debugging */
 	{
 		printf("  toktype %6d  which  %6d  symtyp %6p  syment %6p  opnds %6p\n",
 				get_token_type(tok), get_token_subtype(tok), getSymbolType(tok), getSymbolTableEntry(tok),
-				getOperands(tok));
+				get_token_operands(tok));
 	}
 }
 
@@ -392,7 +392,7 @@ void dbugprintexpr(TOKEN tok) /* print an expression in 'nice' debugging form */
 	dbugprinttok(tok);
 	if (get_token_type(tok) == OPERATOR_TOKEN)
 	{ 
-		opnds = getOperands(tok);
+		opnds = get_token_operands(tok);
 		while (opnds != NULL)
 		{ 
 			dbugprintexpr(opnds);

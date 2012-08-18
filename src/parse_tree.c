@@ -26,7 +26,7 @@ uint64_t get_current_label(void)
 
 TOKEN make_binary_operation(TOKEN operation, TOKEN leftSide, TOKEN rightSide)
 {
-    setOperands(operation, leftSide);
+    set_token_operands(operation, leftSide);
     set_token_link(leftSide, rightSide);
     set_token_link(rightSide, NULL);
     return operation;
@@ -35,7 +35,7 @@ TOKEN make_binary_operation(TOKEN operation, TOKEN leftSide, TOKEN rightSide)
 
 TOKEN make_unary_operation(TOKEN operation, TOKEN operand)
 {
-    setOperands(operation, operand);
+    set_token_operands(operation, operand);
     set_token_link(operand, NULL);
     return operation;
 }
@@ -47,20 +47,20 @@ TOKEN make_statement_list(TOKEN statements)
     TOKEN result = make_token();
     set_token_type(result, OPERATOR_TOKEN); 
     set_token_subtype(result, PARSE_TREE_STATEMENT_LIST);
-    setOperands(result, statements);
+    set_token_operands(result, statements);
     return result;
 }
 
 TOKEN get_statements(TOKEN statement_list)
 {
-    return getOperands(statement_list);
+    return get_token_operands(statement_list);
 }
 
 //appends a statement to an existing statement list.
 //The resulting 
 TOKEN append_statement(TOKEN statement_list, TOKEN end_statement)
 {
-    TOKEN tail = getOperands(statement_list);
+    TOKEN tail = get_token_operands(statement_list);
 
     while(get_token_link(tail) != NULL)
     {
@@ -81,7 +81,7 @@ TOKEN make_if(TOKEN exp, TOKEN if_body, TOKEN else_body)
     {
         set_token_link(else_body, NULL);
     }
-    setOperands(result, exp);
+    set_token_operands(result, exp);
     return result;
 }
 
@@ -91,14 +91,14 @@ TOKEN make_function_call(TOKEN function_name, TOKEN args)
     TOKEN function_call = make_token();
     set_token_type(function_call, OPERATOR_TOKEN);
     set_token_subtype(function_call, PARSE_TREE_FUNCALL);
-    setOperands(function_call, function_name);
+    set_token_operands(function_call, function_name);
     set_token_link(function_name, args);
     return function_call;
 }
 
 TOKEN get_function_call_name(TOKEN function_call)
 {
-    return getOperands(function_call);
+    return get_token_operands(function_call);
 }
 
 TOKEN get_function_call_args(TOKEN function_call)
@@ -111,7 +111,7 @@ TOKEN make_function_definition(TOKEN function_name, TOKEN parameters, TOKEN func
     TOKEN function_def = make_token();
     set_token_type(function_def, OPERATOR_TOKEN);
     set_token_subtype(function_def, PARSE_TREE_FUNCTION_DEFINITION);
-    setOperands(function_def, function_name);
+    set_token_operands(function_def, function_name);
     set_token_link(function_name, parameters);
     set_token_link(parameters, function_body);
     return function_def;
@@ -129,7 +129,7 @@ TOKEN get_function_def_parameters(TOKEN function_definition)
 
 TOKEN get_function_def_name(TOKEN function_definition)
 {
-    return getOperands(function_definition);
+    return get_token_operands(function_definition);
 }
 
 TOKEN make_return_statement(TOKEN return_exp)
@@ -137,7 +137,7 @@ TOKEN make_return_statement(TOKEN return_exp)
     TOKEN ret_statement = make_token();
     set_token_type(ret_statement, OPERATOR_TOKEN);
     set_token_subtype(ret_statement, PARSE_TREE_RETURN);
-    setOperands(ret_statement, return_exp);
+    set_token_operands(ret_statement, return_exp);
     return ret_statement;
 }
 
@@ -146,7 +146,7 @@ TOKEN make_translation_unit(TOKEN function_list)
     TOKEN trans_unit = make_token();
     set_token_type(trans_unit, OPERATOR_TOKEN);
     set_token_subtype(trans_unit, PARSE_TREE_TRANSLATION_UNIT);
-    setOperands(trans_unit, function_list);
+    set_token_operands(trans_unit, function_list);
     return trans_unit;
 }
 
@@ -174,12 +174,12 @@ TOKEN make_label(uint64_t label_name)
     set_token_type(label, OPERATOR_TOKEN);
     set_token_subtype(label, PARSE_TREE_LABEL);
     set_token_link(label, NULL);
-    setOperands(label, label_number);
+    set_token_operands(label, label_number);
     set_token_type(label_number, NUMBER_TOKEN);
     set_token_integer_value(label_number, label_name);
     set_data_type(label_number, INTEGER);
     set_token_link(label_number, NULL);
-    setOperands(label_number, NULL);
+    set_token_operands(label_number, NULL);
     return label;
 }
 
@@ -189,7 +189,7 @@ TOKEN make_goto(TOKEN label)
     TOKEN goto_tok = make_token();
     set_token_type(goto_tok, OPERATOR_TOKEN);
     set_token_subtype(goto_tok, PARSE_TREE_GOTO);
-    setOperands(goto_tok, getOperands(label));//copy_token(label); //FIXME: we might need to change this to search for the label in the label table instead of just making a label
+    set_token_operands(goto_tok, get_token_operands(label));//copy_token(label); //FIXME: we might need to change this to search for the label in the label table instead of just making a label
     return goto_tok;
 }
 

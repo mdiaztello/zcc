@@ -36,7 +36,7 @@ void generate_code(TOKEN parse_tree)
         return;
     }
     generate_string_literals();
-    TOKEN function_definition = getOperands(parse_tree);
+    TOKEN function_definition = get_token_operands(parse_tree);
     while(NULL != function_definition)
     {
         generate_function(function_definition);

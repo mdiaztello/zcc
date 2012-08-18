@@ -87,7 +87,7 @@ void generate_function_call(TOKEN function_call)
 //FIXME FILTHY HACK
 void generate_return_code(TOKEN return_statement)
 {
-    TOKEN return_val = getOperands(return_statement);
+    TOKEN return_val = get_token_operands(return_statement);
     emit("\tmovl $");
     char value[10];
     sprintf(value, "%lu", get_token_integer_value(return_val));
