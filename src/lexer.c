@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> //for strcmp
+#include <stdint.h>
 #include <stdbool.h>
 #include "token.h"
 #include "token_API.h"
@@ -9,31 +10,32 @@
 
 /**************************** STATIC HELPER FUNCTION PROTOTYPES **************************************/
 
+static TOKEN lex(void);  //just gets a token from the input stream
+static bool is_white_space(char c);
 static void skip_whitespace_and_comments(void);
 static void skip_single_line_comment(void);
 static void skip_block_comments(void);
-static bool isWhiteSpace(char c);
-static bool detectBlockCommentClose(void);
-static bool detectBlockCommentOpen(void);
-static bool detectedSingleLineComment(void);
+static bool block_comment_open_detected(void);
+static bool block_comment_close_detected(void);
+static bool single_line_comment_detected(void);
 static void make_identifier(TOKEN tok);
 static void make_number(TOKEN tok);
 static void make_string(TOKEN tok);
 static void make_special(TOKEN tok);
-static void updateLineNumber(char c);
-static int isKeywordString(char* string);
+static void update_line_number(char c);
+static int is_keyword_string(char* string);
 static void get_identifier_string(char* buffer);
 static void get_string_literal(char* buffer);
-static long long parse_number(void);
-static TOKEN lex(void);  //just gets a token from the input stream
+static uint64_t parse_number(void);
 
-static bool isDelimiterCharacter(char c, DelimiterType* whichDelim);
-static bool isDoubleCharacterOperator(char* buffer, OperatorType* whichOp);
-static bool isSingleCharacterOperator(char* buffer, OperatorType* whichOp);
+static bool is_delimiter_character(char c, DelimiterType* whichDelim);
+static bool is_single_character_operator(char* buffer, OperatorType* whichOp);
+static bool is_double_character_operator(char* buffer, OperatorType* whichOp);
 
 /**************************** END OF STATIC HELPER FUNCTION PROTOTYPES *******************************/
 
-unsigned long source_code_line_number = 1; //source files start with line 1
+uint64_t source_code_line_number = 1; //source files start with line 1
+
 static char keywords[NUM_KEYWORD_TYPES][MAX_KEYWORD_LENGTH] =
 {
     "static",       
@@ -211,25 +213,25 @@ static void skip_whitespace_and_comments(void)
 {
     char c = peekchar();
     
-    while((((int)(c = peekchar())) != EOF) && (isWhiteSpace(c) || detectedSingleLineComment() || detectBlockCommentOpen()))
+    while((((int)(c = peekchar())) != EOF) && (is_white_space(c) || single_line_comment_detected() || block_comment_open_detected()))
     {
-        if(detectedSingleLineComment())
+        if(single_line_comment_detected())
         {
             skip_single_line_comment();
         }
-        else if(detectBlockCommentOpen())
+        else if(block_comment_open_detected())
         {
             skip_block_comments();
         }
-        else //isWhiteSpace(c)
+        else //is_white_space(c)
         {
-            updateLineNumber(c);
+            update_line_number(c);
             discard_char();
         }
     }
 }
 
-static bool detectedSingleLineComment(void)
+static bool single_line_comment_detected(void)
 {
     bool result = false;
 
@@ -240,7 +242,7 @@ static bool detectedSingleLineComment(void)
     return result;
 }
 
-static bool detectBlockCommentOpen(void)
+static bool block_comment_open_detected(void)
 {
     bool result = false;
     if((peekchar() == '/') && (peek2char() == '*'))
@@ -250,7 +252,7 @@ static bool detectBlockCommentOpen(void)
     return result;
 }
 
-static bool detectBlockCommentClose(void)
+static bool block_comment_close_detected(void)
 {
     bool result = false;
     if((peekchar() == '*') && (peek2char() == '/'))
@@ -268,7 +270,7 @@ static void skip_single_line_comment(void)
     {
        discard_char(); //get rid of everything in the comment
     }
-    updateLineNumber(c);
+    update_line_number(c);
     discard_char(); //discard the newline character
 }
 
@@ -280,10 +282,10 @@ static void skip_block_comments(void)
     discard_char(); //discard the '/'
     discard_char(); //discard the '*'
 
-    while(((int)(c = peekchar()) != EOF) && !detectBlockCommentClose())
+    while(((int)(c = peekchar()) != EOF) && !block_comment_close_detected())
     {
         discard_char();
-        updateLineNumber(c);
+        update_line_number(c);
     }
 
     if(c == EOF)
@@ -295,7 +297,7 @@ static void skip_block_comments(void)
     discard_char(); //discard the '/'
 }
 
-static bool isWhiteSpace(char c)
+static bool is_white_space(char c)
 {
     bool result = false;
     if((c == '\t') || (c == '\n') || (c == ' '))
@@ -305,7 +307,7 @@ static bool isWhiteSpace(char c)
     return result;
 }
 
-static void updateLineNumber(char c)
+static void update_line_number(char c)
 {
     if(c == '\n')
     {
@@ -329,7 +331,7 @@ static void make_identifier(TOKEN tok)
     get_identifier_string(buffer);
     setStringVal(tok, buffer);
 
-    int whichKeyword = isKeywordString(getStringVal(tok));
+    int whichKeyword = is_keyword_string(getStringVal(tok));
     if(-1 != whichKeyword)
     {
         setWhichVal(tok, whichKeyword);
@@ -340,7 +342,7 @@ static void make_identifier(TOKEN tok)
 //returns which keyword the string represents
 //or returns NOT_A_KEYWORD if it isn't in the
 //dictionary of keywords
-static int isKeywordString(char* string)
+static int is_keyword_string(char* string)
 {
 #define NOT_A_KEYWORD (-1)
     int i = 0;
@@ -385,15 +387,15 @@ static void get_identifier_string(char* buffer)
 static void make_number(TOKEN tok)
 {
     setTokenType(tok, NUMBER_TOKEN); 
-    long long number = parse_number();
+    uint64_t number = parse_number();
     setIntegerValue(tok, number);
 }
 
 #define MAX_UNSIGNED_32_BIT_INTEGER 4294967295U
 
-static long long parse_number(void)
+static uint64_t parse_number(void)
 {
-    long long result = 0;
+    uint64_t result = 0;
     int i = 0;
     while(get_char_class(peekchar()) == NUMERIC)
     {
@@ -474,7 +476,7 @@ static void make_special(TOKEN tok)
     buffer[1] = peek2char();
     buffer[2] = 0; //terminate the string
 
-    if(true == isDelimiterCharacter(buffer[0], &whichDelimiter))
+    if(true == is_delimiter_character(buffer[0], &whichDelimiter))
     {
         buffer[1] = 0; //terminate the delimiter after 1 character
         setTokenType(tok, DELIMITER_TOKEN); 
@@ -484,7 +486,7 @@ static void make_special(TOKEN tok)
     else
     {
         OperatorType whichOp;
-        if(true == isDoubleCharacterOperator(buffer, &whichOp))
+        if(true == is_double_character_operator(buffer, &whichOp))
         {
             setTokenType(tok, OPERATOR_TOKEN); 
             setWhichVal(tok, (int)whichOp);
@@ -494,7 +496,7 @@ static void make_special(TOKEN tok)
         else 
         {
             buffer[1] = 0; //terminate the delimiter after 1 character
-            if(true == isSingleCharacterOperator(buffer, &whichOp))
+            if(true == is_single_character_operator(buffer, &whichOp))
             {
                 setTokenType(tok, OPERATOR_TOKEN); 
                 setWhichVal(tok, (int)whichOp);
@@ -510,7 +512,7 @@ static void make_special(TOKEN tok)
 
 //answers the question whether it is a delimiter, and if so which one
 //if it is not a delimiter, then the value stored in whichDelim is invalid
-static bool isDelimiterCharacter(char c, DelimiterType* whichDelim)
+static bool is_delimiter_character(char c, DelimiterType* whichDelim)
 {
     int i = 0;
     bool result = false;
@@ -531,7 +533,7 @@ static bool isDelimiterCharacter(char c, DelimiterType* whichDelim)
 
 //answers the question whether it is an operator, and if so which one
 //if it is not a operator, then the value stored in whichOp is invalid
-static bool isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
+static bool is_double_character_operator(char* buffer, OperatorType* whichOp)
 {
     int i = 0;
     bool result = false;
@@ -550,7 +552,7 @@ static bool isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
 
 //answers the question whether it is an operator, and if so which one
 //if it is not a operator, then the value stored in whichOp is invalid
-static bool isSingleCharacterOperator(char* buffer, OperatorType* whichOp)
+static bool is_single_character_operator(char* buffer, OperatorType* whichOp)
 {
     int i = 0;
     bool result = false;
