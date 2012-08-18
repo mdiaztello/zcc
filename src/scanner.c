@@ -23,7 +23,6 @@
 #include "token.h"
 #include "scanner.h"
 #include "debug.h"
-#include "global_defs.h"
 
 
 int EOFFLG;

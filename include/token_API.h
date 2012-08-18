@@ -25,7 +25,6 @@
 
 #include <stdbool.h>
 #include "symtab.h"
-#include "global_defs.h" //for the bool definition
 
 TOKEN makeToken(void);
 void setTokenType(TOKEN t, enum token_type tType);
