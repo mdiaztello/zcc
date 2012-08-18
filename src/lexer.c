@@ -188,7 +188,7 @@ TOKEN gettok(void)
     return current_token;
 }
 
-TOKEN peektok(void)
+TOKEN peek_token(void)
 {
     //printf("\nPEEKTOK\n\n");
     if((lookahead == current_token) || (lookahead == NULL))

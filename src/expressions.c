@@ -18,7 +18,7 @@
 TOKEN expression(void)
 {
     TOKEN result = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(false == delimiter(tok, SEMICOLON))
     {
         result = assignment_expression();
@@ -34,7 +34,7 @@ TOKEN assignment_expression(void)
 {
     TOKEN result = NULL;
     result = conditional_expression();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(result == NULL) 
     {
         result = unary_expression();
@@ -57,7 +57,7 @@ TOKEN assignment_expression(void)
 TOKEN assignment_operator(void)
 {
     TOKEN result = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == isAssignmentOperator(tok))
     {
         result = gettok();
@@ -80,7 +80,7 @@ TOKEN logical_OR_expression(void)
     TOKEN result = NULL;
     TOKEN operand = logical_AND_expression();
     TOKEN op = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == _operator(tok, BOOLEAN_OR))
     {
         op = gettok();
@@ -102,7 +102,7 @@ TOKEN logical_AND_expression(void)
     TOKEN result = NULL;
     TOKEN operand = inclusive_OR_expression();
     TOKEN op = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == _operator(tok, BOOLEAN_AND))
     {
         op = gettok();
@@ -125,7 +125,7 @@ TOKEN inclusive_OR_expression(void)
     TOKEN result = NULL;
     TOKEN op = NULL;
     TOKEN operand = exclusive_OR_expression();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == _operator(tok, BITWISE_OR))
     {
         op = gettok();
@@ -147,7 +147,7 @@ TOKEN exclusive_OR_expression(void)
     TOKEN result = NULL;
     TOKEN op = NULL;
     TOKEN operand = AND_expression();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == _operator(tok, BITWISE_XOR))
     {
         op = gettok();
@@ -170,7 +170,7 @@ TOKEN AND_expression(void)
     TOKEN result = NULL;
     TOKEN op = NULL;
     TOKEN operand = equality_expression();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == _operator(tok, AMPERSAND))
     {
         op = gettok();
@@ -193,7 +193,7 @@ TOKEN equality_expression(void)
     TOKEN result = NULL;
     TOKEN op = NULL;
     TOKEN operand = relational_expression();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == _operator(tok, EQUALS) ||
             true == _operator(tok, NOT_EQUALS))
     {
@@ -218,7 +218,7 @@ TOKEN relational_expression(void)
     TOKEN result = NULL;
     TOKEN op = NULL;
     TOKEN operand = shift_expression();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == _operator(tok, GREATER_THAN) ||
             true == _operator(tok, GREATER_THAN_OR_EQUAL) ||
             true == _operator(tok, LESS_THAN) ||
@@ -243,7 +243,7 @@ TOKEN shift_expression(void)
     TOKEN result = NULL;
     TOKEN op = NULL;
     TOKEN operand = additive_expression();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == _operator(tok, SHIFT_LEFT) ||
             true == _operator(tok, SHIFT_RIGHT) )
     {
@@ -267,13 +267,13 @@ TOKEN additive_expression(void)
     TOKEN op = NULL;
     TOKEN operand = NULL;
     TOKEN result = multiplicative_expression();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     while(true == isAdditiveOperator(tok))
     {
         op = gettok();
         operand = multiplicative_expression();
         result = make_binary_operation(op, result, operand);
-        tok = peektok();
+        tok = peek_token();
     }
     return result;
 }
@@ -289,7 +289,7 @@ TOKEN multiplicative_expression(void)
     TOKEN result = cast_expression();
     TOKEN op = NULL;
     TOKEN operand = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     while(true == isMultiplicativeOperator(tok))
     {
         op = gettok();
@@ -302,7 +302,7 @@ TOKEN multiplicative_expression(void)
         operand = cast_expression();
 
         result = make_binary_operation(op, result, operand);
-        tok = peektok();
+        tok = peek_token();
     }
 
     return result;
@@ -359,7 +359,7 @@ TOKEN unary_expression(void)
 TOKEN unary_operator(void)
 {
     TOKEN op = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == isUnaryOperator(tok))
     {
         op = gettok();
@@ -385,7 +385,7 @@ TOKEN unary_operator(void)
 TOKEN argument_expression_list(void)
 {
     TOKEN result = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if( true == delimiter(tok, CLOSE_PAREN) )
     {
         //if this happens we are reading an empty argument list
@@ -394,7 +394,7 @@ TOKEN argument_expression_list(void)
     else
     {
         result = assignment_expression();
-        tok = peektok();
+        tok = peek_token();
         if( true == delimiter(tok, COMMA) )
         {
             expect(DELIMITER_TOKEN, COMMA, NULL);
@@ -420,7 +420,7 @@ TOKEN postfix_expression(void)
 {
     TOKEN result = NULL;
     result = primary_expression();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     while( true == delimiter(tok, OPEN_BRACKET) ||
             true == delimiter(tok, OPEN_PAREN) ||
             true == _operator(tok, DOT) ||
@@ -445,7 +445,7 @@ TOKEN postfix_expression(void)
            expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);
            result = make_function_call(function_name, args);
        }
-       tok = peektok();
+       tok = peek_token();
     }
     return result;
 }
@@ -459,7 +459,7 @@ TOKEN postfix_expression(void)
 TOKEN primary_expression(void)
 {
     TOKEN result = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(NULL == tok)
     {
         return result;

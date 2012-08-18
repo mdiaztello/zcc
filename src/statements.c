@@ -44,7 +44,7 @@
 TOKEN statement(void)
 {
     TOKEN result = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
 
     if((getTokenType(tok) == IDENTIFIER_TOKEN) || 
             (true == reserved(tok, CASE)) || 
@@ -133,7 +133,7 @@ TOKEN block_item_list(void)
 {
     TOKEN result = NULL;
     TOKEN next = NULL;
-    if(false == delimiter(peektok(), CLOSE_BRACE))
+    if(false == delimiter(peek_token(), CLOSE_BRACE))
     {
         result = block_item();
         next = block_item_list();
@@ -159,7 +159,7 @@ TOKEN block_item(void)
     setStorageClass(sym, AUTO_STORAGE_CLASS);
     //to see if we have a declaration, for now we will check in the symbol table to see if the token
     //we are peeking at is a basic type. If it is, we will assume we have a declaration instead of a statement
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     SYMBOL s = searchst(getStringVal(tok));
     if (s != NULL && s->kind == BASICTYPE)
     {
@@ -203,11 +203,11 @@ TOKEN selection_statement(void)
     TOKEN actions = compound_statement();
 
 
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(true == reserved(tok, ELSE))
     {
         tok = gettok();
-        tok = peektok();
+        tok = peek_token();
         if(true == reserved(tok, IF)) //handle "else if"
         {
             else_part = selection_statement();

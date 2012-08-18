@@ -49,7 +49,7 @@ TOKEN translation_unit(void)
 {
     TOKEN trans_unit = NULL;
     TOKEN next = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(tok != NULL)
     {
         trans_unit = external_declaration(); 
@@ -152,7 +152,7 @@ TOKEN declaration(SYMBOL s)
     s->kind = VARSYM; //if we have made it this far, i think it's safe to assume we are declaring a variable      
     declaration_specifiers(s);
     dec = init_declarator_list(s);
-    t = peektok();
+    t = peek_token();
 
     if(false == delimiter(t, SEMICOLON))
     {
@@ -216,7 +216,7 @@ TOKEN declaration_specifiers(SYMBOL s)
 TOKEN storage_class_specifier(void)
 {
     TOKEN storage_class = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(tok == NULL)
     {
         return NULL;
@@ -255,7 +255,7 @@ TOKEN storage_class_specifier(void)
 
 TOKEN type_specifier(void)
 {
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(tok == NULL)
     {
         fprintf(stderr, "no type specifier found...\n");
@@ -292,7 +292,7 @@ TOKEN type_specifier(void)
 TOKEN init_declarator_list(SYMBOL s)
 {
     TOKEN init_dec_list = init_declarator(s);
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if( true == delimiter(tok, COMMA) )
     {
         //FIXME: this might be a bug but i'm not sure yet
@@ -313,7 +313,7 @@ TOKEN init_declarator_list(SYMBOL s)
 TOKEN init_declarator(SYMBOL s)
 {
     TOKEN decl = declarator(s);
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if(tok == NULL)
     {
         return NULL;
@@ -372,7 +372,7 @@ TOKEN direct_declarator(SYMBOL s)
 TOKEN identifier(void)
 {
     TOKEN tok = NULL;
-    tok = peektok(); 
+    tok = peek_token(); 
     if( (tok != NULL) && 
             (getTokenType(tok) == IDENTIFIER_TOKEN))
     {
@@ -390,7 +390,7 @@ TOKEN identifier(void)
 TOKEN constant(void)
 {
     TOKEN tok = NULL;
-    tok = peektok();
+    tok = peek_token();
     if((tok != NULL) &&
             ((getTokenType(tok) == NUMBER_TOKEN) ||
              (getTokenType(tok) == CHARACTER_LITERAL))) //FIXME: character literals are broken in the lexer right now and I don't feel like
@@ -408,7 +408,7 @@ TOKEN constant(void)
 TOKEN string_literal(void)
 {
     TOKEN tok = NULL;
-    tok = peektok();
+    tok = peek_token();
     if((tok != NULL) &&
             ((getTokenType(tok) == STRING_LITERAL) ||
              (getTokenType(tok) == CHARACTER_LITERAL)))
@@ -427,7 +427,7 @@ TOKEN string_literal(void)
 TOKEN character_constant(void)
 {
     TOKEN tok = NULL;
-    tok = peektok();
+    tok = peek_token();
     if((tok != NULL) &&
              (getTokenType(tok) == CHARACTER_LITERAL))
     {
@@ -448,7 +448,7 @@ TOKEN character_constant(void)
 TOKEN parameter_type_list(void)
 {
     TOKEN param_list = NULL;
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     //if we have a void list, there should be no other parameters
     if(false == reserved(tok, VOID)) //FIXME: this will cause us to be unable to use void* in our parameter list.
     {
@@ -467,7 +467,7 @@ TOKEN parameter_type_list(void)
 TOKEN parameter_list(void)
 {
     TOKEN param_list = parameter_declaration();
-    TOKEN tok = peektok();
+    TOKEN tok = peek_token();
     if( true == delimiter(tok, COMMA) )
     {
         //FIXME: this might be a bug but i'm not sure yet
@@ -499,7 +499,7 @@ TOKEN parameter_declaration(void)
 
 void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void))
 {
-    TOKEN peek = peektok();
+    TOKEN peek = peek_token();
     if((tType != getTokenType(peek)) || (whichToken != getWhichVal(peek)))
     {
         if(NULL == errorAction)

@@ -43,12 +43,12 @@ TEST_GROUP(LEXER_TESTS)
 TEST(LEXER_TESTS, ConsecutivePeekToksDoNotAdvanceInput)
 {
     set_input_source("peektok_test", "r+");
-    TOKEN tok1 = peektok();
+    TOKEN tok1 = peek_token();
     for(int i = 0; i < 10; i++)
     {
-        peektok();
+        peek_token();
     }
-    TOKEN tok2 = peektok();
+    TOKEN tok2 = peek_token();
     CHECK(getTokenType(tok1) == IDENTIFIER_TOKEN);
     CHECK(getTokenType(tok2) == IDENTIFIER_TOKEN);
     STRCMP_EQUAL(getStringVal(tok1), getStringVal(tok2));
@@ -69,7 +69,7 @@ TEST(LEXER_TESTS, GetTokReturnsPeekedTokAfterPeekTokCall)
 {
     set_input_source("gettok_test", "r+");
     TOKEN get1 = gettok();
-    TOKEN peek = peektok();
+    TOKEN peek = peek_token();
     TOKEN get2 = gettok();
     STRCMP_EQUAL("a", getStringVal(get1));
     STRCMP_EQUAL("b", getStringVal(peek));
