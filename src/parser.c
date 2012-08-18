@@ -162,7 +162,7 @@ TOKEN declaration(SYMBOL s)
     }
     else
     {
-        t = gettok(); //consume the SEMICOLON
+        t = get_token(); //consume the SEMICOLON
         SYMBOL entry = searchins(s->namestring);
         copy_symbol(s, entry);
     }
@@ -226,7 +226,7 @@ TOKEN storage_class_specifier(void)
             true == reserved(tok, EXTERN) ||
             true == reserved(tok, STATIC))
     {
-        storage_class = gettok();
+        storage_class = get_token();
     }
     else
     {
@@ -274,7 +274,7 @@ TOKEN type_specifier(void)
             true == reserved(tok, SIGNED) ||
             true == reserved(tok, UNSIGNED) )
     {
-        type_spec = gettok();
+        type_spec = get_token();
     }
     else
     {
@@ -296,7 +296,7 @@ TOKEN init_declarator_list(SYMBOL s)
     if( true == delimiter(tok, COMMA) )
     {
         //FIXME: this might be a bug but i'm not sure yet
-        tok = gettok(); //consume the COMMA
+        tok = get_token(); //consume the COMMA
         setLink(init_dec_list, init_declarator(s));
     }
     else
@@ -367,7 +367,7 @@ TOKEN direct_declarator(SYMBOL s)
 //                 <identifier> <identifier-non-digit> | 
 //                 <identifier> <digit>
 //NOTE: The buck stops here. I already wrote a lexer that can
-//tokenize C identifiers, so I will simply use my gettok() routine
+//tokenize C identifiers, so I will simply use my get_token() routine
 
 TOKEN identifier(void)
 {
@@ -376,7 +376,7 @@ TOKEN identifier(void)
     if( (tok != NULL) && 
             (getTokenType(tok) == IDENTIFIER_TOKEN))
     {
-        tok = gettok();
+        tok = get_token();
     }
     else
     {
@@ -396,7 +396,7 @@ TOKEN constant(void)
              (getTokenType(tok) == CHARACTER_LITERAL))) //FIXME: character literals are broken in the lexer right now and I don't feel like
                         //fixing the lexer to recognize them at the moment.
     {
-        tok = gettok();
+        tok = get_token();
     }
     else
     {
@@ -413,7 +413,7 @@ TOKEN string_literal(void)
             ((getTokenType(tok) == STRING_LITERAL) ||
              (getTokenType(tok) == CHARACTER_LITERAL)))
     {
-        tok = gettok();
+        tok = get_token();
     }
     else
     {
@@ -431,7 +431,7 @@ TOKEN character_constant(void)
     if((tok != NULL) &&
              (getTokenType(tok) == CHARACTER_LITERAL))
     {
-        tok = gettok();
+        tok = get_token();
     }
     else
     {
@@ -456,7 +456,7 @@ TOKEN parameter_type_list(void)
     }
     else
     {
-        gettok(); //consume the "void" token
+        get_token(); //consume the "void" token
     }
     return param_list;
 }
@@ -471,7 +471,7 @@ TOKEN parameter_list(void)
     if( true == delimiter(tok, COMMA) )
     {
         //FIXME: this might be a bug but i'm not sure yet
-        tok = gettok(); //consume the COMMA
+        tok = get_token(); //consume the COMMA
         setLink(param_list, parameter_list());
     }
     else
@@ -518,5 +518,5 @@ void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void))
         // barf
         exit(EXIT_FAILURE);
     }
-    gettok();
+    get_token();
 }

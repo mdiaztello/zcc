@@ -60,7 +60,7 @@ TOKEN assignment_operator(void)
     TOKEN tok = peek_token();
     if(true == isAssignmentOperator(tok))
     {
-        result = gettok();
+        result = get_token();
     }
     return result;
 }
@@ -83,7 +83,7 @@ TOKEN logical_OR_expression(void)
     TOKEN tok = peek_token();
     if(true == _operator(tok, BOOLEAN_OR))
     {
-        op = gettok();
+        op = get_token();
         result = make_binary_operation(op, operand, logical_OR_expression());
     }
     else
@@ -105,7 +105,7 @@ TOKEN logical_AND_expression(void)
     TOKEN tok = peek_token();
     if(true == _operator(tok, BOOLEAN_AND))
     {
-        op = gettok();
+        op = get_token();
         result = make_binary_operation(op, operand, logical_AND_expression());
     }
     else
@@ -128,7 +128,7 @@ TOKEN inclusive_OR_expression(void)
     TOKEN tok = peek_token();
     if(true == _operator(tok, BITWISE_OR))
     {
-        op = gettok();
+        op = get_token();
         result = make_binary_operation(op, operand, inclusive_OR_expression());
     }
     else
@@ -150,7 +150,7 @@ TOKEN exclusive_OR_expression(void)
     TOKEN tok = peek_token();
     if(true == _operator(tok, BITWISE_XOR))
     {
-        op = gettok();
+        op = get_token();
         result = make_binary_operation(op, operand, exclusive_OR_expression());
     }
     else
@@ -173,7 +173,7 @@ TOKEN AND_expression(void)
     TOKEN tok = peek_token();
     if(true == _operator(tok, AMPERSAND))
     {
-        op = gettok();
+        op = get_token();
         setWhichVal(op, BITWISE_AND);
         result = make_binary_operation(op, operand, AND_expression());
     }
@@ -197,7 +197,7 @@ TOKEN equality_expression(void)
     if(true == _operator(tok, EQUALS) ||
             true == _operator(tok, NOT_EQUALS))
     {
-        op = gettok();
+        op = get_token();
         result = make_binary_operation(op, operand, equality_expression());
     }
     else
@@ -224,7 +224,7 @@ TOKEN relational_expression(void)
             true == _operator(tok, LESS_THAN) ||
             true == _operator(tok, LESS_THAN_OR_EQUAL) )
     {
-        op = gettok();
+        op = get_token();
         result = make_binary_operation(op, operand, relational_expression());
     }
     else
@@ -247,7 +247,7 @@ TOKEN shift_expression(void)
     if(true == _operator(tok, SHIFT_LEFT) ||
             true == _operator(tok, SHIFT_RIGHT) )
     {
-        op = gettok();
+        op = get_token();
         result = make_binary_operation(op, operand, shift_expression());
     }
     else
@@ -270,7 +270,7 @@ TOKEN additive_expression(void)
     TOKEN tok = peek_token();
     while(true == isAdditiveOperator(tok))
     {
-        op = gettok();
+        op = get_token();
         operand = multiplicative_expression();
         result = make_binary_operation(op, result, operand);
         tok = peek_token();
@@ -292,7 +292,7 @@ TOKEN multiplicative_expression(void)
     TOKEN tok = peek_token();
     while(true == isMultiplicativeOperator(tok))
     {
-        op = gettok();
+        op = get_token();
         //we know we are parsing a multiplicative expression at this time, so we can
         //resolve STAR operators to MULTIPLICATION
         if(true == _operator(tok, STAR))
@@ -319,7 +319,7 @@ TOKEN cast_expression(void)
     if(result == NULL)
     {
         expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
-        type_name = gettok();
+        type_name = get_token();
         expect(DELIMITER_TOKEN, CLOSE_PAREN, NULL);
         result = cast_expression();
     }
@@ -362,7 +362,7 @@ TOKEN unary_operator(void)
     TOKEN tok = peek_token();
     if(true == isUnaryOperator(tok))
     {
-        op = gettok();
+        op = get_token();
         //resolve all unary STARS and AMPERSANDS to DEREFERENCES and REFERENCES
         if(true == _operator(tok, AMPERSAND))
         {

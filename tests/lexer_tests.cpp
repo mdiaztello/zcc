@@ -58,8 +58,8 @@ TEST(LEXER_TESTS, ConsecutivePeekToksDoNotAdvanceInput)
 TEST(LEXER_TESTS, GetTokAdvancesInputOnConsecutiveCalls)
 {
     set_input_source("gettok_test", "r+");
-    TOKEN tok1 = gettok();
-    TOKEN tok2 = gettok();
+    TOKEN tok1 = get_token();
+    TOKEN tok2 = get_token();
     STRCMP_EQUAL(getStringVal(tok1), "a");
     STRCMP_EQUAL(getStringVal(tok2), "b");
     CHECK(tok1 != tok2);
@@ -68,9 +68,9 @@ TEST(LEXER_TESTS, GetTokAdvancesInputOnConsecutiveCalls)
 TEST(LEXER_TESTS, GetTokReturnsPeekedTokAfterPeekTokCall)
 {
     set_input_source("gettok_test", "r+");
-    TOKEN get1 = gettok();
+    TOKEN get1 = get_token();
     TOKEN peek = peek_token();
-    TOKEN get2 = gettok();
+    TOKEN get2 = get_token();
     STRCMP_EQUAL("a", getStringVal(get1));
     STRCMP_EQUAL("b", getStringVal(peek));
     STRCMP_EQUAL("b", getStringVal(get2));
@@ -83,7 +83,7 @@ TEST(LEXER_TESTS, LexerRecognizesKeywords)
     set_input_source("keyword_test", "r+");
     for(int keyword_type = STATIC; keyword_type < NUM_KEYWORD_TYPES; ++keyword_type)
     {
-        tok = gettok();
+        tok = get_token();
         CHECK(true == reserved(tok, (KeywordType)keyword_type));
     }
 }
@@ -101,7 +101,7 @@ TEST(LEXER_TESTS, LexerCanProcessIdentifiers)
 
     for(int i = 0; i < 4; i++)
     {
-        tok = gettok();
+        tok = get_token();
         STRCMP_EQUAL(identifiers[i], getStringVal(tok));
     }
 }
@@ -114,7 +114,7 @@ TEST(LEXER_TESTS, LexerHandlesWeirdInlineComments)
 
     for(int i = 0; i < 6; i++)
     {
-        tok = gettok();
+        tok = get_token();
         CHECK(false == isKeyword(tok));
         STRCMP_EQUAL(expected_identifiers[i], getStringVal(tok));
     }
@@ -127,7 +127,7 @@ TEST(LEXER_TESTS, LexerDetectsDelimiters)
 
     for(int delimiter_type = COMMA; delimiter_type < NUM_DELIMITER_TYPES; delimiter_type++)
     {
-        tok = gettok();
+        tok = get_token();
         CHECK(true == delimiter(tok, (DelimiterType)delimiter_type));
     }
 }
@@ -140,7 +140,7 @@ TEST(LEXER_TESTS, LexterProperlyDetectsOperators)
 
     for(int op_type = ADDITION; op_type < STAR; op_type++)
     {
-        tok = gettok();
+        tok = get_token();
         if((op_type == MULTIPLICATION) || (op_type == DEREFERENCE))//the lexer reports these as "STAR" tokens until the parser can disambiguate them
         {
             CHECK(true == _operator(tok, STAR));
@@ -171,12 +171,12 @@ TEST(LEXER_TESTS, LexerUsesMaximalMunchRule)
 
     int i = 0;
     set_input_source("tricky_operator_test", "r+");
-    TOKEN tok = gettok();
+    TOKEN tok = get_token();
     
     while(tok != NULL)
     {
         CHECK(true == _operator(tok, expectedOperators[i]));
-        tok = gettok();
+        tok = get_token();
         i++;
     }
 }

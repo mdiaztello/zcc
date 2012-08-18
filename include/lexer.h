@@ -6,7 +6,7 @@
 
 
 TOKEN peek_token(void); //looks ahead one token into the input stream
-TOKEN gettok(void); //gets tokens from the input stream mindful of whether we've peeked at tokens in the past
+TOKEN get_token(void); //gets tokens from the input stream mindful of whether we've peeked at tokens in the past
 uint64_t get_source_code_line_number(void);
 
 #endif //__LEX_H_

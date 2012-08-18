@@ -89,7 +89,7 @@ TOKEN statement(void)
 TOKEN jump_statement(void)
 {
     TOKEN result = NULL;
-    TOKEN keyword = gettok();
+    TOKEN keyword = get_token();
     if(true == reserved(keyword, RETURN))
     {
         result = expression();
@@ -195,7 +195,7 @@ TOKEN expression_statement(void)
 TOKEN selection_statement(void)
 {
     TOKEN result = NULL;
-    TOKEN conditional = gettok();
+    TOKEN conditional = get_token();
     TOKEN else_part = NULL; //the body of the potential "else" part of a conditional statement
     expect(DELIMITER_TOKEN, OPEN_PAREN, NULL);
     TOKEN exp = expression();
@@ -206,7 +206,7 @@ TOKEN selection_statement(void)
     TOKEN tok = peek_token();
     if(true == reserved(tok, ELSE))
     {
-        tok = gettok();
+        tok = get_token();
         tok = peek_token();
         if(true == reserved(tok, IF)) //handle "else if"
         {
@@ -242,7 +242,7 @@ TOKEN selection_statement(void)
 TOKEN iteration_statement(void)
 {
     TOKEN result = NULL;
-    TOKEN loop_type = gettok();
+    TOKEN loop_type = get_token();
 
     if( true == reserved(loop_type, WHILE) )
     {

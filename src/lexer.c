@@ -173,7 +173,7 @@ TOKEN lex(void)
 TOKEN lookahead = NULL;
 TOKEN current_token = NULL;
 
-TOKEN gettok(void)
+TOKEN get_token(void)
 {
     //printf("\nGETTOK\n\n");
     if((current_token != lookahead) && (lookahead != NULL))
