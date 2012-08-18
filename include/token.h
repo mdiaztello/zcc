@@ -1,5 +1,5 @@
-#ifndef __TOKEN_H_
-#define __TOKEN_H_
+#ifndef INCLUDE_GUARD__TOKEN_H_
+#define INCLUDE_GUARD__TOKEN_H_
 
 #define MAX_TOKEN_STRING_LENGTH 256 //this is somewhat arbitrary, but it seems long enough to deal with
                             //really long function and variable names
@@ -165,4 +165,4 @@ enum keyword_types
 };
 typedef enum keyword_types KeywordType;
 
-#endif // __TOKEN_H_
+#endif // INCLUDE_GUARD__TOKEN_H_

@@ -1,5 +1,5 @@
-#ifndef __PARSE_TREE_H_
-#define __PARSE_TREE_H_
+#ifndef INCLUDE_GUARD__PARSE_TREE_H_
+#define INCLUDE_GUARD__PARSE_TREE_H_
 
 #include <stdint.h>
 
@@ -25,4 +25,4 @@ TOKEN make_label(uint64_t label_name);
 uint64_t get_new_label_number(void);
 uint64_t get_current_label(void);
 
-#endif //__PARSE_TREE_H_
+#endif //INCLUDE_GUARD__PARSE_TREE_H_

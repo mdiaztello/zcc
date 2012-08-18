@@ -1,5 +1,5 @@
-#ifndef __CODE_GEN_H_
-#define __CODE_GEN_H_
+#ifndef INCLUDE_GUARD__CODE_GEN_H_
+#define INCLUDE_GUARD__CODE_GEN_H_
 
 /*
  * =====================================================================================

@@ -1,5 +1,5 @@
-#ifndef __DEBUG_H_
-#define __DEBUG_H_
+#ifndef INCLUDE_GUARD__DEBUG_H_
+#define INCLUDE_GUARD__DEBUG_H_
 
 #define DEBUG 1
 
@@ -12,4 +12,4 @@
 #endif
 
 
-#endif //__DEBUG_H_
+#endif //INCLUDE_GUARD__DEBUG_H_

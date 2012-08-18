@@ -1,5 +1,5 @@
-#ifndef __SCANNER_H_
-#define __SCANNER_H_
+#ifndef INCLUDE_GUARD__SCANNER_H_
+#define INCLUDE_GUARD__SCANNER_H_
 
 /*
  * =====================================================================================
@@ -38,4 +38,4 @@ void discard_char(void);
 void init_scanner(FILE* input_file);
 int get_char_class(char c);
 
-#endif // __SCANNER_H_
+#endif // INCLUDE_GUARD__SCANNER_H_

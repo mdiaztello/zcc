@@ -1,5 +1,5 @@
-#ifndef __SYMTAB_H_
-#define __SYMTAB_H_
+#ifndef INCLUDE_GUARD__SYMTAB_H_
+#define INCLUDE_GUARD__SYMTAB_H_
 
 /* symtab.h            Gordon S. Novak Jr.           21 Feb 07 */
 
@@ -118,4 +118,4 @@ typedef struct str_literal
 void install_string_literal(TOKEN string);
 STRING_LIST get_string_literal_list(void);
 
-#endif //__SYMTAB_H_
+#endif //INCLUDE_GUARD__SYMTAB_H_

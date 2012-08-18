@@ -1,5 +1,5 @@
-#ifndef __PARSER_H_
-#define __PARSER_H_
+#ifndef INCLUDE_GUARD__PARSER_H_
+#define INCLUDE_GUARD__PARSER_H_
 
 #include "parse_tree.h"
 
@@ -26,4 +26,4 @@ TOKEN parameter_list(void);
 TOKEN parameter_declaration(void);
 void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void));
 
-#endif //__PARSER_H_
+#endif //INCLUDE_GUARD__PARSER_H_

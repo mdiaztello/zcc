@@ -1,5 +1,5 @@
-#ifndef __TOKEN_API_H_
-#define __TOKEN_API_H_
+#ifndef INCLUDE_GUARD__TOKEN_API_H_
+#define INCLUDE_GUARD__TOKEN_API_H_
 
 /*
  * =====================================================================================
@@ -83,4 +83,4 @@ void printDelimiterType(TOKEN t);
 void printNumericValue(TOKEN t);
 void printOperator(TOKEN t);
 
-#endif //__TOKEN_API_H_
+#endif //INCLUDE_GUARD__TOKEN_API_H_

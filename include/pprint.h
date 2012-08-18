@@ -1,8 +1,8 @@
 
-#ifndef __PPRINT_H_
-#define __PPRINT_H_
+#ifndef INCLUDE_GUARD__PPRINT_H_
+#define INCLUDE_GUARD__PPRINT_H_
 
 #include "token.h"
 void ppexpr(TOKEN tok);
 
-#endif //__PPRINT_H_
+#endif //INCLUDE_GUARD__PPRINT_H_

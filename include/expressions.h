@@ -1,5 +1,5 @@
-#ifndef __EXPRESSIONS_H_
-#define __EXPRESSIONS_H_
+#ifndef INCLUDE_GUARD__EXPRESSIONS_H_
+#define INCLUDE_GUARD__EXPRESSIONS_H_
 
 TOKEN expression(void);
 TOKEN assignment_expression(void);
@@ -24,4 +24,4 @@ TOKEN cast_expression(void);
 TOKEN argument_expression_list(void);
 
 
-#endif //__EXPRESSIONS_H_
+#endif //INCLUDE_GUARD__EXPRESSIONS_H_
