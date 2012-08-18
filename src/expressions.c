@@ -465,7 +465,7 @@ TOKEN primary_expression(void)
         return result;
     }
 
-    switch(getTokenType(tok))
+    switch(get_token_type(tok))
     {
         case IDENTIFIER_TOKEN:
             result = identifier();

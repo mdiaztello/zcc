@@ -196,9 +196,9 @@ void debugprinttok(TOKEN tok)           /* print a token for debugging */
 	else 
 	{
 		//printf( " token %6d  type %2d  which %3d  datatype %3d  symtype %6d link %6d  operands %6d\n",
-				//tok, getTokenType(tok), getWhichVal(tok), getDataType(tok), getSymbolType(tok),
+				//tok, get_token_type(tok), getWhichVal(tok), getDataType(tok), getSymbolType(tok),
 				//getLink(tok), getOperands(tok));
-		switch (getTokenType(tok))
+		switch (get_token_type(tok))
 		{
 			case DELIMITER_TOKEN:
 				printf( "token %6p    type: DELIMITER_TOKEN   which: \"%s\"    datatype %3d    symtype %6p   link %6p    operands %6p\n",
@@ -230,7 +230,7 @@ int strlength(char str[])           /* find length of a string */
 
 void printtok(TOKEN tok)             /* print a token in abbreviated form */
 { 
-	switch (getTokenType(tok))
+	switch (get_token_type(tok))
 	{
 		case IDENTIFIER_TOKEN:
 			printf ("%s", getStringVal(tok));
@@ -268,7 +268,7 @@ void dbugprinttok(TOKEN tok)  /* print a token in 'nice' debugging form */
 	}
 	else
 	{
-		switch (getTokenType(tok))
+		switch (get_token_type(tok))
 		{ 
 			case IDENTIFIER_TOKEN:
 				printf("token %6p    ID:  \"%s\"    dtype %2d    link %6p\n",
@@ -315,7 +315,7 @@ void printexpr(TOKEN tok, int col)     /* print an expression in prefix form */
 		printf ("printexpr: col %d\n", col);
 		dbugprinttok(tok);
 	};
-	if(getTokenType(tok) == OPERATOR_TOKEN)
+	if(get_token_type(tok) == OPERATOR_TOKEN)
 	{ 
 		printf ("(%s", opprint[getWhichVal(tok)]);
 		nextcol = col + 2 + opsize[getWhichVal(tok)];
@@ -336,7 +336,7 @@ void printexpr(TOKEN tok, int col)     /* print an expression in prefix form */
 				}
 			}
 			printexpr(opnds, nextcol);
-			if ( getTokenType(opnds) == IDENTIFIER_TOKEN && nextcol < 60 )
+			if ( get_token_type(opnds) == IDENTIFIER_TOKEN && nextcol < 60 )
 			{
 				nextcol = nextcol + 1 + strlength(getStringVal(opnds));
 			}
@@ -381,7 +381,7 @@ void dbugbprinttok(TOKEN tok)    /* print rest of token for debugging */
 	if (tok != NULL)
 	{
 		printf("  toktype %6d  which  %6d  symtyp %6p  syment %6p  opnds %6p\n",
-				getTokenType(tok), getWhichVal(tok), getSymbolType(tok), getSymbolTableEntry(tok),
+				get_token_type(tok), getWhichVal(tok), getSymbolType(tok), getSymbolTableEntry(tok),
 				getOperands(tok));
 	}
 }
@@ -390,7 +390,7 @@ void dbugprintexpr(TOKEN tok) /* print an expression in 'nice' debugging form */
 { 
 	TOKEN opnds;
 	dbugprinttok(tok);
-	if (getTokenType(tok) == OPERATOR_TOKEN)
+	if (get_token_type(tok) == OPERATOR_TOKEN)
 	{ 
 		opnds = getOperands(tok);
 		while (opnds != NULL)

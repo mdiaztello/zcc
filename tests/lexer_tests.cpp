@@ -49,8 +49,8 @@ TEST(LEXER_TESTS, ConsecutivePeekToksDoNotAdvanceInput)
         peek_token();
     }
     TOKEN tok2 = peek_token();
-    CHECK(getTokenType(tok1) == IDENTIFIER_TOKEN);
-    CHECK(getTokenType(tok2) == IDENTIFIER_TOKEN);
+    CHECK(get_token_type(tok1) == IDENTIFIER_TOKEN);
+    CHECK(get_token_type(tok2) == IDENTIFIER_TOKEN);
     STRCMP_EQUAL(getStringVal(tok1), getStringVal(tok2));
     POINTERS_EQUAL(tok1, tok2);
 }

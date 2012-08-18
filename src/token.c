@@ -47,7 +47,7 @@ void set_token_type(TOKEN t, TokenType tType)
     t->tokenType = tType;
 }
 
-TokenType getTokenType(TOKEN t)
+TokenType get_token_type(TOKEN t)
 {
     return t->tokenType;
 }
@@ -218,7 +218,7 @@ StorageClass getTokenStorageClass(TOKEN tok)
 bool isKeyword(TOKEN tok)
 {
     bool result = false;
-    if(getTokenType(tok) == KEYWORD_TOKEN)
+    if(get_token_type(tok) == KEYWORD_TOKEN)
     {
         result = true;
     }
@@ -238,7 +238,7 @@ bool reserved(TOKEN tok, KeywordType keyword)
 bool isDelimiter(TOKEN tok)
 {
     bool result = false;
-    if(getTokenType(tok) == DELIMITER_TOKEN)
+    if(get_token_type(tok) == DELIMITER_TOKEN)
     {
         result = true;
     }
@@ -258,7 +258,7 @@ bool delimiter(TOKEN tok, DelimiterType delim)
 bool isOperator(TOKEN tok)
 {
     bool result = false;
-    if(getTokenType(tok) == OPERATOR_TOKEN)
+    if(get_token_type(tok) == OPERATOR_TOKEN)
     {
         result = true;
     }
@@ -382,7 +382,7 @@ void printToken(TOKEN t)
     {
         printf("\n");
         printTokenType(t);
-        switch(getTokenType(t))
+        switch(get_token_type(t))
         {
             case KEYWORD_TOKEN:
                 printKeywordType(t);

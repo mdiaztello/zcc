@@ -374,7 +374,7 @@ TOKEN identifier(void)
     TOKEN tok = NULL;
     tok = peek_token(); 
     if( (tok != NULL) && 
-            (getTokenType(tok) == IDENTIFIER_TOKEN))
+            (get_token_type(tok) == IDENTIFIER_TOKEN))
     {
         tok = get_token();
     }
@@ -392,8 +392,8 @@ TOKEN constant(void)
     TOKEN tok = NULL;
     tok = peek_token();
     if((tok != NULL) &&
-            ((getTokenType(tok) == NUMBER_TOKEN) ||
-             (getTokenType(tok) == CHARACTER_LITERAL))) //FIXME: character literals are broken in the lexer right now and I don't feel like
+            ((get_token_type(tok) == NUMBER_TOKEN) ||
+             (get_token_type(tok) == CHARACTER_LITERAL))) //FIXME: character literals are broken in the lexer right now and I don't feel like
                         //fixing the lexer to recognize them at the moment.
     {
         tok = get_token();
@@ -410,8 +410,8 @@ TOKEN string_literal(void)
     TOKEN tok = NULL;
     tok = peek_token();
     if((tok != NULL) &&
-            ((getTokenType(tok) == STRING_LITERAL) ||
-             (getTokenType(tok) == CHARACTER_LITERAL)))
+            ((get_token_type(tok) == STRING_LITERAL) ||
+             (get_token_type(tok) == CHARACTER_LITERAL)))
     {
         tok = get_token();
     }
@@ -429,7 +429,7 @@ TOKEN character_constant(void)
     TOKEN tok = NULL;
     tok = peek_token();
     if((tok != NULL) &&
-             (getTokenType(tok) == CHARACTER_LITERAL))
+             (get_token_type(tok) == CHARACTER_LITERAL))
     {
         tok = get_token();
     }
@@ -500,7 +500,7 @@ TOKEN parameter_declaration(void)
 void expect(TokenType tType, unsigned int whichToken, void (*errorAction)(void))
 {
     TOKEN peek = peek_token();
-    if((tType != getTokenType(peek)) || (whichToken != getWhichVal(peek)))
+    if((tType != get_token_type(peek)) || (whichToken != getWhichVal(peek)))
     {
         if(NULL == errorAction)
         {

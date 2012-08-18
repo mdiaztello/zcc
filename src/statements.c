@@ -46,7 +46,7 @@ TOKEN statement(void)
     TOKEN result = NULL;
     TOKEN tok = peek_token();
 
-    if((getTokenType(tok) == IDENTIFIER_TOKEN) || 
+    if((get_token_type(tok) == IDENTIFIER_TOKEN) || 
             (true == reserved(tok, CASE)) || 
             (true == reserved(tok, DEFAULT)) || 
             (true == delimiter(tok, OPEN_PAREN)) ||
