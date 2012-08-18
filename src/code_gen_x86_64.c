@@ -24,6 +24,7 @@
  * =====================================================================================
  */
 
+//Generates code for the setup that occurs in every function
 void generate_function_preamble(void)
 {
     emit("\t# **** FUNCTION PREAMBLE ****\n");
@@ -31,6 +32,7 @@ void generate_function_preamble(void)
 	emit("\tmovq %rsp, %rbp     #set up stack frame\n");
 }
 
+//Generates code for the cleanup that occurs in every function
 void generate_function_postamble(void)
 {
     emit("\n\t# **** FUNCTION POSTAMBLE ****\n");
@@ -39,6 +41,8 @@ void generate_function_postamble(void)
 }
 
 
+//Generates a directive that indicates to the assembler that the subroutine
+//corresponding to the given label name can be used at global scope
 void register_function_name(char* function_name)
 {
     emit("\n.global ");
@@ -46,6 +50,8 @@ void register_function_name(char* function_name)
     emit("\n");
 }
 
+//Generates assembler directives to store all of the string literals present
+//in the current translation unit.
 //FIXME this works but I may want to refine it...
 void generate_string_literals(void)
 {
@@ -62,6 +68,7 @@ void generate_string_literals(void)
     emit("\n.text  #beginning of the code\n");
 }
 
+//Generates the code needed in order to invoke a function
 //FIXME FILTHY HACK
 void generate_function_call(TOKEN function_call)
 {
@@ -75,6 +82,8 @@ void generate_function_call(TOKEN function_call)
     emit("\n");
 }
 
+//Generates return value code so that functions can
+//return results after execution
 //FIXME FILTHY HACK
 void generate_return_code(TOKEN return_statement)
 {
