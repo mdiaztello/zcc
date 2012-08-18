@@ -231,31 +231,31 @@ static void skip_whitespace_and_comments(void)
 
 static bool detectedSingleLineComment(void)
 {
-    bool result = FALSE;
+    bool result = false;
 
     if((peekchar() == '/') && (peek2char() == '/'))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
 static bool detectBlockCommentOpen(void)
 {
-    bool result = FALSE;
+    bool result = false;
     if((peekchar() == '/') && (peek2char() == '*'))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
 static bool detectBlockCommentClose(void)
 {
-    bool result = FALSE;
+    bool result = false;
     if((peekchar() == '*') && (peek2char() == '/'))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
@@ -297,10 +297,10 @@ static void skip_block_comments(void)
 
 static bool isWhiteSpace(char c)
 {
-    bool result = FALSE;
+    bool result = false;
     if((c == '\t') || (c == '\n') || (c == ' '))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
@@ -474,7 +474,7 @@ static void make_special(TOKEN tok)
     buffer[1] = peek2char();
     buffer[2] = 0; //terminate the string
 
-    if(TRUE == isDelimiterCharacter(buffer[0], &whichDelimiter))
+    if(true == isDelimiterCharacter(buffer[0], &whichDelimiter))
     {
         buffer[1] = 0; //terminate the delimiter after 1 character
         setTokenType(tok, DELIMITER_TOKEN); 
@@ -484,7 +484,7 @@ static void make_special(TOKEN tok)
     else
     {
         OperatorType whichOp;
-        if(TRUE == isDoubleCharacterOperator(buffer, &whichOp))
+        if(true == isDoubleCharacterOperator(buffer, &whichOp))
         {
             setTokenType(tok, OPERATOR_TOKEN); 
             setWhichVal(tok, (int)whichOp);
@@ -494,7 +494,7 @@ static void make_special(TOKEN tok)
         else 
         {
             buffer[1] = 0; //terminate the delimiter after 1 character
-            if(TRUE == isSingleCharacterOperator(buffer, &whichOp))
+            if(true == isSingleCharacterOperator(buffer, &whichOp))
             {
                 setTokenType(tok, OPERATOR_TOKEN); 
                 setWhichVal(tok, (int)whichOp);
@@ -513,13 +513,13 @@ static void make_special(TOKEN tok)
 static bool isDelimiterCharacter(char c, DelimiterType* whichDelim)
 {
     int i = 0;
-    bool result = FALSE;
+    bool result = false;
     *whichDelim = 0;
     for(i = 0; i < NUM_DELIMITER_TYPES; ++i)
     {
         if(delimiters[i] == c)
         {
-            result = TRUE;
+            result = true;
             *whichDelim = i;
         }
     }
@@ -534,14 +534,14 @@ static bool isDelimiterCharacter(char c, DelimiterType* whichDelim)
 static bool isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
 {
     int i = 0;
-    bool result = FALSE;
+    bool result = false;
     *whichOp = 0;
 
     for(i = EQUALS; i < NUM_OPERATOR_TYPES; ++i)
     {
         if(0 == strcmp(operators[i], buffer))
         {
-            result = TRUE;
+            result = true;
             *whichOp = i;
         }
     }
@@ -553,14 +553,14 @@ static bool isDoubleCharacterOperator(char* buffer, OperatorType* whichOp)
 static bool isSingleCharacterOperator(char* buffer, OperatorType* whichOp)
 {
     int i = 0;
-    bool result = FALSE;
+    bool result = false;
     *whichOp = 0;
 
     for(i = ADDITION; i < NUM_OPERATOR_TYPES; ++i)
     {
         if(0 == strcmp(operators[i], buffer))
         {
-            result = TRUE;
+            result = true;
             *whichOp = i;
         }
     }
