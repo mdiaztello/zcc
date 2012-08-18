@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "token.h"
 #include "token_API.h"
 #include "parse_tree.h"
@@ -80,11 +81,11 @@ void generate_function_body(TOKEN function_definition)
     emit("\n\t# **** FUNCTION BODY ****\n\n");
     while(NULL != function_body)
     {
-        if(TRUE == _operator(function_body, PARSE_TREE_FUNCALL))
+        if(true == _operator(function_body, PARSE_TREE_FUNCALL))
         {
             generate_function_call(function_body);
         }
-        if(TRUE == _operator(function_body, PARSE_TREE_RETURN))
+        if(true == _operator(function_body, PARSE_TREE_RETURN))
         {
             generate_return_code(function_body);
         }
