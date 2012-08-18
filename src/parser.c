@@ -122,7 +122,7 @@ TOKEN function_definition(SYMBOL s)
     TOKEN func_name = make_token();
     set_token_type(func_name, IDENTIFIER_TOKEN);
     set_string_value(func_name, s->namestring);
-    setSymbolTableEntry(func_name, s);
+    set_token_symbol_table_entry(func_name, s);
     params = make_statement_list(params);
     func_definition = make_function_definition(func_name, params, func_body);
     return func_definition;

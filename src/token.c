@@ -177,12 +177,16 @@ void setSymbolType(TOKEN tok, SYMBOL sym_t)
     tok->symtype = sym_t;
 }
 
-SYMBOL getSymbolTableEntry(TOKEN tok)
+//gets the entry in the symbol table corresponding to the given token
+//this helps us get additional semantic information about the token
+SYMBOL get_token_symbol_table_entry(TOKEN tok)
 {
     return tok->symentry;
 }
 
-void setSymbolTableEntry(TOKEN tok, SYMBOL sym_entry)
+//sets a link between a token in our parse tree and the symbol table, 
+//effectively annotating the tree node with semantic information
+void set_token_symbol_table_entry(TOKEN tok, SYMBOL sym_entry)
 {
     tok->symentry = sym_entry;
 }

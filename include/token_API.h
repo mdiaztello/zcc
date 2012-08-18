@@ -51,8 +51,8 @@ TOKEN get_token_operands(TOKEN tok);
 SYMBOL getSymbolType(TOKEN tok);
 void setSymbolType(TOKEN tok, SYMBOL sym_t);
 
-SYMBOL getSymbolTableEntry(TOKEN tok);
-void setSymbolTableEntry(TOKEN tok, SYMBOL sym_entry);
+SYMBOL get_token_symbol_table_entry(TOKEN tok);
+void set_token_symbol_table_entry(TOKEN tok, SYMBOL sym_entry);
 
 double getRealVal(TOKEN tok);
 void setRealVal(TOKEN tok, double value);

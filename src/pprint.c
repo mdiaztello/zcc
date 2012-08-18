@@ -381,7 +381,7 @@ void dbugbprinttok(TOKEN tok)    /* print rest of token for debugging */
 	if (tok != NULL)
 	{
 		printf("  toktype %6d  which  %6d  symtyp %6p  syment %6p  opnds %6p\n",
-				get_token_type(tok), get_token_subtype(tok), getSymbolType(tok), getSymbolTableEntry(tok),
+				get_token_type(tok), get_token_subtype(tok), getSymbolType(tok), get_token_symbol_table_entry(tok),
 				get_token_operands(tok));
 	}
 }

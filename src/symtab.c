@@ -548,7 +548,7 @@ void install_string_literal(TOKEN string)
     STRING_LIST str = make_string_literal();
     SYMBOL s = makesym(string_name);
     str->string_tok = string;
-    setSymbolTableEntry(string, s);
+    set_token_symbol_table_entry(string, s);
 
     if(string_literal_list == NULL)
     {

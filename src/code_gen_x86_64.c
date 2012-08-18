@@ -59,7 +59,7 @@ void generate_string_literals(void)
     emit(".section .rodata\n");
     while(string_literal_list != NULL)
     {
-        emit(getSymbolTableEntry(string_literal_list->string_tok)->namestring);
+        emit(get_token_symbol_table_entry(string_literal_list->string_tok)->namestring);
         emit(": .string \"");
         emit(get_string_value(string_literal_list->string_tok));
         emit("\"\n");
@@ -75,7 +75,7 @@ void generate_function_call(TOKEN function_call)
     TOKEN func_name = get_function_call_name(function_call);
     TOKEN arg = get_function_call_args(function_call);
     emit("\tmovl $");
-    emit(getSymbolTableEntry(arg)->namestring);
+    emit(get_token_symbol_table_entry(arg)->namestring);
     emit(", %edi\n");
     emit("\tcall ");
     emit(get_string_value(func_name));
