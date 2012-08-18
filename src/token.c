@@ -2,8 +2,8 @@
 #include "token_API.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "debug.h"
-#include "global_defs.h"
 #include "symtab.h"
 
 struct token
@@ -180,8 +180,8 @@ void setRealVal(TOKEN tok, double value)
 //gets the storage class from a token containing a storage class reserved word
 StorageClass getTokenStorageClass(TOKEN tok)
 {
-    if( FALSE == reserved(tok, EXTERN) && FALSE == reserved(tok, TYPEDEF) &&
-            FALSE == reserved(tok, STATIC))
+    if( false == reserved(tok, EXTERN) && false == reserved(tok, TYPEDEF) &&
+            false == reserved(tok, STATIC))
     {
         printf("You tried to get a storage class from a non-storage-class token\n");
         exit(EXIT_FAILURE); //FIXME: we don't want to just barf in the future, but for now its ok
@@ -212,62 +212,62 @@ StorageClass getTokenStorageClass(TOKEN tok)
 //RANDOM HELPER FUNCTIONS: FIXME figure out where these functions ought to go instead of just jamming them all down here
 //perhaps consider putting them with the other token operations?
 
-BOOLEAN isKeyword(TOKEN tok)
+bool isKeyword(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
+    bool result = false;
     if(getTokenType(tok) == KEYWORD_TOKEN)
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
-BOOLEAN reserved(TOKEN tok, KeywordType keyword)
+bool reserved(TOKEN tok, KeywordType keyword)
 {
-    BOOLEAN result = FALSE;
+    bool result = false;
     if(isKeyword(tok) && (getWhichVal(tok) == keyword))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
-BOOLEAN isDelimiter(TOKEN tok)
+bool isDelimiter(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
+    bool result = false;
     if(getTokenType(tok) == DELIMITER_TOKEN)
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
-BOOLEAN delimiter(TOKEN tok, DelimiterType delim)
+bool delimiter(TOKEN tok, DelimiterType delim)
 {
-    BOOLEAN result = FALSE;
+    bool result = false;
     if(isDelimiter(tok) && (getWhichVal(tok) == delim))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
-BOOLEAN isOperator(TOKEN tok)
+bool isOperator(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
+    bool result = false;
     if(getTokenType(tok) == OPERATOR_TOKEN)
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
-BOOLEAN _operator(TOKEN tok, OperatorType operator)
+bool _operator(TOKEN tok, OperatorType operator)
 {
-    BOOLEAN result = FALSE;
+    bool result = false;
     if(isOperator(tok) && (getWhichVal(tok) == operator))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
@@ -275,97 +275,97 @@ BOOLEAN _operator(TOKEN tok, OperatorType operator)
 
 //checks to see if the token is an assignment type operator 
 //like "=" or "+=" or any of the other variants
-BOOLEAN isAssignmentOperator(TOKEN tok)
+bool isAssignmentOperator(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
-    if((TRUE == _operator(tok, ASSIGNMENT)) ||
-       (TRUE == _operator(tok, PLUS_EQUAL)) ||
-       (TRUE == _operator(tok, MINUS_EQUAL)) ||
-       (TRUE == _operator(tok, MULTIPLY_EQUAL)) ||
-       (TRUE == _operator(tok, DIVIDE_EQUAL)) ||
-       (TRUE == _operator(tok, MOD_EQUAL)) ||
-       (TRUE == _operator(tok, BITWISE_AND_EQUAL)) ||
-       (TRUE == _operator(tok, BITWISE_OR_EQUAL)))
+    bool result = false;
+    if((true == _operator(tok, ASSIGNMENT)) ||
+       (true == _operator(tok, PLUS_EQUAL)) ||
+       (true == _operator(tok, MINUS_EQUAL)) ||
+       (true == _operator(tok, MULTIPLY_EQUAL)) ||
+       (true == _operator(tok, DIVIDE_EQUAL)) ||
+       (true == _operator(tok, MOD_EQUAL)) ||
+       (true == _operator(tok, BITWISE_AND_EQUAL)) ||
+       (true == _operator(tok, BITWISE_OR_EQUAL)))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
 //checks to see if the operator is one of the possible unary operators
 
-BOOLEAN isUnaryOperator(TOKEN tok)
+bool isUnaryOperator(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
-    if((TRUE == _operator(tok, AMPERSAND)) || 
-       (TRUE == _operator(tok, STAR)) ||
-       (TRUE == _operator(tok, ADDITION)) ||
-       (TRUE == _operator(tok, SUBTRACTION)) ||
-       (TRUE == _operator(tok, BITWISE_NOT)) ||
-       (TRUE == _operator(tok, BOOLEAN_NOT)))
+    bool result = false;
+    if((true == _operator(tok, AMPERSAND)) || 
+       (true == _operator(tok, STAR)) ||
+       (true == _operator(tok, ADDITION)) ||
+       (true == _operator(tok, SUBTRACTION)) ||
+       (true == _operator(tok, BITWISE_NOT)) ||
+       (true == _operator(tok, BOOLEAN_NOT)))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
 //checks to see if we have a *, a / or a %
-BOOLEAN isMultiplicativeOperator(TOKEN tok)
+bool isMultiplicativeOperator(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
-    if(TRUE == _operator(tok, STAR) ||  
-            TRUE == _operator(tok, MULTIPLICATION) ||
-            TRUE == _operator(tok, DIVISION) ||
-            TRUE == _operator(tok, MODULAR_DIVISION) )
+    bool result = false;
+    if(true == _operator(tok, STAR) ||  
+            true == _operator(tok, MULTIPLICATION) ||
+            true == _operator(tok, DIVISION) ||
+            true == _operator(tok, MODULAR_DIVISION) )
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
-BOOLEAN isAdditiveOperator(TOKEN tok)
+bool isAdditiveOperator(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
-    if((TRUE == _operator(tok, ADDITION)) ||
-            (TRUE == _operator(tok, SUBTRACTION)))
+    bool result = false;
+    if((true == _operator(tok, ADDITION)) ||
+            (true == _operator(tok, SUBTRACTION)))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
-BOOLEAN isIterationKeyword(TOKEN tok)
+bool isIterationKeyword(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
-    if( TRUE == reserved(tok, WHILE) ||
-            TRUE == reserved(tok, FOR) ||
-            TRUE == reserved(tok, DO) )
+    bool result = false;
+    if( true == reserved(tok, WHILE) ||
+            true == reserved(tok, FOR) ||
+            true == reserved(tok, DO) )
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
-BOOLEAN isJumpKeyword(TOKEN tok)
+bool isJumpKeyword(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
-    if( (TRUE == reserved(tok, GOTO)) || 
-            (TRUE == reserved(tok, CONTINUE)) || 
-            (TRUE == reserved(tok, BREAK)) ||
-            (TRUE == reserved(tok, RETURN)) )
+    bool result = false;
+    if( (true == reserved(tok, GOTO)) || 
+            (true == reserved(tok, CONTINUE)) || 
+            (true == reserved(tok, BREAK)) ||
+            (true == reserved(tok, RETURN)) )
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }
 
-BOOLEAN isSelectionKeyword(TOKEN tok)
+bool isSelectionKeyword(TOKEN tok)
 {
-    BOOLEAN result = FALSE;
-    if( (TRUE == reserved(tok, IF)) || 
-            (TRUE == reserved(tok, SWITCH)))
+    bool result = false;
+    if( (true == reserved(tok, IF)) || 
+            (true == reserved(tok, SWITCH)))
     {
-        result = TRUE;
+        result = true;
     }
     return result;
 }

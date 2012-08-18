@@ -23,8 +23,9 @@
  * =====================================================================================
  */
 
+#include <stdbool.h>
 #include "symtab.h"
-#include "global_defs.h" //for the BOOLEAN definition
+#include "global_defs.h" //for the bool definition
 
 TOKEN makeToken(void);
 void setTokenType(TOKEN t, enum token_type tType);
@@ -58,22 +59,22 @@ void setRealVal(TOKEN tok, double value);
 
 StorageClass getTokenStorageClass(TOKEN tok);
 
-BOOLEAN isKeyword(TOKEN tok);
-BOOLEAN isOperator(TOKEN tok);
-BOOLEAN isAssignmentOperator(TOKEN tok);
-BOOLEAN isUnaryOperator(TOKEN tok);
-BOOLEAN isMultiplicativeOperator(TOKEN tok);
-BOOLEAN isAdditiveOperator(TOKEN tok);
-BOOLEAN isDelimiter(TOKEN tok);
+bool isKeyword(TOKEN tok);
+bool isOperator(TOKEN tok);
+bool isAssignmentOperator(TOKEN tok);
+bool isUnaryOperator(TOKEN tok);
+bool isMultiplicativeOperator(TOKEN tok);
+bool isAdditiveOperator(TOKEN tok);
+bool isDelimiter(TOKEN tok);
 
-BOOLEAN isIterationKeyword(TOKEN tok);
-BOOLEAN isJumpKeyword(TOKEN tok);
-BOOLEAN isSelectionKeyword(TOKEN tok);
+bool isIterationKeyword(TOKEN tok);
+bool isJumpKeyword(TOKEN tok);
+bool isSelectionKeyword(TOKEN tok);
 
 
-BOOLEAN reserved(TOKEN tok, KeywordType keyword);
-BOOLEAN _operator(TOKEN tok, OperatorType _operator);
-BOOLEAN delimiter(TOKEN tok, DelimiterType delim);
+bool reserved(TOKEN tok, KeywordType keyword);
+bool _operator(TOKEN tok, OperatorType _operator);
+bool delimiter(TOKEN tok, DelimiterType delim);
 
 void printToken(TOKEN t);
 void printTokenType(TOKEN t);
