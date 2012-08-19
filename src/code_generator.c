@@ -67,9 +67,9 @@ static void generate_function(TOKEN function_definition)
 void generate_function_label(TOKEN function_definition)
 {
     TOKEN function_name = get_function_def_name(function_definition);
-    register_function_name(get_string_value(function_name));
+    register_function_name(get_token_string_value(function_name));
     emit("\n");
-    emit(get_string_value(function_name));
+    emit(get_token_string_value(function_name));
     emit(":\n");
 }
 
@@ -81,11 +81,11 @@ void generate_function_body(TOKEN function_definition)
     emit("\n\t# **** FUNCTION BODY ****\n\n");
     while(NULL != function_body)
     {
-        if(true == _operator(function_body, PARSE_TREE_FUNCALL))
+        if(true == token_matches_operator(function_body, PARSE_TREE_FUNCALL))
         {
             generate_function_call(function_body);
         }
-        if(true == _operator(function_body, PARSE_TREE_RETURN))
+        if(true == token_matches_operator(function_body, PARSE_TREE_RETURN))
         {
             generate_return_code(function_body);
         }

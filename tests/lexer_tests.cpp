@@ -51,7 +51,7 @@ TEST(LEXER_TESTS, ConsecutivePeekToksDoNotAdvanceInput)
     TOKEN tok2 = peek_token();
     CHECK(get_token_type(tok1) == IDENTIFIER_TOKEN);
     CHECK(get_token_type(tok2) == IDENTIFIER_TOKEN);
-    STRCMP_EQUAL(get_string_value(tok1), get_string_value(tok2));
+    STRCMP_EQUAL(get_token_string_value(tok1), get_token_string_value(tok2));
     POINTERS_EQUAL(tok1, tok2);
 }
 
@@ -60,8 +60,8 @@ TEST(LEXER_TESTS, GetTokAdvancesInputOnConsecutiveCalls)
     set_input_source("gettok_test", "r+");
     TOKEN tok1 = get_token();
     TOKEN tok2 = get_token();
-    STRCMP_EQUAL(get_string_value(tok1), "a");
-    STRCMP_EQUAL(get_string_value(tok2), "b");
+    STRCMP_EQUAL(get_token_string_value(tok1), "a");
+    STRCMP_EQUAL(get_token_string_value(tok2), "b");
     CHECK(tok1 != tok2);
 }
 
@@ -71,9 +71,9 @@ TEST(LEXER_TESTS, GetTokReturnsPeekedTokAfterPeekTokCall)
     TOKEN get1 = get_token();
     TOKEN peek = peek_token();
     TOKEN get2 = get_token();
-    STRCMP_EQUAL("a", get_string_value(get1));
-    STRCMP_EQUAL("b", get_string_value(peek));
-    STRCMP_EQUAL("b", get_string_value(get2));
+    STRCMP_EQUAL("a", get_token_string_value(get1));
+    STRCMP_EQUAL("b", get_token_string_value(peek));
+    STRCMP_EQUAL("b", get_token_string_value(get2));
     POINTERS_EQUAL(peek, get2);
 }
 
@@ -84,7 +84,7 @@ TEST(LEXER_TESTS, LexerRecognizesKeywords)
     for(int keyword_type = STATIC; keyword_type < NUM_KEYWORD_TYPES; ++keyword_type)
     {
         tok = get_token();
-        CHECK(true == reserved(tok, (KeywordType)keyword_type));
+        CHECK(true == token_matches_keyword(tok, (KeywordType)keyword_type));
     }
 }
 
@@ -102,7 +102,7 @@ TEST(LEXER_TESTS, LexerCanProcessIdentifiers)
     for(int i = 0; i < 4; i++)
     {
         tok = get_token();
-        STRCMP_EQUAL(identifiers[i], get_string_value(tok));
+        STRCMP_EQUAL(identifiers[i], get_token_string_value(tok));
     }
 }
 
@@ -115,8 +115,8 @@ TEST(LEXER_TESTS, LexerHandlesWeirdInlineComments)
     for(int i = 0; i < 6; i++)
     {
         tok = get_token();
-        CHECK(false == isKeyword(tok));
-        STRCMP_EQUAL(expected_identifiers[i], get_string_value(tok));
+        CHECK(false == is_keyword_token(tok));
+        STRCMP_EQUAL(expected_identifiers[i], get_token_string_value(tok));
     }
 }
 
@@ -128,7 +128,7 @@ TEST(LEXER_TESTS, LexerDetectsDelimiters)
     for(int delimiter_type = COMMA; delimiter_type < NUM_DELIMITER_TYPES; delimiter_type++)
     {
         tok = get_token();
-        CHECK(true == delimiter(tok, (DelimiterType)delimiter_type));
+        CHECK(true == token_matches_delimiter(tok, (DelimiterType)delimiter_type));
     }
 }
 
@@ -143,15 +143,15 @@ TEST(LEXER_TESTS, LexterProperlyDetectsOperators)
         tok = get_token();
         if((op_type == MULTIPLICATION) || (op_type == DEREFERENCE))//the lexer reports these as "STAR" tokens until the parser can disambiguate them
         {
-            CHECK(true == _operator(tok, STAR));
+            CHECK(true == token_matches_operator(tok, STAR));
         }
         else if((op_type == BITWISE_AND) || (op_type == REFERENCE))//the lexer reports these as "AMPERSAND" tokens until the parser can disambiguate them
         {
-            CHECK(true == _operator(tok, AMPERSAND));
+            CHECK(true == token_matches_operator(tok, AMPERSAND));
         }
         else
         {
-            CHECK(true == _operator(tok, (OperatorType)op_type));
+            CHECK(true == token_matches_operator(tok, (OperatorType)op_type));
         }
     }
 }
@@ -175,7 +175,7 @@ TEST(LEXER_TESTS, LexerUsesMaximalMunchRule)
     
     while(tok != NULL)
     {
-        CHECK(true == _operator(tok, expectedOperators[i]));
+        CHECK(true == token_matches_operator(tok, expectedOperators[i]));
         tok = get_token();
         i++;
     }

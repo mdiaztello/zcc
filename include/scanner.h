@@ -19,8 +19,6 @@
  * =====================================================================================
  */
 
-#define MAXCHARCLASS 256
-
 //The character_type enum describes the three different types of characters
 //that will appear in a stream of characters being read from a C source file.
 //ALPHA characters are alphabetic (underscores are included). NUMERIC

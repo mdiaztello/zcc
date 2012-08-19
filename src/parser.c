@@ -114,14 +114,14 @@ TOKEN function_definition(SYMBOL s)
     TOKEN params = parameter_type_list(); //we already found the return type and function name earlier, so we just pick up from there
     expect(DELIMITER_TOKEN, CLOSE_PAREN, NO_ERROR_HANDLER);
     SYMBOL return_type = s;
-    insertfn(s->namestring, return_type, getSymbolType(params)); //FIXME: extend this to more than just one parameter
+    insertfn(s->namestring, return_type, get_token_symbol_type(params)); //FIXME: extend this to more than just one parameter
     TOKEN func_body = compound_statement();
 
     //FIXME: this is a hack to retrieve the function name in TOKEN form
     //figure out a better way to deal with this
     TOKEN func_name = make_token();
     set_token_type(func_name, IDENTIFIER_TOKEN);
-    set_string_value(func_name, s->namestring);
+    set_token_string_value(func_name, s->namestring);
     set_token_symbol_table_entry(func_name, s);
     params = make_statement_list(params);
     func_definition = make_function_definition(func_name, params, func_body);
@@ -154,7 +154,7 @@ TOKEN declaration(SYMBOL s)
     dec = init_declarator_list(s);
     t = peek_token();
 
-    if(false == delimiter(t, SEMICOLON))
+    if(false == token_matches_delimiter(t, SEMICOLON))
     {
         //it turns out that we haven't found a variable declaration, so exit
         //and allow the function definition recognizer take a stab at parsing
@@ -184,13 +184,13 @@ TOKEN declaration_specifiers(SYMBOL s)
     TOKEN storage_class = storage_class_specifier();
     if( NULL != storage_class )
     {
-        setStorageClass(s, getTokenStorageClass(storage_class));
+        setStorageClass(s, get_token_storage_class(storage_class));
     }
     TOKEN type_spec = type_specifier();
     
-    if( false == reserved(type_spec, VOID))
+    if( false == token_matches_keyword(type_spec, VOID))
     {
-        SYMBOL type = searchst(get_string_value(type_spec));
+        SYMBOL type = searchst(get_token_string_value(type_spec));
         s->basicdt = type->basicdt;
         s->datatype = type;
         s->size = type->size;
@@ -222,9 +222,9 @@ TOKEN storage_class_specifier(void)
         return NULL;
     }
 
-    if(true == reserved(tok, TYPEDEF) ||
-            true == reserved(tok, EXTERN) ||
-            true == reserved(tok, STATIC))
+    if(true == token_matches_keyword(tok, TYPEDEF) ||
+            true == token_matches_keyword(tok, EXTERN) ||
+            true == token_matches_keyword(tok, STATIC))
     {
         storage_class = get_token();
     }
@@ -264,15 +264,15 @@ TOKEN type_specifier(void)
 
     TOKEN type_spec;
 
-    if( true == reserved(tok, VOID) ||
-            true == reserved(tok, CHAR) ||
-            true == reserved(tok, SHORT) ||
-            true == reserved(tok, INT) ||
-            true == reserved(tok, LONG) ||
-            //true == reserved(tok, FLOAT) ||
-            //true == reserved(tok, DOUBLE) ||
-            true == reserved(tok, SIGNED) ||
-            true == reserved(tok, UNSIGNED) )
+    if( true == token_matches_keyword(tok, VOID) ||
+            true == token_matches_keyword(tok, CHAR) ||
+            true == token_matches_keyword(tok, SHORT) ||
+            true == token_matches_keyword(tok, INT) ||
+            true == token_matches_keyword(tok, LONG) ||
+            //true == token_matches_keyword(tok, FLOAT) ||
+            //true == token_matches_keyword(tok, DOUBLE) ||
+            true == token_matches_keyword(tok, SIGNED) ||
+            true == token_matches_keyword(tok, UNSIGNED) )
     {
         type_spec = get_token();
     }
@@ -293,7 +293,7 @@ TOKEN init_declarator_list(SYMBOL s)
 {
     TOKEN init_dec_list = init_declarator(s);
     TOKEN tok = peek_token();
-    if( true == delimiter(tok, COMMA) )
+    if( true == token_matches_delimiter(tok, COMMA) )
     {
         //FIXME: this might be a bug but i'm not sure yet
         tok = get_token(); //consume the COMMA
@@ -319,7 +319,7 @@ TOKEN init_declarator(SYMBOL s)
         return NULL;
     }
     TOKEN initial_value = NULL;
-    if(true == _operator(tok, ASSIGNMENT))
+    if(true == token_matches_operator(tok, ASSIGNMENT))
     {
         initial_value = NULL;//initializer();
     }
@@ -359,7 +359,7 @@ TOKEN pointer(void)
 TOKEN direct_declarator(SYMBOL s)
 {
     TOKEN direct_decl = identifier();
-    setSymbolNameString(s, get_string_value(direct_decl));
+    setSymbolNameString(s, get_token_string_value(direct_decl));
     return direct_decl;
 }
 
@@ -450,7 +450,7 @@ TOKEN parameter_type_list(void)
     TOKEN param_list = NULL;
     TOKEN tok = peek_token();
     //if we have a void list, there should be no other parameters
-    if(false == reserved(tok, VOID)) //FIXME: this will cause us to be unable to use void* in our parameter list.
+    if(false == token_matches_keyword(tok, VOID)) //FIXME: this will cause us to be unable to use void* in our parameter list.
     {
         param_list = parameter_list();
     }
@@ -468,7 +468,7 @@ TOKEN parameter_list(void)
 {
     TOKEN param_list = parameter_declaration();
     TOKEN tok = peek_token();
-    if( true == delimiter(tok, COMMA) )
+    if( true == token_matches_delimiter(tok, COMMA) )
     {
         //FIXME: this might be a bug but i'm not sure yet
         tok = get_token(); //consume the COMMA
@@ -491,7 +491,7 @@ TOKEN parameter_declaration(void)
     TOKEN dec = NULL;
     declaration_specifiers(s);
     dec = declarator(s);
-    setSymbolType(dec,s);
+    set_token_symbol_type(dec,s);
 
     return dec;
 }

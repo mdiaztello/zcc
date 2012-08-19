@@ -61,7 +61,7 @@ void generate_string_literals(void)
     {
         emit(get_token_symbol_table_entry(string_literal_list->string_tok)->namestring);
         emit(": .string \"");
-        emit(get_string_value(string_literal_list->string_tok));
+        emit(get_token_string_value(string_literal_list->string_tok));
         emit("\"\n");
         string_literal_list = string_literal_list->link;
     }
@@ -78,7 +78,7 @@ void generate_function_call(TOKEN function_call)
     emit(get_token_symbol_table_entry(arg)->namestring);
     emit(", %edi\n");
     emit("\tcall ");
-    emit(get_string_value(func_name));
+    emit(get_token_string_value(func_name));
     emit("\n");
 }
 

@@ -165,7 +165,7 @@ TOKEN lex(void)
 
     if(DEBUG_GET_TOKEN != 0)
     {
-        printToken(token);
+        print_token(token);
     }
     return token;
 }
@@ -328,12 +328,12 @@ static TOKEN make_identifier_token(void)
 
     //assume that the token is an identifier, then check if it is a reserved word
     set_token_type(tok, IDENTIFIER_TOKEN);
-    set_data_type(tok, STRING_TYPE);
+    set_token_data_type(tok, STRING_TYPE);
 
     get_identifier_string(buffer);
-    set_string_value(tok, buffer);
+    set_token_string_value(tok, buffer);
 
-    int whichKeyword = is_keyword_string(get_string_value(tok));
+    int whichKeyword = is_keyword_string(get_token_string_value(tok));
     if(-1 != whichKeyword)
     {
         set_token_subtype(tok, whichKeyword);
@@ -429,9 +429,9 @@ static TOKEN make_string_token(void)
     TOKEN tok = make_token();
     char buffer[MAX_TOKEN_STRING_LENGTH];
     set_token_type(tok, STRING_LITERAL);
-    set_data_type(tok, STRING_TYPE);
+    set_token_data_type(tok, STRING_TYPE);
     get_string_literal(buffer);
-    set_string_value(tok, buffer);
+    set_token_string_value(tok, buffer);
     return tok;
 }
 

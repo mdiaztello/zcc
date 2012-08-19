@@ -196,18 +196,18 @@ void debugprinttok(TOKEN tok)           /* print a token for debugging */
 	else 
 	{
 		//printf( " token %6d  type %2d  which %3d  datatype %3d  symtype %6d link %6d  operands %6d\n",
-				//tok, get_token_type(tok), get_token_subtype(tok), get_data_type(tok), getSymbolType(tok),
+				//tok, get_token_type(tok), get_token_subtype(tok), get_token_data_type(tok), get_token_symbol_type(tok),
 				//get_token_link(tok), get_token_operands(tok));
 		switch (get_token_type(tok))
 		{
 			case DELIMITER_TOKEN:
 				printf( "token %6p    type: DELIMITER_TOKEN   which: \"%s\"    datatype %3d    symtype %6p   link %6p    operands %6p\n",
-						tok, delprnt[get_token_subtype(tok)], get_data_type(tok) , getSymbolType(tok),
+						tok, delprnt[get_token_subtype(tok)], get_token_data_type(tok) , get_token_symbol_type(tok),
 						get_token_link(tok), get_token_operands(tok));
 				break;
 			case KEYWORD_TOKEN: 
 				printf( "token %6p    type: KEYWORD_TOKEN    which: \"%s\"    datatype %3d    symtype %6p   link %6p    operands %6p\n",
-						tok, resprnt[get_token_subtype(tok)], get_data_type(tok), getSymbolType(tok),
+						tok, resprnt[get_token_subtype(tok)], get_token_data_type(tok), get_token_symbol_type(tok),
 						get_token_link(tok), get_token_operands(tok));
 				break;
             default:
@@ -233,19 +233,19 @@ void printtok(TOKEN tok)             /* print a token in abbreviated form */
 	switch (get_token_type(tok))
 	{
 		case IDENTIFIER_TOKEN:
-			printf ("%s", get_string_value(tok));
+			printf ("%s", get_token_string_value(tok));
 			break;
 		case STRING_LITERAL:
-			printf ("'%s'", get_string_value(tok));
+			printf ("'%s'", get_token_string_value(tok));
 			break;
 		case NUMBER_TOKEN:
-			switch (get_data_type(tok))
+			switch (get_token_data_type(tok))
 			{
 				case INTEGER:
 					printf ("%ld", get_token_integer_value(tok));
 					break;
 				//case REAL:
-				//	printf ("%e", getRealVal(tok));
+				//	printf ("%e", get_token_floating_point_value(tok));
 				//	break; 
                 default:
                     break;
@@ -272,22 +272,22 @@ void dbugprinttok(TOKEN tok)  /* print a token in 'nice' debugging form */
 		{ 
 			case IDENTIFIER_TOKEN:
 				printf("token %6p    ID:  \"%s\"    dtype %2d    link %6p\n",
-						tok, get_string_value(tok), get_data_type(tok), get_token_link(tok));
+						tok, get_token_string_value(tok), get_token_data_type(tok), get_token_link(tok));
 				break;
 			case STRING_LITERAL:
 				printf("token %6p    STR: \"%s\"    dtype %2d    link %6p\n",
-						tok, get_string_value(tok), get_data_type(tok), get_token_link(tok));
+						tok, get_token_string_value(tok), get_token_data_type(tok), get_token_link(tok));
 				break;
 			case NUMBER_TOKEN:
-				switch (get_data_type(tok))
+				switch (get_token_data_type(tok))
 				{
 					case INTEGER:
 						printf("token %6p    NUM: %12ld    dtype %2d    link %6p\n",
-								tok, get_token_integer_value(tok), get_data_type(tok), get_token_link(tok));
+								tok, get_token_integer_value(tok), get_token_data_type(tok), get_token_link(tok));
 						break;
 					//case REAL:
 					//	printf("token %6p    NUM: %12e    dtype %2d    link %6p\n",
-					//			tok, getRealVal(tok), get_data_type(tok), get_token_link(tok));
+					//			tok, get_token_floating_point_value(tok), get_token_data_type(tok), get_token_link(tok));
 					//	break; 
                     default:
                         break;
@@ -295,7 +295,7 @@ void dbugprinttok(TOKEN tok)  /* print a token in 'nice' debugging form */
 				break;
 			case OPERATOR_TOKEN:
 				printf("token %6p    OP:  \"%s\"    dtype %2d    link %6p    operands %6p\n",
-						tok, opprint[get_token_subtype(tok)], get_data_type(tok), get_token_link(tok),
+						tok, opprint[get_token_subtype(tok)], get_token_data_type(tok), get_token_link(tok),
 						get_token_operands(tok));
 				break;
 			case DELIMITER_TOKEN: case KEYWORD_TOKEN:
@@ -338,7 +338,7 @@ void printexpr(TOKEN tok, int col)     /* print an expression in prefix form */
 			printexpr(opnds, nextcol);
 			if ( get_token_type(opnds) == IDENTIFIER_TOKEN && nextcol < 60 )
 			{
-				nextcol = nextcol + 1 + strlength(get_string_value(opnds));
+				nextcol = nextcol + 1 + strlength(get_token_string_value(opnds));
 			}
 			else
 			{
@@ -381,7 +381,7 @@ void dbugbprinttok(TOKEN tok)    /* print rest of token for debugging */
 	if (tok != NULL)
 	{
 		printf("  toktype %6d  which  %6d  symtyp %6p  syment %6p  opnds %6p\n",
-				get_token_type(tok), get_token_subtype(tok), getSymbolType(tok), get_token_symbol_table_entry(tok),
+				get_token_type(tok), get_token_subtype(tok), get_token_symbol_type(tok), get_token_symbol_table_entry(tok),
 				get_token_operands(tok));
 	}
 }

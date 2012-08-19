@@ -47,27 +47,27 @@ TOKEN statement(void)
     TOKEN tok = peek_token();
 
     if((get_token_type(tok) == IDENTIFIER_TOKEN) || 
-            (true == reserved(tok, CASE)) || 
-            (true == reserved(tok, DEFAULT)) || 
-            (true == delimiter(tok, OPEN_PAREN)) ||
-            (true == delimiter(tok, SEMICOLON)))
+            (true == token_matches_keyword(tok, CASE)) || 
+            (true == token_matches_keyword(tok, DEFAULT)) || 
+            (true == token_matches_delimiter(tok, OPEN_PAREN)) ||
+            (true == token_matches_delimiter(tok, SEMICOLON)))
     {
         //labeled_statement();
         result = expression_statement();
     }
-    else if(true == delimiter(tok, OPEN_BRACE))
+    else if(true == token_matches_delimiter(tok, OPEN_BRACE))
     {
         result = compound_statement();
     }
-    else if(true == isSelectionKeyword(tok))
+    else if(true == is_selection_keyword_token(tok))
     {
         result = selection_statement();
     }
-    else if(true == isIterationKeyword(tok))
+    else if(true == is_iteration_keyword_token(tok))
     {
          result = iteration_statement();
     }
-    else if(true == isJumpKeyword(tok))
+    else if(true == is_jump_keyword_token(tok))
     {
         result = jump_statement();
     }
@@ -90,12 +90,12 @@ TOKEN jump_statement(void)
 {
     TOKEN result = NULL;
     TOKEN keyword = get_token();
-    if(true == reserved(keyword, RETURN))
+    if(true == token_matches_keyword(keyword, RETURN))
     {
         result = expression();
         result = make_return_statement(result);
     }
-    else if(true == reserved(keyword, BREAK))
+    else if(true == token_matches_keyword(keyword, BREAK))
     {
         //TOKEN break_jump_target = make_label(get_new_label_number());
         //result = make_goto(
@@ -133,7 +133,7 @@ TOKEN block_item_list(void)
 {
     TOKEN result = NULL;
     TOKEN next = NULL;
-    if(false == delimiter(peek_token(), CLOSE_BRACE))
+    if(false == token_matches_delimiter(peek_token(), CLOSE_BRACE))
     {
         result = block_item();
         next = block_item_list();
@@ -160,7 +160,7 @@ TOKEN block_item(void)
     //to see if we have a declaration, for now we will check in the symbol table to see if the token
     //we are peeking at is a basic type. If it is, we will assume we have a declaration instead of a statement
     TOKEN tok = peek_token();
-    SYMBOL s = searchst(get_string_value(tok));
+    SYMBOL s = searchst(get_token_string_value(tok));
     if (s != NULL && s->kind == BASICTYPE)
     {
         declaration(sym);
@@ -204,11 +204,11 @@ TOKEN selection_statement(void)
 
 
     TOKEN tok = peek_token();
-    if(true == reserved(tok, ELSE))
+    if(true == token_matches_keyword(tok, ELSE))
     {
         tok = get_token();
         tok = peek_token();
-        if(true == reserved(tok, IF)) //handle "else if"
+        if(true == token_matches_keyword(tok, IF)) //handle "else if"
         {
             else_part = selection_statement();
         }
@@ -244,7 +244,7 @@ TOKEN iteration_statement(void)
     TOKEN result = NULL;
     TOKEN loop_type = get_token();
 
-    if( true == reserved(loop_type, WHILE) )
+    if( true == token_matches_keyword(loop_type, WHILE) )
     {
         expect(DELIMITER_TOKEN, OPEN_PAREN, NO_ERROR_HANDLER);
         TOKEN exp = expression();
@@ -252,7 +252,7 @@ TOKEN iteration_statement(void)
         TOKEN body = compound_statement();
         result = make_while_loop(exp, body);
     }
-    else if( true == reserved(loop_type, DO) )
+    else if( true == token_matches_keyword(loop_type, DO) )
     {
 
         TOKEN body = compound_statement();
@@ -263,7 +263,7 @@ TOKEN iteration_statement(void)
         expect(DELIMITER_TOKEN, SEMICOLON, NO_ERROR_HANDLER);
         result = make_do_loop(exp, body);
     }
-    else if( true == reserved(loop_type, FOR) )
+    else if( true == token_matches_keyword(loop_type, FOR) )
     {
         expect(DELIMITER_TOKEN, OPEN_PAREN, NO_ERROR_HANDLER);
         expect(DELIMITER_TOKEN, CLOSE_PAREN, NO_ERROR_HANDLER);

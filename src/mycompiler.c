@@ -32,7 +32,7 @@ void test_lexer(void)
     printf("*** TESTING THE LEXER ***\n\n");
     while( (t = get_token()) != NULL )
     {
-        printToken(t);
+        print_token(t);
     }
     printf("\n*** DONE TESTING THE LEXER ***\n");
 }

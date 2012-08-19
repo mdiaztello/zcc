@@ -10,7 +10,9 @@ struct token
 {
     enum token_type tokenType; //high-level token type: e.g. delimiter, operator, etc
     enum data_type dataType;   //data type of variable tokens : e.g. int, char, long
-    struct symtbr * symtype;   //pointer to the symbols type in the symbol table
+    struct symtbr * symtype;   //pointer to the symbol's type in the symbol
+                               //table: this is needed for tokens that don't have 
+                               //a basic type (structs and such)
     struct symtbr * symentry;  //pointer to entry in the symbol table
     struct token* operands;
     struct token* link;
@@ -57,17 +59,17 @@ TokenType get_token_type(TOKEN t)
     return t->tokenType;
 }
 
-void set_data_type(TOKEN t, DataType dType)
+void set_token_data_type(TOKEN t, DataType dType)
 {
     t->dataType = dType;
 }
 
-DataType get_data_type(TOKEN t)
+DataType get_token_data_type(TOKEN t)
 {
     return t->dataType;
 }
 
-void set_string_value(TOKEN t, char* string)
+void set_token_string_value(TOKEN t, char* string)
 {
     int i = 0;
 
@@ -78,7 +80,7 @@ void set_string_value(TOKEN t, char* string)
     t->stringval[i] = 0; //terminate the string FIXME: there may be an off-by-one buffer overflow here...
 }
 
-char* get_string_value(TOKEN t)
+char* get_token_string_value(TOKEN t)
 {
     char* s;
     if(t->tokenType == KEYWORD_TOKEN)
@@ -162,7 +164,9 @@ void set_token_operands(TOKEN tok, TOKEN operand)
     tok->operands = operand;
 }
 
-SYMBOL getSymbolType(TOKEN tok)
+//returns the type of the symbol for the given token. This returns type information
+//for datatypes that are not built in (such as user defined structs)
+SYMBOL get_token_symbol_type(TOKEN tok)
 {
     SYMBOL result = NULL;
     if(tok != NULL)
@@ -172,7 +176,10 @@ SYMBOL getSymbolType(TOKEN tok)
     return result;
 }
 
-void setSymbolType(TOKEN tok, SYMBOL sym_t)
+//sets the type of the token (most likely some sort of user defined datatype.
+//i.e. not an char, short, int, etc) to the type represented by the given
+//SYMBOL object
+void set_token_symbol_type(TOKEN tok, SYMBOL sym_t)
 {
     tok->symtype = sym_t;
 }
@@ -191,21 +198,22 @@ void set_token_symbol_table_entry(TOKEN tok, SYMBOL sym_entry)
     tok->symentry = sym_entry;
 }
 
-double getRealVal(TOKEN tok)
+double get_token_floating_point_value(TOKEN tok)
 {
     return tok->realval;
 }
 
-void setRealVal(TOKEN tok, double value)
+void set_token_floating_point_value(TOKEN tok, double value)
 {
     tok->realval = value;
 }
 
 //gets the storage class from a token containing a storage class reserved word
-StorageClass getTokenStorageClass(TOKEN tok)
+//(e.g. extern, static)
+StorageClass get_token_storage_class(TOKEN tok)
 {
-    if( false == reserved(tok, EXTERN) && false == reserved(tok, TYPEDEF) &&
-            false == reserved(tok, STATIC))
+    if( false == token_matches_keyword(tok, EXTERN) && false == token_matches_keyword(tok, TYPEDEF) &&
+            false == token_matches_keyword(tok, STATIC))
     {
         printf("You tried to get a storage class from a non-storage-class token\n");
         exit(EXIT_FAILURE); //FIXME: we don't want to just barf in the future, but for now its ok
@@ -236,7 +244,7 @@ StorageClass getTokenStorageClass(TOKEN tok)
 //RANDOM HELPER FUNCTIONS: FIXME figure out where these functions ought to go instead of just jamming them all down here
 //perhaps consider putting them with the other token operations?
 
-bool isKeyword(TOKEN tok)
+bool is_keyword_token(TOKEN tok)
 {
     bool result = false;
     if(get_token_type(tok) == KEYWORD_TOKEN)
@@ -246,17 +254,17 @@ bool isKeyword(TOKEN tok)
     return result;
 }
 
-bool reserved(TOKEN tok, KeywordType keyword)
+bool token_matches_keyword(TOKEN tok, KeywordType desired_keyword)
 {
     bool result = false;
-    if(isKeyword(tok) && (get_token_subtype(tok) == keyword))
+    if(is_keyword_token(tok) && (get_token_subtype(tok) == desired_keyword))
     {
         result = true;
     }
     return result;
 }
 
-bool isDelimiter(TOKEN tok)
+bool is_delimiter_token(TOKEN tok)
 {
     bool result = false;
     if(get_token_type(tok) == DELIMITER_TOKEN)
@@ -266,17 +274,17 @@ bool isDelimiter(TOKEN tok)
     return result;
 }
 
-bool delimiter(TOKEN tok, DelimiterType delim)
+bool token_matches_delimiter(TOKEN tok, DelimiterType desired_delimiter)
 {
     bool result = false;
-    if(isDelimiter(tok) && (get_token_subtype(tok) == delim))
+    if(is_delimiter_token(tok) && (get_token_subtype(tok) == desired_delimiter))
     {
         result = true;
     }
     return result;
 }
 
-bool isOperator(TOKEN tok)
+bool is_operator_token(TOKEN tok)
 {
     bool result = false;
     if(get_token_type(tok) == OPERATOR_TOKEN)
@@ -286,10 +294,10 @@ bool isOperator(TOKEN tok)
     return result;
 }
 
-bool _operator(TOKEN tok, OperatorType operator)
+bool token_matches_operator(TOKEN tok, OperatorType desired_operator)
 {
     bool result = false;
-    if(isOperator(tok) && (get_token_subtype(tok) == operator))
+    if(is_operator_token(tok) && (get_token_subtype(tok) == desired_operator))
     {
         result = true;
     }
@@ -299,17 +307,17 @@ bool _operator(TOKEN tok, OperatorType operator)
 
 //checks to see if the token is an assignment type operator 
 //like "=" or "+=" or any of the other variants
-bool isAssignmentOperator(TOKEN tok)
+bool is_assignment_operator_token(TOKEN tok)
 {
     bool result = false;
-    if((true == _operator(tok, ASSIGNMENT)) ||
-       (true == _operator(tok, PLUS_EQUAL)) ||
-       (true == _operator(tok, MINUS_EQUAL)) ||
-       (true == _operator(tok, MULTIPLY_EQUAL)) ||
-       (true == _operator(tok, DIVIDE_EQUAL)) ||
-       (true == _operator(tok, MOD_EQUAL)) ||
-       (true == _operator(tok, BITWISE_AND_EQUAL)) ||
-       (true == _operator(tok, BITWISE_OR_EQUAL)))
+    if((true == token_matches_operator(tok, ASSIGNMENT)) ||
+       (true == token_matches_operator(tok, PLUS_EQUAL)) ||
+       (true == token_matches_operator(tok, MINUS_EQUAL)) ||
+       (true == token_matches_operator(tok, MULTIPLY_EQUAL)) ||
+       (true == token_matches_operator(tok, DIVIDE_EQUAL)) ||
+       (true == token_matches_operator(tok, MOD_EQUAL)) ||
+       (true == token_matches_operator(tok, BITWISE_AND_EQUAL)) ||
+       (true == token_matches_operator(tok, BITWISE_OR_EQUAL)))
     {
         result = true;
     }
@@ -317,15 +325,15 @@ bool isAssignmentOperator(TOKEN tok)
 }
 
 //checks to see if the operator is one of the possible unary operators
-bool isUnaryOperator(TOKEN tok)
+bool is_unary_operator_token(TOKEN tok)
 {
     bool result = false;
-    if((true == _operator(tok, AMPERSAND)) || 
-       (true == _operator(tok, STAR)) ||
-       (true == _operator(tok, ADDITION)) ||
-       (true == _operator(tok, SUBTRACTION)) ||
-       (true == _operator(tok, BITWISE_NOT)) ||
-       (true == _operator(tok, BOOLEAN_NOT)))
+    if((true == token_matches_operator(tok, AMPERSAND)) || 
+       (true == token_matches_operator(tok, STAR)) ||
+       (true == token_matches_operator(tok, ADDITION)) ||
+       (true == token_matches_operator(tok, SUBTRACTION)) ||
+       (true == token_matches_operator(tok, BITWISE_NOT)) ||
+       (true == token_matches_operator(tok, BOOLEAN_NOT)))
     {
         result = true;
     }
@@ -333,60 +341,60 @@ bool isUnaryOperator(TOKEN tok)
 }
 
 //checks to see if we have a *, a / or a %
-bool isMultiplicativeOperator(TOKEN tok)
+bool is_multiplicative_operator_token(TOKEN tok)
 {
     bool result = false;
-    if(true == _operator(tok, STAR) ||  
-            true == _operator(tok, MULTIPLICATION) ||
-            true == _operator(tok, DIVISION) ||
-            true == _operator(tok, MODULAR_DIVISION) )
+    if(true == token_matches_operator(tok, STAR) ||  
+            true == token_matches_operator(tok, MULTIPLICATION) ||
+            true == token_matches_operator(tok, DIVISION) ||
+            true == token_matches_operator(tok, MODULAR_DIVISION) )
     {
         result = true;
     }
     return result;
 }
 
-bool isAdditiveOperator(TOKEN tok)
+bool is_additive_operator_token(TOKEN tok)
 {
     bool result = false;
-    if((true == _operator(tok, ADDITION)) ||
-            (true == _operator(tok, SUBTRACTION)))
+    if((true == token_matches_operator(tok, ADDITION)) ||
+            (true == token_matches_operator(tok, SUBTRACTION)))
     {
         result = true;
     }
     return result;
 }
 
-bool isIterationKeyword(TOKEN tok)
+bool is_iteration_keyword_token(TOKEN tok)
 {
     bool result = false;
-    if( true == reserved(tok, WHILE) ||
-            true == reserved(tok, FOR) ||
-            true == reserved(tok, DO) )
+    if( true == token_matches_keyword(tok, WHILE) ||
+            true == token_matches_keyword(tok, FOR) ||
+            true == token_matches_keyword(tok, DO) )
     {
         result = true;
     }
     return result;
 }
 
-bool isJumpKeyword(TOKEN tok)
+bool is_jump_keyword_token(TOKEN tok)
 {
     bool result = false;
-    if( (true == reserved(tok, GOTO)) || 
-            (true == reserved(tok, CONTINUE)) || 
-            (true == reserved(tok, BREAK)) ||
-            (true == reserved(tok, RETURN)) )
+    if( (true == token_matches_keyword(tok, GOTO)) || 
+            (true == token_matches_keyword(tok, CONTINUE)) || 
+            (true == token_matches_keyword(tok, BREAK)) ||
+            (true == token_matches_keyword(tok, RETURN)) )
     {
         result = true;
     }
     return result;
 }
 
-bool isSelectionKeyword(TOKEN tok)
+bool is_selection_keyword_token(TOKEN tok)
 {
     bool result = false;
-    if( (true == reserved(tok, IF)) || 
-            (true == reserved(tok, SWITCH)))
+    if( (true == token_matches_keyword(tok, IF)) || 
+            (true == token_matches_keyword(tok, SWITCH)))
     {
         result = true;
     }
@@ -396,31 +404,31 @@ bool isSelectionKeyword(TOKEN tok)
 
 /************************** TOKEN PRINTING FUNCTIONS *************************************************/
 
-void printToken(TOKEN t)
+void print_token(TOKEN t)
 {
     if( NULL != t )
     {
         printf("\n");
-        printTokenType(t);
+        print_token_type(t);
         switch(get_token_type(t))
         {
             case KEYWORD_TOKEN:
-                printKeywordType(t);
+                print_token_keyword_type(t);
                 break;
             case IDENTIFIER_TOKEN:
-                printIdentifier(t);
+                print_identifier_token(t);
                 break;
             case STRING_LITERAL:
-                printf("The string is \"%s\"\n", get_string_value(t));
+                printf("The string is \"%s\"\n", get_token_string_value(t));
                 break;
             case DELIMITER_TOKEN:
-                printDelimiterType(t);
+                print_token_delimiter_type(t);
                 break;
             case NUMBER_TOKEN:
-                printNumericValue(t);
+                print_token_numeric_value(t);
                 break;
             case OPERATOR_TOKEN:
-                printOperator(t);
+                print_operator_token(t);
                 break;
             default:
                 printf("I don't know what kind of token this is...\n");
@@ -433,7 +441,7 @@ void printToken(TOKEN t)
     }
 }
 
-void printTokenType(TOKEN t)
+void print_token_type(TOKEN t)
 {
     printf("TOKEN TYPE:\t");
     switch(t->tokenType)
@@ -465,7 +473,7 @@ void printTokenType(TOKEN t)
     }
 }
 
-void printKeywordType(TOKEN t)
+void print_token_keyword_type(TOKEN t)
 {
     printf("This is a \"");
     switch(get_token_subtype(t))
@@ -562,12 +570,12 @@ void printKeywordType(TOKEN t)
     printf("\" keyword token\n");
 }
 
-void printIdentifier(TOKEN t)
+void print_identifier_token(TOKEN t)
 {
-    printf("The identifier is \"%s\"\n", get_string_value(t));
+    printf("The identifier is \"%s\"\n", get_token_string_value(t));
 }
 
-void printDelimiterType(TOKEN t)
+void print_token_delimiter_type(TOKEN t)
 {
     printf("The DELIMITER we found is a ");
     switch(get_token_subtype(t))
@@ -605,12 +613,12 @@ void printDelimiterType(TOKEN t)
     }
 }
 
-void printNumericValue(TOKEN t)
+void print_token_numeric_value(TOKEN t)
 {
     printf("The value of this NUMBER_TOKEN is %lu\n", get_token_integer_value(t));
 }
 
-void printOperator(TOKEN t)
+void print_operator_token(TOKEN t)
 {
     printf("The OPERATOR_TOKEN is a ");
     switch(get_token_subtype(t))
