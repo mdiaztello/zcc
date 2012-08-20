@@ -36,7 +36,7 @@ struct token
 //memory)
 TOKEN make_token(void)
 {
-    TOKEN t = malloc(sizeof(struct token));
+    TOKEN t = calloc(1, sizeof(struct token));
     if(t == NULL)
     {
         fprintf(stderr, "Token allocation failed. are we out of memory?\n");
