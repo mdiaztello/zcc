@@ -40,7 +40,7 @@ TEST_GROUP(LEXER_TESTS)
 
 //make sure that when we peek, it grabs the next input
 //without advancing the input pointer
-TEST(LEXER_TESTS, ConsecutivePeekToksDoNotAdvanceInput)
+TEST(LEXER_TESTS, consecutive_peek_toks_do_not_advance_the_input_stream)
 {
     set_input_source("peektok_test", "r+");
     TOKEN tok1 = peek_token();
@@ -55,7 +55,7 @@ TEST(LEXER_TESTS, ConsecutivePeekToksDoNotAdvanceInput)
     POINTERS_EQUAL(tok1, tok2);
 }
 
-TEST(LEXER_TESTS, GetTokAdvancesInputOnConsecutiveCalls)
+TEST(LEXER_TESTS, get_tok_advances_input_stream_on_consecutive_calls)
 {
     set_input_source("gettok_test", "r+");
     TOKEN tok1 = get_token();
@@ -65,7 +65,7 @@ TEST(LEXER_TESTS, GetTokAdvancesInputOnConsecutiveCalls)
     CHECK(tok1 != tok2);
 }
 
-TEST(LEXER_TESTS, GetTokReturnsPeekedTokAfterPeekTokCall)
+TEST(LEXER_TESTS, get_tok_returns_peeked_token_after_peek_tok_was_called)
 {
     set_input_source("gettok_test", "r+");
     TOKEN get1 = get_token();
@@ -77,7 +77,7 @@ TEST(LEXER_TESTS, GetTokReturnsPeekedTokAfterPeekTokCall)
     POINTERS_EQUAL(peek, get2);
 }
 
-TEST(LEXER_TESTS, LexerRecognizesKeywords)
+TEST(LEXER_TESTS, lexer_recognizes_c_language_keywords)
 {
     TOKEN tok;
     set_input_source("keyword_test", "r+");
@@ -88,7 +88,7 @@ TEST(LEXER_TESTS, LexerRecognizesKeywords)
     }
 }
 
-TEST(LEXER_TESTS, LexerCanProcessIdentifiers)
+TEST(LEXER_TESTS, lexer_properly_handles_identifiers)
 {
     TOKEN tok;
     set_input_source("identifier_test", "r+");
@@ -106,7 +106,7 @@ TEST(LEXER_TESTS, LexerCanProcessIdentifiers)
     }
 }
 
-TEST(LEXER_TESTS, LexerHandlesWeirdInlineComments)
+TEST(LEXER_TESTS, lexer_handles_weird_inline_comments)
 {
     TOKEN tok;
     set_input_source("tricky_comments_test", "r+");
@@ -120,7 +120,7 @@ TEST(LEXER_TESTS, LexerHandlesWeirdInlineComments)
     }
 }
 
-TEST(LEXER_TESTS, LexerDetectsDelimiters)
+TEST(LEXER_TESTS, lexer_handles_delimiters)
 {
     TOKEN tok;
     set_input_source("delimiter_test", "r+");
@@ -132,7 +132,7 @@ TEST(LEXER_TESTS, LexerDetectsDelimiters)
     }
 }
 
-TEST(LEXER_TESTS, LexterProperlyDetectsOperators)
+TEST(LEXER_TESTS, lexer_handles_operators)
 {
     TOKEN tok;
 
@@ -156,7 +156,7 @@ TEST(LEXER_TESTS, LexterProperlyDetectsOperators)
     }
 }
 
-TEST(LEXER_TESTS, LexerUsesMaximalMunchRule)
+TEST(LEXER_TESTS, lexer_uses_maximal_munch_rule_for_detecting_multicharacter_tokens)
 {
     OperatorType expectedOperators[] = { 
         INCREMENT, INCREMENT, ADDITION, INCREMENT, 
