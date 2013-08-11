@@ -52,5 +52,5 @@ my_clean:
 	rm mcc
 
 ctags:
-	ctags *.{c,h}
+	ctags src/*.c include/*.h
 

@@ -17,13 +17,13 @@
  */
 
 
+#include <stdio.h> //for debugging purposes
+#include <stdlib.h> //for exit()
+#include <stdbool.h>
 #include "debug.h"
 #include "token.h"
 #include "token_API.h"
 #include "lexer.h"
-#include <stdio.h> //for debugging purposes
-#include <stdlib.h> //for exit()
-#include <stdbool.h>
 #include "symtab.h"
 #include "error_handlers.h"
 #include "statements.h"

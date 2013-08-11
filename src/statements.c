@@ -19,6 +19,9 @@
  * =====================================================================================
  */
 
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
 #include "token.h"
 #include "token_API.h"
 #include "lexer.h"
@@ -26,11 +29,8 @@
 #include "expressions.h"
 #include "parser.h"
 #include "error_handlers.h"
-#include <stdio.h>
-#include <stdbool.h>
 #include "debug.h"
 #include "pprint.h"
-#include <stdlib.h>
 
 
 
