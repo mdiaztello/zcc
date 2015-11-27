@@ -1,7 +1,7 @@
 
 
 #------OUTPUTS-------#
-COMPONENT_NAME = mcc
+COMPONENT_NAME = zcc
 #Set this to keep the makefile quiet
 SILENCE = @
 
@@ -48,14 +48,14 @@ CC := gcc
 CFLAGS := -Wall -Wextra -std=c99
 
 
-mcc: $(OBJ)
+$(COMPONENT_NAME): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(OBJ)
 
 
 .PHONY: my_clean
 
 my_clean:
-	rm mcc
+	rm $(COMPONENT_NAME)
 
 ctags:
 	ctags src/*.c include/*.h
