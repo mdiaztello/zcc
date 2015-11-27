@@ -101,7 +101,7 @@ int main(int argc, char** argv)
     initsyms();
     init_code_generator(output);
     //test_lexer();
-    test_parser();
-    //test_code_generator();
+    //test_parser();
+    test_code_generator();
     return 0;
 }
